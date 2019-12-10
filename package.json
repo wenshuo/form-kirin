@@ -1,0 +1,34 @@
+{
+  "name": "react-form",
+  "version": "1.0.0",
+  "description": "basic setup for react project",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js --progress --display-error-details",
+    "start": "webpack-dev-server --config webpack.config.js --progress --watch"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.5",
+    "@babel/plugin-proposal-object-rest-spread": "^7.7.4",
+    "@babel/plugin-proposal-optional-chaining": "^7.7.5",
+    "@babel/plugin-transform-async-to-generator": "^7.7.4",
+    "@babel/preset-env": "^7.7.6",
+    "@babel/preset-react": "^7.7.4",
+    "babel-loader": "^8.0.6",
+    "core-js": "^3.4.8",
+    "handlebars-loader": "^1.7.1",
+    "html-webpack-plugin": "^3.2.0",
+    "regenerator-runtime": "^0.13.3",
+    "webpack": "^4.41.2",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.9.0"
+  },
+  "author": "",
+  "license": "ISC"
+}

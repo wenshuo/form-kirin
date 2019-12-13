@@ -5,7 +5,6 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
   context: path.resolve(__dirname, '.'),
-  entry: './app/js/index',
   output: {
     filename: '[name].js',
     sourceMapFilename: '[name].map',
@@ -80,7 +79,6 @@ module.exports = {
       'Access-Control-Allow-Origin': '*'
     }
   },
-  devtool: 'eval-source-map',
   mode: 'development',
   plugins: [
     new MiniCssExtractPlugin({

@@ -10,5 +10,3 @@
 
 1. form submission and form reset
    - setSubmitting function to set submitting flag, useful for implementing loading spinner or disable submit button
-
-1. form value formatting and parsing

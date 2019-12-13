@@ -2,6 +2,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 import Form from './components/Form';
+import Input from './components/Field';
+import Checkbox from './components/Checkbox';
+import LabelField from './components/LabelField';
+import styles from './index.module.scss';
 
 const initialValues = {
   firstName: 'wen',
@@ -13,19 +17,54 @@ function submitForm(values, setSubmitting) {
   setTimeout(() => setSubmitting(false), 2000);
 }
 
+function validateFirst(value) {
+  if (value.length < 5) {
+    return 'first name must be 5 char longs.'
+  }
+
+  return '';
+}
+
 function App(props) {
   return (
     <div>
-      <Form initialValues={initialValues} handleSubmit={submitForm}>
+      <Form initialValues={initialValues} handleSubmit={submitForm} validateOnBlur>
         {
-          ({ values, handleChange, handleSubmit, isSubmitting }) => (
+          ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, resetForm }) => (
             <form onSubmit={handleSubmit}>
-              <label htmlFor="firstName">first name:</label>
-              <input type="text" id="firstName" name="firstName" onChange={handleChange} value={values.firstName} />
-              <br />
-              <label htmlFor="lastName">last name:</label>
-              <input type="text" id="lastName" name="lastName" onChange={handleChange} value={values.lastName} />
-              <br />
+              <LabelField text="First Name:">
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  validate={validateFirst}
+                />
+              </LabelField>
+              {
+                touched.firstName && errors.firstName && <div className={styles.error}>{errors.firstName}</div>
+              }
+              <LabelField text="Last Name:">
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                />
+              </LabelField>
+
+              <Checkbox name="admin" id="admin" label="admin" />
+
+              {
+                values.admin && (
+                  <LabelField text="Department:">
+                    <Input
+                      type="text"
+                      id="department"
+                      name="department"
+                    />
+                  </LabelField>
+                )
+              }
+              <button type="button" onClick={resetForm}>reset</button>
               <button type="submit" disabled={isSubmitting}>submit form</button>
             </form>
           )

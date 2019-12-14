@@ -3,6 +3,44 @@ const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
+function cssLoaderOptions(cssModuleOptions, loaderOptions) {
+  return Object.assign({}, loaderOptions, {
+    test: /\.scss$/,
+    use: [
+      {
+        loader: MiniCssExtractPlugin.loader,
+        options: {
+          hmr: process.env.NODE_ENV === 'development'
+        }
+      },
+      {
+        loader: 'css-loader',
+        options: {
+          modules: cssModuleOptions,
+          sourceMap: true,
+          importLoaders: 2
+        }
+      },
+      {
+        loader: 'postcss-loader',
+        options: {
+          plugins: [
+            require('autoprefixer')()
+          ],
+          sourceMap: true
+        }
+      },
+      {
+        loader: 'sass-loader',
+        options: {
+          implementation: require('node-sass'),
+          sourceMap: true
+        }
+      }
+    ]
+  });
+}
+
 module.exports = {
   context: path.resolve(__dirname, '.'),
   entry: './app/js/index',
@@ -31,41 +69,13 @@ module.exports = {
         exclude: /node_modules/,
         use: 'babel-loader'
       },
-      {
-        test: /\.scss$/,
-        use: [
-          {
-            loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: process.env.NODE_ENV === 'development'
-            }
-          },
-          {
-            loader: 'css-loader',
-            options: {
-              modules: true,
-              sourceMap: true,
-              importLoaders: 2
-            }
-          },
-          {
-            loader: 'postcss-loader',
-            options: {
-              plugins: [
-                require('autoprefixer')()
-              ],
-              sourceMap: true
-            }
-          },
-          {
-            loader: 'sass-loader',
-            options: {
-              implementation: require('node-sass'),
-              sourceMap: true
-            }
-          }
-        ]
-      }
+      cssLoaderOptions(false, { exclude: /\.module\.scss$/ }), // global css processing
+      cssLoaderOptions({
+        mode: 'local',
+        localIdentName: '[path][name]__[local]'
+      }, {
+        include: /\.module\.scss$/
+      }) // css module processing
     ]
   },
   resolve: {

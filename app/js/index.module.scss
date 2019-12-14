@@ -7,7 +7,6 @@ label {
   margin-right: 0.5rem;
 }
 
-.error {
-  color: red;
-  font-size: 1rem;
+:global(.section) {
+  margin-bottom: 1rem;
 }

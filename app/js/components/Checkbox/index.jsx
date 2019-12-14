@@ -1,12 +1,13 @@
 import React from 'react';
 
-import Field from '../Field';
+import BasicField from '../BasicField';
+import styles from './index.module.scss';
 
 export default function Checkbox(props) {
   return (
-    <label htmlFor={props.id}>
-      <Field {...props} type="checkbox" />
-      <span>{ props.label }</span>
+    <label htmlFor={props.id} className={styles.container}>
+      <BasicField {...props} type="checkbox" />
+      <span className={styles.label}>{ props.label }</span>
     </label>
   );
 }

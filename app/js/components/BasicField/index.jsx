@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 
 import FormContext from '../../contexts/form';
@@ -97,7 +98,7 @@ export default class BasicField extends Component {
   }
 
   render() {
-    const props = omit(this.props, ['handleBlur', 'handleChange', 'validate']);
+    const props = omit(this.props, ['handleBlur', 'handleChange', 'validate',  'tagName']);
     const value = this?.context?.values?.[getFieldName(this.props)];
 
     let inputProps = {};
@@ -107,11 +108,13 @@ export default class BasicField extends Component {
     } else if (this.props.type === 'radio') {
       inputProps = { checked: value === this.props.value };
     } else {
-      inputProps = { value };
+      inputProps = { value:  value || '' };
     }
 
+    const Wrapper = this.props.tagName;
+
     return (
-      <input
+      <Wrapper
         className={styles.input}
         {...props}
         {...inputProps}
@@ -123,3 +126,10 @@ export default class BasicField extends Component {
 }
 
 BasicField.contextType = FormContext;
+BasicField.propTypes = {
+  tagName: PropTypes.string
+};
+
+BasicField.defaultProps = {
+  tagName: 'input'
+};

@@ -8,8 +8,11 @@ import Checkbox from './components/Checkbox';
 import LabelField from './components/LabelField';
 import RadioSet from './components/RadioSet';
 import Radio from './components/Radio';
+import Textarea from './components/Textarea';
+import Select from './components/Select';
 import List from './components/List';
-import styles from './index.module.scss';
+
+import './index.scss';
 
 const initialValues = {
   firstName: 'wen',
@@ -30,13 +33,17 @@ function validateFirst(value) {
 }
 
 function validateForm(values) {
+  const errors = {};
+
   if (values.admin && !values.department) {
-    return {
-      department: 'Department field can be empty for amdin.'
-    };
+    errors.department = 'Department field can be empty for amdin.';
   }
 
-  return {};
+  if (!values.bio || values.bio.length < 20) {
+    errors.bio = 'At least tell me more about you.'
+  }
+
+  return errors;
 }
 
 function App(props) {
@@ -97,6 +104,27 @@ function App(props) {
                   <Radio name="role" id="role2" value="engineer" label="Engineer" />
                   <Radio name="role" id="role3" value="QA" label="QA" />
                 </RadioSet>
+              </section>
+
+              <section className="section">
+                <Field errorMessage={touched.source && errors.source}>
+                  <LabelField text="How do know us:">
+                    <Select id="source" name="source">
+                      <option></option>
+                      <option value="internet">Internet</option>
+                      <option value="newspaper">Newspaper</option>
+                      <option value="friends">Friends</option>
+                    </Select>
+                  </LabelField>
+                </Field>
+              </section>
+
+              <section className="section">
+                <Field errorMessage={touched.bio && errors.bio}>
+                  <LabelField text="Tell me about you:">
+                    <Textarea id="bio" name="bio" rows="10" cols="50" />
+                  </LabelField>
+                </Field>
               </section>
 
               <List>

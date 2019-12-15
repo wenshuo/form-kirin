@@ -35,14 +35,30 @@ export default class Form extends PureComponent {
       touched: {},
       isSubmitting: false,
       isValidating: false,
-      dirty: false,
-      isValid: true,
       setErrors: this.setErrors,
       handleBlur: this.handleBlur,
       handleChange: this.handleChange,
       setField: this.setField,
       unsetField: this.unsetField
     };
+
+    // define dirty as read only get property
+    Object.defineProperty(this.state, 'dirty', {
+      enumerable: false,
+      configurable: false,
+      get() {
+        return !isEqual(this.initialValues, this.values);
+      }
+    });
+
+    // define isValid as read only get property
+    Object.defineProperty(this.state, 'isValid', {
+      enumerable: false,
+      configurable: false,
+      get() {
+        return isEmpty(this.errors)
+      }
+    });
   }
 
   async submitForm(event) {
@@ -120,8 +136,6 @@ export default class Form extends PureComponent {
       values: this.state.initialValues,
       touched: {},
       errors: {},
-      isValid: true,
-      dirty: false,
       isSubmitting: false,
       isValidating: false,
       ...overwrites
@@ -188,20 +202,45 @@ export default class Form extends PureComponent {
     this.handleChange(fieldName, fieldValue);
   }
 
-  handleChange(fieldName, fieldValue) {
+  async handleChange(fieldName, fieldValue, callback, ...args) {
     const values = {
       ...this.state.values,
       [fieldName]: fieldValue
     };
 
-    this.setState({
-      dirty: !isEqual(this.state.initialValues, values),
-      values
-    });
+    this.setState({ values });
+
+    const validateOnChange = this.state.validateOnChange;
+    const fieldValidator = this.fields[fieldName].validate;
+    // Call field level validation if defined
+    if (validateOnChange && fieldValidator) {
+      try {
+        const fieldErrors = await fieldValidator(fieldValue, values);
+        this.setErrors({ [fieldName]: fieldErrors });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    callback && callback(...args);
   }
 
-  handleBlur(fieldName) {
+  async handleBlur(fieldName, callback, ...args) {
     this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
+
+    const validateOnBlur = this.state.validateOnBlur;
+    const fieldValidator = this.fields[fieldName].validate;
+    // Call field level validation if defined
+    if (validateOnBlur && fieldValidator) {
+      try {
+        const fieldErrors = await fieldValidator(fieldValue, values);
+        this.setErrors({ [fieldName]: fieldErrors });
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    callback && callback(...args);
   }
 
   render() {
@@ -222,10 +261,11 @@ export default class Form extends PureComponent {
             handleSubmit: this.submitForm,
             isSubmitting: this.state.isSubmitting,
             isValidating: this.state.isValidating,
-            isValid: isEmpty(this.state.errors),
+            isValid: this.state.isValid,
             dirty: this.state.dirty,
             resetForm: this.resetForm,
-            resetFormToValues: this.resetFormToValues
+            resetFormToValues: this.resetFormToValues,
+            setFieldValue: this.setFieldValue
           })
         }
       </FormContext.Provider>

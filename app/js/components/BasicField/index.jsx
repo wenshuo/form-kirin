@@ -49,44 +49,26 @@ export default class BasicField extends Component {
     }
   }
 
-  async handleChange(event) {
+  handleChange(event) {
     event.stopPropagation();
 
     if (this.context) {
-      const { handleChange, validateOnChange } = this.context;
+      const { handleChange } = this.context;
       const fieldName = getFieldName(this.props);
       const fieldValue = this.fieldValue(event.target);
 
-      handleChange(fieldName, fieldValue);
-
-      if (validateOnChange) {
-        await this.validate(fieldName, fieldValue);
-      }
-    }
-
-    // call user provided handleChange method
-    if (this.props.handleChange) {
-      this.props.handleChange(event);
+      handleChange(fieldName, fieldValue, this.props.handleChange, event);
     }
   }
 
-  async handleBlur(event) {
+  handleBlur(event) {
     event.stopPropagation();
 
     if (this.context) {
-      const { handleBlur, validateOnBlur } = this.context;
+      const { handleBlur } = this.context;
       const fieldName = getFieldName(this.props);
 
-      handleBlur(fieldName);
-
-      if (validateOnBlur) {
-        await this.validate(fieldName, this.fieldValue(event.target));
-      }
-    }
-
-    // call user provided handleBlur method
-    if (this.props.handleBlur) {
-      this.props.handleBlur(event);
+      handleBlur(fieldName, this.props.handleBlur, event);
     }
   }
 

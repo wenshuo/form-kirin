@@ -6,11 +6,7 @@ import cx from 'classnames';
 import FormContext from '../../contexts/form';
 import { getFieldName } from '../../helpers/utils';
 
-import styles from './index.module.scss';
-
-const CHECKABLE_TYPES = ['radio', 'checkbox'];
-
-export default class BasicField extends Component {
+export default class MagicWrapper extends Component {
   constructor(props) {
     super(props);
 
@@ -65,8 +61,8 @@ export default class BasicField extends Component {
     }
 
     // call user provided handleChange method
-    if (this.props.handleChange) {
-      this.props.handleChange(event);
+    if (this.props.onChange) {
+      this.props.onChange(event);
     }
   }
 
@@ -85,13 +81,9 @@ export default class BasicField extends Component {
     }
 
     // call user provided handleBlur method
-    if (this.props.handleBlur) {
-      this.props.handleBlur(event);
+    if (this.props.onBlur) {
+      this.props.onBlur(event);
     }
-  }
-
-  isCheckable(type) {
-    return CHECKABLE_TYPES.includes(type);
   }
 
   fieldValue(el) {
@@ -99,38 +91,23 @@ export default class BasicField extends Component {
   }
 
   render() {
-    const { className, tagName: Wrapper } = this.props;
-    const props = omit(this.props, ['handleBlur', 'handleChange', 'validate',  'tagName']);
-    const value = this?.context?.values?.[getFieldName(this.props)];
+    const { children } = this.props;
 
-    let inputProps = {};
-
-    if (this.props.type === 'checkbox') {
-      inputProps = { checked: !!value };
-    } else if (this.props.type === 'radio') {
-      inputProps = { checked: value === this.props.value };
-    } else {
-      inputProps = { value:  value || '' };
+    if (typeof children !== 'function') {
+      throw new Error('children of MagicWrapper must be function.');
     }
 
-    return (
-      <Wrapper
-        className={cx(styles.input, className)}
-        {...props}
-        {...inputProps}
-        onChange={this.handleChange}
-        onBlur={this.handleBlur}
-      />
-    );
+    return children({
+      ...this.context,
+      onChange: this.handleChange,
+      onBlur: this.handleBlur,
+      value: this?.context?.values?.[getFieldName(this.props)]
+    });
   }
 }
 
-BasicField.contextType = FormContext;
-BasicField.propTypes = {
-  tagName: PropTypes.string,
-  className: PropTypes.string
-};
+MagicWrapper.contextType = FormContext;
 
-BasicField.defaultProps = {
-  tagName: 'input'
+MagicWrapper.propTypes = {
+  className: PropTypes.string
 };

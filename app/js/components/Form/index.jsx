@@ -1,6 +1,6 @@
 import React, { PureComponent, createContext } from 'react';
 import isEmpty from 'lodash/isEmpty';
-
+import isEqual from 'lodash/isEqual';
 import { isObject, getFieldNameForElement } from '../../helpers/utils';
 import FormContext from '../../contexts/form';
 
@@ -22,6 +22,8 @@ export default class Form extends PureComponent {
     this.handleBlur = this.handleBlur.bind(this);
     this.setField = this.setField.bind(this);
     this.unsetField = this.unsetField.bind(this);
+    this.resetFormToValues = this.resetFormToValues.bind(this);
+    this.setFieldValue = this.setFieldValue.bind(this);
     this.fields = {};
 
     this.state = {
@@ -33,6 +35,7 @@ export default class Form extends PureComponent {
       touched: {},
       isSubmitting: false,
       isValidating: false,
+      dirty: false,
       isValid: true,
       setErrors: this.setErrors,
       handleBlur: this.handleBlur,
@@ -109,13 +112,32 @@ export default class Form extends PureComponent {
   }
 
   resetForm() {
-    this.setState({
-      values: this.props.initialValues,
+    this.setState(this.defaultFormState());
+  }
+
+  defaultFormState(overwrites) {
+    return {
+      values: this.state.initialValues,
       touched: {},
       errors: {},
       isValid: true,
+      dirty: false,
       isSubmitting: false,
-      isValidating: false
+      isValidating: false,
+      ...overwrites
+    };
+  }
+
+  // Imperatively reset form to newValues if passed otherwise reset form using initialValues
+  // Useful when we need to reset form values programmatically without user interaction
+  // For example we create a form to update book information
+  // and we can implement prev and next button to load previous and next book information
+  resetFormToValues(newValues) {
+    const values = newValues || this.state.initialValues;
+
+    this.setState({
+      ...this.defaultFormState({ values }),
+      initialValues: values
     });
   }
 
@@ -134,6 +156,7 @@ export default class Form extends PureComponent {
   }
 
   setErrors(errors) {
+    // do not setState when errors is empty to avoid unnecessary rendering
     if (!isEmpty(errors)) {
       this.setState({ errors: { ...this.state.errors, ...errors } });
     }
@@ -149,15 +172,31 @@ export default class Form extends PureComponent {
   }
 
   unsetField(fieldName) {
+    // remove field related state when a field is unmounted
+    // typically important for conditional fields which only render depend on the value of other fields.
     delete this.fields[fieldName];
+    delete this.state.values[fieldName];
+    delete this.state.errors[fieldName];
+    delete this.state.touched[fieldName];
+  }
+
+  // Set field value Imperatively
+  // useful for change the field value programmatically
+  // For example we can implement to undo action button by keeping track values of a field
+  // and imperatively set the field value when user click the undo button.
+  setFieldValue(fieldName, fieldValue) {
+    this.handleChange(fieldName, fieldValue);
   }
 
   handleChange(fieldName, fieldValue) {
+    const values = {
+      ...this.state.values,
+      [fieldName]: fieldValue
+    };
+
     this.setState({
-      values: {
-        ...this.state.values,
-        [fieldName]: fieldValue
-      }
+      dirty: !isEqual(this.state.initialValues, values),
+      values
     });
   }
 
@@ -184,7 +223,9 @@ export default class Form extends PureComponent {
             isSubmitting: this.state.isSubmitting,
             isValidating: this.state.isValidating,
             isValid: isEmpty(this.state.errors),
-            resetForm: this.resetForm
+            dirty: this.state.dirty,
+            resetForm: this.resetForm,
+            resetFormToValues: this.resetFormToValues
           })
         }
       </FormContext.Provider>

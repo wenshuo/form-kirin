@@ -12,8 +12,6 @@ export default class Form extends PureComponent {
       throw new Error('initialValues must be object');
     }
 
-    this.validate = props.validate;
-    this.handleSubmit = props.handleSubmit;
     this.submitForm = this.submitForm.bind(this);
     this.setSubmitting = this.setSubmitting.bind(this);
     this.resetForm = this.resetForm.bind(this);
@@ -34,7 +32,10 @@ export default class Form extends PureComponent {
       errors: {},
       touched: {},
       isSubmitting: false,
-      isValidating: false,
+      isValidating: false
+    };
+
+    this.formData = {
       setErrors: this.setErrors,
       handleBlur: this.handleBlur,
       handleChange: this.handleChange,
@@ -42,21 +43,11 @@ export default class Form extends PureComponent {
       unsetField: this.unsetField
     };
 
-    // define dirty as read only get property
-    Object.defineProperty(this.state, 'dirty', {
-      enumerable: false,
-      configurable: false,
-      get() {
-        return !isEqual(this.initialValues, this.values);
-      }
-    });
-
-    // define isValid as read only get property
-    Object.defineProperty(this.state, 'isValid', {
-      enumerable: false,
-      configurable: false,
-      get() {
-        return isEmpty(this.errors)
+    Object.defineProperties(this.formData, {
+      values: {
+        enumerable: false,
+        configurable: false,
+        get: () => this.state.values
       }
     });
   }
@@ -66,7 +57,7 @@ export default class Form extends PureComponent {
     event.stopPropagation();
 
     // can't submit form during submission
-    if (this.state.isSubmitting || !this.handleSubmit) {
+    if (this.state.isSubmitting || !this.props.onSubmit) {
       return false;
     }
 
@@ -75,7 +66,7 @@ export default class Form extends PureComponent {
 
     // Perform form level validation if there's validate function prop
       try {
-        const hasFormLevelValidate = (typeof this.validate === 'function');
+        const hasFormLevelValidate = (typeof this.props.validate === 'function');
         const fieldValidators = this.getFieldValidators(this.fields);
         const hasFieldLevelValidate = !isEmpty(fieldValidators);
 
@@ -94,7 +85,7 @@ export default class Form extends PureComponent {
 
         // Form level validation
         if (hasFormLevelValidate) {
-          errors = await this.validate(this.state.values, this.props);
+          errors = await this.props.validate(this.state.values, this.props);
         }
 
         // Field level validation
@@ -123,12 +114,14 @@ export default class Form extends PureComponent {
 
     if (canSubmit) {
       this.setState({ isSubmitting: true });
-      this.handleSubmit(this.state.values, this.setSubmitting);
+      this.props.onSubmit(this.state.values, this.setSubmitting);
     }
   }
 
-  resetForm() {
+  resetForm(event) {
     this.setState(this.defaultFormState());
+
+    this.props.onReset?.(event);
   }
 
   defaultFormState(overwrites) {
@@ -244,30 +237,43 @@ export default class Form extends PureComponent {
   }
 
   render() {
-    const { children } = this.props;
+    const children = this.props.children;
     // render prop
     if (typeof children !== 'function') {
       throw new Error('chilren of Form component must be a function.');
     }
 
+    const propsForRender = {
+      handleChange: this.handleChange,
+      handleBlur: this.handleBlur,
+      handleSubmit: this.submitForm,
+      handleReset: this.resetForm,
+      values: this.state.values,
+      errors: this.state.errors,
+      touched: this.state.touched,
+      isSubmitting: this.state.isSubmitting,
+      isValidating: this.state.isValidating,
+      resetForm: this.resetFormToValues,
+      setFieldValue: this.setFieldValue
+    };
+
+    // Define dirty and isValid as read only getter
+    Object.defineProperties(propsForRender, {
+      dirty: {
+        enumerable: false,
+        configurable: false,
+        get: () => !isEqual(this.state.initialValues, this.state.values)
+      },
+      isValid: {
+        enumerable: false,
+        configurable: false,
+        get: () => isEmpty(this.state.errors)
+      }
+    });
+
     return (
-      <FormContext.Provider value={this.state}>
-        {
-          children({
-            handleChange: this.handleChange,
-            values: this.state.values,
-            errors: this.state.errors,
-            touched: this.state.touched,
-            handleSubmit: this.submitForm,
-            isSubmitting: this.state.isSubmitting,
-            isValidating: this.state.isValidating,
-            isValid: this.state.isValid,
-            dirty: this.state.dirty,
-            resetForm: this.resetForm,
-            resetFormToValues: this.resetFormToValues,
-            setFieldValue: this.setFieldValue
-          })
-        }
+      <FormContext.Provider value={this.formData}>
+        {children(propsForRender)}
       </FormContext.Provider>
     );
   }

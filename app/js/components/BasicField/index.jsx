@@ -16,7 +16,6 @@ export default class BasicField extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.validate = this.validate.bind(this);
   }
 
   componentDidMount() {
@@ -33,19 +32,6 @@ export default class BasicField extends Component {
   componentWillUnmount() {
     if (this.context) {
       this.context.unsetField(getFieldName(this.props));
-    }
-  }
-
-  async validate(fieldName, fieldValue) {
-    const { setErrors, values } = this.context;
-
-    if (this.props.validate) {
-      try {
-        const errors = await this.props.validate(fieldValue, values);
-        setErrors({ [fieldName]: errors });
-      } catch (e) {
-        console.log(e);
-      }
     }
   }
 

@@ -49,9 +49,9 @@ function validateForm(values) {
 function App(props) {
   return (
     <div>
-      <Form initialValues={initialValues} handleSubmit={submitForm} validateOnBlur validate={validateForm}>
+      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
         {
-          ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, resetForm }) => (
+          ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName}>
@@ -129,7 +129,7 @@ function App(props) {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={resetForm}>reset</button>
+                  <button type="button" onClick={handleReset}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>

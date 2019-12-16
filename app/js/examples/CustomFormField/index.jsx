@@ -8,46 +8,46 @@ import Checkbox from './CustomCheckbox';
 const initialValues = {};
 
 function submitForm(values, setSubmitting) {
-  console.log(values);
+  alert(JSON.stringify(values));
   setTimeout(() => setSubmitting(false), 2000);
 }
 
-function validateFirst(value) {
-  if (value.length < 5) {
-    return 'first name must be 5 char longs.'
+function isRequired(value, name) {
+  if (!value) {
+    return `${name} is required and can't be empty.`;
   }
 
   return '';
 }
 
-function validateForm(values) {
-  const errors = {};
+function fromList(value = []) {
+  return value.join(',');
+}
 
-  if (values.admin && !values.department) {
-    errors.department = 'Department field can be empty for amdin.';
-  }
+function toList(value) {
+  return value ? value.split(',') : [];
+}
 
-  if (!values.bio || values.bio.length < 20) {
-    errors.bio = 'At least tell me more about you.'
-  }
-
-  return errors;
+function uniqueGuests(value) {
+  const uniqueList = [...new Set(value)];
+  return uniqueList.length !== value.length ? 'Guest names must be unique.' : '';
 }
 
 export default function CustomFormFieldExample(props) {
   return (
     <div>
-      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
+      <h3 className="u-text-center form-header">Guest List Form</h3>
+      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur>
         {
           ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
 
               <section className="section">
-                <TextInput id="firstName" name="firstName" validate={validateFirst} label="First Name:" />
+                <TextInput id="firstName" name="firstName" validate={isRequired} label="First Name:" />
               </section>
 
               <section className="section">
-                <TextInput id="lastName" name="lastName" validate={validateFirst} label="First Name:" />
+                <TextInput id="lastName" name="lastName" validate={isRequired} label="Last Name:" />
               </section>
 
               <section className="section">
@@ -57,7 +57,7 @@ export default function CustomFormFieldExample(props) {
               {
                 values.hasGuests && (
                   <section className="section">
-                    <TextInput id="guests" name="guests" label="who are they:" />
+                    <TextInput id="guests" name="guests" label="who are they:" toValue={toList} fromValue={fromList} validate={uniqueGuests} />
                   </section>
                 )
               }

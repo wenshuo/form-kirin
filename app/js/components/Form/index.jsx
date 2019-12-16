@@ -4,6 +4,8 @@ import isEqual from 'lodash/isEqual';
 import { isObject, getFieldNameForElement } from '../../helpers/utils';
 import FormContext from '../../contexts/form';
 
+const identity = v => v;
+
 export default class Form extends PureComponent {
   constructor(props) {
     super(props);
@@ -22,6 +24,7 @@ export default class Form extends PureComponent {
     this.unsetField = this.unsetField.bind(this);
     this.resetFormToValues = this.resetFormToValues.bind(this);
     this.setFieldValue = this.setFieldValue.bind(this);
+    this.getRawValues = this.getRawValues.bind(this);
     this.fields = {};
 
     this.state = {
@@ -48,6 +51,11 @@ export default class Form extends PureComponent {
         enumerable: false,
         configurable: false,
         get: () => this.state.values
+      },
+      rawValues: {
+        enumerable: false,
+        configurable: false,
+        get: this.getRawValues
       },
       errors: {
         enumerable: false,
@@ -103,7 +111,7 @@ export default class Form extends PureComponent {
           const fieldValidatorNames = Object.keys(fieldValidators);
 
           await Promise.all(
-            fieldValidatorNames.map(name => fieldValidators[name](values[name], values))
+            fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values))
           ).then((result) => {
             fieldValidatorNames.forEach((name, i) => {
               fieldErrors[name] = result[i];
@@ -211,9 +219,10 @@ export default class Form extends PureComponent {
   }
 
   async handleChange(fieldName, fieldValue, callback, ...args) {
+    const toValue = this.fields?.[fieldName]?.toValue || identity;
     const values = {
       ...this.state.values,
-      [fieldName]: fieldValue
+      [fieldName]: toValue(fieldValue)
     };
 
     this.setState({ values });
@@ -223,7 +232,7 @@ export default class Form extends PureComponent {
     // Call field level validation if defined
     if (validateOnChange && fieldValidator) {
       try {
-        const fieldErrors = await fieldValidator(fieldValue, values);
+        const fieldErrors = await fieldValidator(values[fieldName], fieldName, values);
         this.setErrors({ [fieldName]: fieldErrors });
       } catch (e) {
         console.log(e);
@@ -243,7 +252,7 @@ export default class Form extends PureComponent {
     // Call field level validation if defined
     if (validateOnBlur && fieldValidator) {
       try {
-        const fieldErrors = await fieldValidator(fieldValue, this.state.values);
+        const fieldErrors = await fieldValidator(fieldValue, fieldName, this.state.values);
         this.setErrors({ [fieldName]: fieldErrors });
       } catch (e) {
         console.log(e);
@@ -251,6 +260,16 @@ export default class Form extends PureComponent {
     }
 
     callback && callback(...args);
+  }
+
+  getRawValues() {
+    return Object.keys(this.state.values).reduce((memo, fieldName) => {
+      const fromValue = this.fields?.[fieldName]?.fromValue || identity;
+
+      memo[fieldName] = fromValue(this.state.values[fieldName]);
+
+      return memo;
+    }, {});
   }
 
   render() {
@@ -285,6 +304,11 @@ export default class Form extends PureComponent {
         enumerable: false,
         configurable: false,
         get: () => this.hasErrors(this.state.errors)
+      },
+      rawValues: {
+        enumerable: false,
+        configurable: false,
+        get: this.getRawValues
       }
     });
 

@@ -6,10 +6,10 @@ export default function Home() {
   return (
     <List stacked>
       <List.Item>
-        <Link to="/basic-form">Basic Form</Link>
+        <Link to="/basic-form">1. Basic Form</Link>
       </List.Item>
       <List.Item>
-        <Link to="/custom-form-fields"  >Custom Form Field</Link>
+        <Link to="/custom-form-fields">2. Custom Form Field</Link>
       </List.Item>
     </List>
   );

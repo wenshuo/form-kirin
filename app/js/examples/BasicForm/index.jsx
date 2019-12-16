@@ -16,7 +16,7 @@ const initialValues = {
 };
 
 function submitForm(values, setSubmitting) {
-  console.log(values);
+  alert(JSON.stringify(values));
   setTimeout(() => setSubmitting(false), 2000);
 }
 
@@ -45,6 +45,7 @@ function validateForm(values) {
 export default function BasicForm(props) {
   return (
     <div>
+      <h3 className="u-text-center  form-header">Basic Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
         {
           ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, handleReset }) => (

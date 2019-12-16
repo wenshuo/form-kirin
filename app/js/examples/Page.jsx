@@ -7,7 +7,7 @@ export default function Page(props) {
       <header>
         <Link to="/">back</Link>
       </header>
-      <main>
+      <main className="main">
         { props.children }
       </main>
     </div>

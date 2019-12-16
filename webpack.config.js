@@ -43,7 +43,7 @@ function cssLoaderOptions(cssModuleOptions, loaderOptions) {
 
 module.exports = {
   context: path.resolve(__dirname, '.'),
-  entry: './app/js/index',
+  entry: './app/js/examples/index',
   output: {
     filename: '[name].js',
     sourceMapFilename: '[name].map',

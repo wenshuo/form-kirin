@@ -1,18 +1,15 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
 
-import Form from './components/Form';
-import Field from './components/Field';
-import Input from './components/BasicField';
-import Checkbox from './components/Checkbox';
-import LabelField from './components/LabelField';
-import RadioSet from './components/RadioSet';
-import Radio from './components/Radio';
-import Textarea from './components/Textarea';
-import Select from './components/Select';
-import List from './components/List';
-
-import './index.scss';
+import Form from '../components/Form';
+import Field from '../components/Field';
+import Input from '../components/BasicField';
+import Checkbox from '../components/Checkbox';
+import LabelField from '../components/LabelField';
+import RadioSet from '../components/RadioSet';
+import Radio from '../components/Radio';
+import Textarea from '../components/Textarea';
+import Select from '../components/Select';
+import List from '../components/List';
 
 const initialValues = {
   firstName: 'wen',
@@ -47,7 +44,7 @@ function validateForm(values) {
   return errors;
 }
 
-function App(props) {
+export default function BasicForm(props) {
   return (
     <div>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
@@ -144,5 +141,3 @@ function App(props) {
     </div>
   );
 }
-
-ReactDOM.render(<App />, document.querySelector('#appRoot'));

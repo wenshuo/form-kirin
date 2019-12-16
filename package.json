@@ -43,6 +43,7 @@
     "node-sass": "^4.13.0",
     "postcss": "^7.0.24",
     "postcss-loader": "^3.0.0",
+    "react-router-dom": "^5.1.2",
     "regenerator-runtime": "^0.13.3",
     "sass-loader": "^8.0.0",
     "style-loader": "^1.0.1",

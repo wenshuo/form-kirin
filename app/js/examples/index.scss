@@ -14,3 +14,20 @@ label {
 header {
   margin-bottom: 1rem;
 }
+
+input[type="text"] {
+  padding: 0.3rem 0.5rem;
+  border: 2px solid gray;
+  font-size: 1rem;
+  outline: none;
+  border-radius: 5px;
+  line-height: 1.2;
+  height: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: #555;
+}
+
+.error {
+  color: red;
+  font-size: 1rem;
+}

@@ -1,5 +1,5 @@
 import React, { Children } from 'react';
-
+import cx from 'classnames';
 import styles from './index.module.scss';
 
 function Item({ children }) {
@@ -8,9 +8,9 @@ function Item({ children }) {
   );
 }
 
-export default function List({ children }) {
+export default function List({ children, stacked }) {
   return (
-    <ul className={styles.container}>
+    <ul className={cx(styles.container, { [styles.stacked]: stacked })}>
       {children}
     </ul>
   );

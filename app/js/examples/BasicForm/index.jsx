@@ -1,19 +1,17 @@
 import React from 'react';
 
-import Form from '../components/Form';
-import Field from '../components/Field';
-import Input from '../components/BasicField';
-import Checkbox from '../components/Checkbox';
-import LabelField from '../components/LabelField';
-import RadioSet from '../components/RadioSet';
-import Radio from '../components/Radio';
-import Textarea from '../components/Textarea';
-import Select from '../components/Select';
-import List from '../components/List';
+import Form from '../../components/Form';
+import Field from '../../components/Field';
+import Input from '../../components/BasicField';
+import Checkbox from '../../components/Checkbox';
+import LabelField from '../../components/LabelField';
+import RadioSet from '../../components/RadioSet';
+import Radio from '../../components/Radio';
+import Textarea from '../../components/Textarea';
+import Select from '../../components/Select';
+import List from '../../components/List';
 
 const initialValues = {
-  firstName: 'wen',
-  lastName: 'huang',
   source: []
 };
 

@@ -48,7 +48,17 @@ export default class Form extends PureComponent {
         enumerable: false,
         configurable: false,
         get: () => this.state.values
-      }
+      },
+      errors: {
+        enumerable: false,
+        configurable: false,
+        get: () => this.state.errors
+      },
+      touched: {
+        enumerable: false,
+        configurable: false,
+        get: () => this.state.touched
+      },
     });
   }
 

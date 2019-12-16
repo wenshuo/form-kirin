@@ -12,7 +12,6 @@ export default class MagicWrapper extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
-    this.validate = this.validate.bind(this);
   }
 
   componentDidMount() {
@@ -32,61 +31,36 @@ export default class MagicWrapper extends Component {
     }
   }
 
-  async validate(fieldName, fieldValue) {
-    const { setErrors, values } = this.context;
-
-    if (this.props.validate) {
-      try {
-        const errors = await this.props.validate(fieldValue, values);
-        setErrors({ [fieldName]: errors });
-      } catch (e) {
-        console.log(e);
-      }
-    }
-  }
-
-  async handleChange(event) {
+  handleChange(event) {
     event.stopPropagation();
 
     if (this.context) {
-      const { handleChange, validateOnChange } = this.context;
+      const { handleChange } = this.context;
       const fieldName = getFieldName(this.props);
       const fieldValue = this.fieldValue(event.target);
 
-      handleChange(fieldName, fieldValue);
-
-      if (validateOnChange) {
-        await this.validate(fieldName, fieldValue);
-      }
-    }
-
-    // call user provided handleChange method
-    if (this.props.onChange) {
-      this.props.onChange(event);
+      handleChange(fieldName, fieldValue, this.props.handleChange, event);
     }
   }
 
-  async handleBlur(event) {
+  handleBlur(event) {
     event.stopPropagation();
 
     if (this.context) {
-      const { handleBlur, validateOnBlur } = this.context;
+      const { handleBlur } = this.context;
       const fieldName = getFieldName(this.props);
 
-      handleBlur(fieldName);
-
-      if (validateOnBlur) {
-        await this.validate(fieldName, this.fieldValue(event.target));
-      }
-    }
-
-    // call user provided handleBlur method
-    if (this.props.onBlur) {
-      this.props.onBlur(event);
+      handleBlur(fieldName, this.props.handleBlur, event);
     }
   }
 
   fieldValue(el) {
+    const elementName = el.tagName.toLowerCase();
+    // handle select with or without multiple
+    if (elementName === 'select') {
+      return Array.from(el.selectedOptions).map(e => e.value);
+    }
+
     return el.getAttribute('type') === 'checkbox' ? el.checked : el.value;
   }
 
@@ -97,11 +71,15 @@ export default class MagicWrapper extends Component {
       throw new Error('children of MagicWrapper must be function.');
     }
 
+    const fieldName = getFieldName(this.props);
+
     return children({
       ...this.context,
-      onChange: this.handleChange,
-      onBlur: this.handleBlur,
-      value: this?.context?.values?.[getFieldName(this.props)]
+      handleChange: this.handleChange,
+      handleBlur: this.handleBlur,
+      value: this?.context?.values?.[fieldName],
+      error: this?.context?.errors?.[fieldName],
+      touched: this?.context?.touched?.[fieldName]
     });
   }
 }

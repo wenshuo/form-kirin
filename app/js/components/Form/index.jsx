@@ -103,7 +103,7 @@ export default class Form extends PureComponent {
 
         errors = { ...errors, ...fieldErrors };
         this.setState({ errors });
-        canSubmit = isEmpty(errors);
+        canSubmit = this.hasErrors(errors);
       } catch (e) {
         canSubmit = false;
         console.log(e);
@@ -133,6 +133,10 @@ export default class Form extends PureComponent {
       isValidating: false,
       ...overwrites
     };
+  }
+
+  hasErrors(errors = {}) {
+    return Object.keys(errors).every(key => !errors[key]);
   }
 
   // Imperatively reset form to newValues if passed otherwise reset form using initialValues
@@ -191,6 +195,7 @@ export default class Form extends PureComponent {
   // useful for change the field value programmatically
   // For example we can implement to undo action button by keeping track values of a field
   // and imperatively set the field value when user click the undo button.
+  // or we can implement custom form control
   setFieldValue(fieldName, fieldValue) {
     this.handleChange(fieldName, fieldValue);
   }
@@ -223,10 +228,12 @@ export default class Form extends PureComponent {
 
     const validateOnBlur = this.state.validateOnBlur;
     const fieldValidator = this.fields[fieldName].validate;
+    const fieldValue = this.state.values[fieldName];
+
     // Call field level validation if defined
     if (validateOnBlur && fieldValidator) {
       try {
-        const fieldErrors = await fieldValidator(fieldValue, values);
+        const fieldErrors = await fieldValidator(fieldValue, this.state.values);
         this.setErrors({ [fieldName]: fieldErrors });
       } catch (e) {
         console.log(e);
@@ -267,7 +274,7 @@ export default class Form extends PureComponent {
       isValid: {
         enumerable: false,
         configurable: false,
-        get: () => isEmpty(this.state.errors)
+        get: () => this.hasErrors(this.state.errors)
       }
     });
 

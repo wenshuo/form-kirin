@@ -63,6 +63,12 @@ export default class BasicField extends Component {
   }
 
   fieldValue(el) {
+    const elementName = el.tagName.toLowerCase();
+    // handle select with or without multiple
+    if (elementName === 'select') {
+      return Array.from(el.selectedOptions).map(e => e.value);
+    }
+
     return el.getAttribute('type') === 'checkbox' ? el.checked : el.value;
   }
 

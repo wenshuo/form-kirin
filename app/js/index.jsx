@@ -16,7 +16,8 @@ import './index.scss';
 
 const initialValues = {
   firstName: 'wen',
-  lastName: 'huang'
+  lastName: 'huang',
+  source: []
 };
 
 function submitForm(values, setSubmitting) {
@@ -109,11 +110,12 @@ function App(props) {
               <section className="section">
                 <Field errorMessage={touched.source && errors.source}>
                   <LabelField text="How do know us:">
-                    <Select id="source" name="source">
+                    <Select id="source" name="source" multiple size={2}>
                       <option></option>
                       <option value="internet">Internet</option>
                       <option value="newspaper">Newspaper</option>
                       <option value="friends">Friends</option>
+                      <option value="others">others</option>
                     </Select>
                   </LabelField>
                 </Field>

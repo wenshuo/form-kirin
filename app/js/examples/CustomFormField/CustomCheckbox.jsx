@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import MagicWrapper from '../../components/MagicWrapper';
 import omit from 'lodash/omit';
 
@@ -21,3 +23,8 @@ export default function CustomCheckbox(props) {
     </MagicWrapper>
   );
 }
+
+CustomCheckbox.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string
+};

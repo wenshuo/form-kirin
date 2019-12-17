@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import cx from 'classnames';
@@ -45,7 +45,9 @@ export default function BasicField(props) {
 
 BasicField.propTypes = {
   tagName: PropTypes.string,
-  className: PropTypes.string
+  className: PropTypes.string,
+  type: PropTypes.string,
+  value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool])
 };
 
 BasicField.defaultProps = {

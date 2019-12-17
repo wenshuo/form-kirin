@@ -1,4 +1,6 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import styles from './index.module.scss';
 
 export default function Field({ children, errorMessage }) {
@@ -13,3 +15,8 @@ export default function Field({ children, errorMessage }) {
     </div>
   );
 }
+
+Field.propTypes = {
+  children: PropTypes.node,
+  errorMessage: PropTypes.string
+};

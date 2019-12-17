@@ -22,7 +22,7 @@ function submitForm(values, setSubmitting) {
 
 function validateFirst(value) {
   if (value.length < 5) {
-    return 'first name must be 5 char longs.'
+    return 'first name must be 5 char longs.';
   }
 
   return '';
@@ -36,19 +36,19 @@ function validateForm(values) {
   }
 
   if (!values.bio || values.bio.length < 20) {
-    errors.bio = 'At least tell me more about you.'
+    errors.bio = 'At least tell me more about you.';
   }
 
   return errors;
 }
 
-export default function BasicForm(props) {
+export default function BasicForm() {
   return (
     <div>
       <h3 className="u-text-center  form-header">Basic Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
         {
-          ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, handleReset }) => (
+          ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName}>

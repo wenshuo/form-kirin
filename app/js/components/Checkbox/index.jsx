@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import BasicField from '../BasicField';
 import styles from './index.module.scss';
@@ -11,3 +12,8 @@ export default function Checkbox(props) {
     </label>
   );
 }
+
+Checkbox.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string
+};

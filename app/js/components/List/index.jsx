@@ -1,5 +1,7 @@
-import React, { Children } from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import cx from 'classnames';
+
 import styles from './index.module.scss';
 
 function Item({ children }) {
@@ -8,6 +10,10 @@ function Item({ children }) {
   );
 }
 
+Item.propTypes = {
+  children: PropTypes.node
+};
+
 export default function List({ children, stacked }) {
   return (
     <ul className={cx(styles.container, { [styles.stacked]: stacked })}>
@@ -15,5 +21,10 @@ export default function List({ children, stacked }) {
     </ul>
   );
 }
+
+List.propTypes = {
+  children: PropTypes.node,
+  stacked: PropTypes.bool
+};
 
 List.Item = Item;

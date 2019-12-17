@@ -1,13 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import BasicForm from './BasicForm';
 import HomePage from './Home';
 import Page from './Page';
 import CustomFormFieldExample from './CustomFormField';
 
-import List from '../components/List';
 
 import './index.scss';
 

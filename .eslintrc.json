@@ -1,0 +1,52 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 11,
+    "sourceType": "module"
+  },
+  "extends": [
+    "plugin:react/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "es2020": true,
+    "mocha": true
+  },
+  "globals": {
+    "expect": "readonly"
+  },
+  "rules": {
+    "semi": ["error", "always"],
+    "indent": ["error", 2],
+    "no-console": "off",
+    "no-debugger": "error",
+    "no-dupe-args": "error",
+    "no-dupe-keys": "error",
+    "no-extra-semi": "error",
+    "no-func-assign": "error",
+    "no-sparse-arrays": "error",
+    "no-unreachable": "error",
+    "complexity": ["error", 8],
+    "consistent-return": "error",
+    "curly": ["error", "all"],
+    "default-case": "error",
+    "eqeqeq": "error",
+    "no-constructor-return": "error",
+    "no-empty-function": "error",
+    "no-eval": "error",
+    "no-global-assign": "error",
+    "no-redeclare": "error",
+    "no-self-assign": "error",
+    "no-unused-labels": "error",
+    "no-useless-catch": "error",
+    "no-with": "error",
+    "no-delete-var": "error",
+    "no-shadow-restricted-names": "error",
+    "no-undef": "error",
+    "no-unused-vars": "error",
+    "constructor-super": "error",
+    "no-const-assign": "error",
+    "no-this-before-super": "error",
+    "require-yield": "error"
+  }
+}

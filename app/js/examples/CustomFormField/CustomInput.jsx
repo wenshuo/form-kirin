@@ -1,6 +1,8 @@
 import React from 'react';
-import MagicWrapper from '../../components/MagicWrapper';
+import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
+
+import MagicWrapper from '../../components/MagicWrapper';
 
 export default function CustomTextInput(props) {
   const fieldProps = omit(props, ['validate', 'label', 'toValue', 'fromValue']);
@@ -8,7 +10,7 @@ export default function CustomTextInput(props) {
   return (
     <MagicWrapper {...props}>
       {
-        ({ value, rawValue, handleBlur, handleChange, error, touched }) => (
+        ({ rawValue, handleBlur, handleChange, error, touched }) => (
           <div>
             <label htmlFor={props.id}>{props.label}</label>
             <input type="text" {...fieldProps} onChange={handleChange} onBlur={handleBlur} value={rawValue || ''} />
@@ -21,3 +23,8 @@ export default function CustomTextInput(props) {
     </MagicWrapper>
   );
 }
+
+CustomTextInput.propTypes = {
+  id: PropTypes.string.isRequired,
+  label: PropTypes.string
+};

@@ -1,8 +1,7 @@
 import React, { Children } from 'react';
-import Radio from '../Radio';
-import List from '../List';
+import PropTypes from 'prop-types';
 
-import styles from './index.module.scss';
+import List from '../List';
 
 export default function RadioSet({ children }) {
   return (
@@ -17,3 +16,7 @@ export default function RadioSet({ children }) {
     </List>
   );
 }
+
+RadioSet.propTypes = {
+  children: PropTypes.node
+};

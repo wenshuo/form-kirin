@@ -4,6 +4,7 @@
   "description": "basic setup for react project",
   "main": "index.js",
   "scripts": {
+    "lint": "eslint --ext .jsx --ext .js app/js",
     "test": "karma start karma.config.js --auto-watch --no-single-run",
     "build": "webpack --config webpack.config.js --progress --display-error-details",
     "start": "webpack-dev-server --config webpack.config.js --progress --watch"
@@ -29,6 +30,8 @@
     "css-loader": "^3.3.0",
     "enzyme": "^3.10.0",
     "enzyme-adapter-react-16": "^1.15.1",
+    "eslint": "^6.7.2",
+    "eslint-plugin-react": "^7.17.0",
     "handlebars": "^4.5.3",
     "handlebars-loader": "^1.7.1",
     "html-webpack-plugin": "^3.2.0",

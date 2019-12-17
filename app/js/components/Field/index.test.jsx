@@ -13,5 +13,5 @@ describe('Input', () => {
     const el = mount(<Input name="test" id="test" />);
 
     expect(el.find('input').props().id).to.eql('test');
-  })
+  });
 });

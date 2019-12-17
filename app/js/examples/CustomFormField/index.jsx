@@ -33,13 +33,13 @@ function uniqueGuests(value) {
   return uniqueList.length !== value.length ? 'Guest names must be unique.' : '';
 }
 
-export default function CustomFormFieldExample(props) {
+export default function CustomFormFieldExample() {
   return (
     <div>
       <h3 className="u-text-center form-header">Guest List Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur>
         {
-          ({ values, touched, errors, handleChange, handleSubmit, isSubmitting, handleReset }) => (
+          ({ values, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
 
               <section className="section">

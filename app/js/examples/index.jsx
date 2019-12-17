@@ -6,7 +6,7 @@ import BasicForm from './BasicForm';
 import HomePage from './Home';
 import Page from './Page';
 import CustomFormFieldExample from './CustomFormField';
-
+import RenderPropExample from './RenderPropExample';
 
 import './index.scss';
 
@@ -25,6 +25,11 @@ function App() {
         <Route path="/custom-form-fields">
           <Page>
             <CustomFormFieldExample />
+          </Page>
+        </Route>
+        <Route path="/render-prop-example">
+          <Page>
+            <RenderPropExample />
           </Page>
         </Route>
       </Switch>

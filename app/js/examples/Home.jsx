@@ -11,6 +11,9 @@ export default function Home() {
       <List.Item>
         <Link to="/custom-form-fields">2. Custom Form Field</Link>
       </List.Item>
+      <List.Item>
+        <Link to="/render-prop-example">3. Render Prop Example</Link>
+      </List.Item>
     </List>
   );
 }

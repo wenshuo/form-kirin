@@ -34,26 +34,11 @@ export default class MagicWrapper extends Component {
   }
 
   handleChange(event) {
-    event.stopPropagation();
-
-    if (this.context) {
-      const { handleChange } = this.context;
-      const fieldName = getFieldName(this.props);
-      const fieldValue = this.fieldValue(event.target);
-
-      handleChange(fieldName, fieldValue, this.props.handleChange, event);
-    }
+    this?.context.handleChange?.(event, this.props.handleChange, event);
   }
 
   handleBlur(event) {
-    event.stopPropagation();
-
-    if (this.context) {
-      const { handleBlur } = this.context;
-      const fieldName = getFieldName(this.props);
-
-      handleBlur(fieldName, this.props.handleBlur, event);
-    }
+    this?.context.handleBlur?.(event, this.props.handleBlur, event);
   }
 
   fieldValue(el) {

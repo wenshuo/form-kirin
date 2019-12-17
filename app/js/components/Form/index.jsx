@@ -1,7 +1,11 @@
 import React, { PureComponent, createContext } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
-import { isObject, getFieldNameForElement } from '../../helpers/utils';
+import {
+  isObject,
+  getFieldNameForElement,
+  getFieldValueForElement
+} from '../../helpers/utils';
 import FormContext from '../../contexts/form';
 
 const identity = v => v;
@@ -218,7 +222,13 @@ export default class Form extends PureComponent {
     this.handleChange(fieldName, fieldValue);
   }
 
-  async handleChange(fieldName, fieldValue, callback, ...args) {
+  async handleChange(event, callback, ...args) {
+    event.stopPropagation?.();
+    event.stopImmediatePropagation?.();
+
+    const fieldName = getFieldNameForElement(event.target);
+    const fieldValue = getFieldValueForElement(event.target);
+
     const toValue = this.fields?.[fieldName]?.toValue || identity;
     const values = {
       ...this.state.values,
@@ -228,7 +238,7 @@ export default class Form extends PureComponent {
     this.setState({ values });
 
     const validateOnChange = this.state.validateOnChange;
-    const fieldValidator = this.fields[fieldName].validate;
+    const fieldValidator = this.fields?.[fieldName]?.validate;
     // Call field level validation if defined
     if (validateOnChange && fieldValidator) {
       try {
@@ -242,11 +252,15 @@ export default class Form extends PureComponent {
     callback && callback(...args);
   }
 
-  async handleBlur(fieldName, callback, ...args) {
+  async handleBlur(event, callback, ...args) {
+    event.stopPropagation?.();
+    event.stopImmediatePropagation?.();
+    const fieldName = getFieldNameForElement(event.target);
+    
     this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
 
     const validateOnBlur = this.state.validateOnBlur;
-    const fieldValidator = this.fields[fieldName].validate;
+    const fieldValidator = this.fields?.[fieldName]?.validate;
     const fieldValue = this.state.values[fieldName];
 
     // Call field level validation if defined
@@ -274,9 +288,15 @@ export default class Form extends PureComponent {
 
   render() {
     const children = this.props.children;
-    // render prop
+    // return children if it is not a function
+    // useful when creating form using predefined form controls which already knows how to talk to
+    // the form component.
     if (typeof children !== 'function') {
-      throw new Error('chilren of Form component must be a function.');
+      return (
+        <FormContext.Provider value={this.formData}>
+          {children}
+        </FormContext.Provider>
+      );
     }
 
     const propsForRender = {

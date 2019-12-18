@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
-import BasicForm from './BasicForm';
+import PredefinedFormFieldExample from './PredefinedFormField';
 import HomePage from './Home';
 import Page from './Page';
 import CustomFormFieldExample from './CustomFormField';
@@ -17,17 +17,17 @@ function App() {
         <Route exact path="/">
           <HomePage />
         </Route>
-        <Route path="/basic-form">
+        <Route path="/predefined-form-fields-example">
           <Page>
-            <BasicForm />
+            <PredefinedFormFieldExample />
           </Page>
         </Route>
-        <Route path="/custom-form-fields">
+        <Route path="/custom-form-fields-example">
           <Page>
             <CustomFormFieldExample />
           </Page>
         </Route>
-        <Route path="/render-prop-example">
+        <Route path="/use-basic-form-control-example">
           <Page>
             <RenderPropExample />
           </Page>

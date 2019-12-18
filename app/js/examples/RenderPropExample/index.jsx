@@ -17,29 +17,43 @@ function submitForm(values, setSubmitting) {
   setTimeout(() => setSubmitting(false), 2000);
 }
 
-function validateForm(values) {
-  const errors = {};
+const validate = {
+  firstName(fieldValue, fieldName) {
+    return !fieldValue ? 'First name is required.' : '';
+  },
+  lastName(fieldValue, fieldName) {
+    return !fieldValue ? 'Last name is required.' : '';
+  },
+  quantity(fieldValue, fieldName) {
+    let errors = '';
 
-  if (!values.firstName) {
-    errors.firstName = 'First name is required.';
+    if (!fieldValue) {
+      errors = 'Quantity is required.';
+    } else if (fieldValue > 10) {
+      errors = 'Please select 1 to 9.';
+    }
+
+    return errors;
   }
+};
 
-  if (!values.lastName) {
-    errors.lastName = 'Last name is required.';
+const toValue = {
+  quantity(value) {
+    return parseInt(value);
   }
+};
 
-  if (!values.quantity) {
-    errors.quantity = 'Quantity is required.';
+const fromValue = {
+  quantity(value) {
+    return String(value);
   }
+};
 
-  return errors;
-}
-
-export default function BasicForm() {
+export default function RenderPropExample() {
   return (
     <div>
       <h3 className="u-text-center  form-header">Basic Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validate={validateForm}>
+      <Form initialValues={initialValues} onSubmit={submitForm} validate={validate} toValue={toValue} fromValue={fromValue}>
         {
           ({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>

@@ -42,11 +42,11 @@ function validateForm(values) {
   return errors;
 }
 
-export default function BasicForm() {
+export default function PredefinedFormFieldExample() {
   return (
     <div>
-      <h3 className="u-text-center  form-header">Basic Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validateForm}>
+      <h3 className="u-text-center  form-header">Information Form</h3>
+      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validateForm={validateForm}>
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>

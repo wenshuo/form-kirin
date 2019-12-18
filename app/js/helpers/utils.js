@@ -12,6 +12,10 @@ export function isObject(value) {
   return value !== null && type === 'object';
 }
 
+export function isFunction(value) {
+  return typeof value === 'function';
+}
+
 export function getFieldName(props) {
   return fieldName(props.name || props.id);
 }

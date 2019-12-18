@@ -3,6 +3,7 @@ import isEmpty from 'lodash/isEmpty';
 import isEqual from 'lodash/isEqual';
 import {
   isObject,
+  isFunction,
   getFieldNameForElement,
   getFieldValueForElement
 } from '../../helpers/utils';
@@ -87,52 +88,54 @@ export default class Form extends PureComponent {
     const values = this.state.values;
 
     // Perform form level validation if there's validate function prop
-      try {
-        const hasFormLevelValidate = (typeof this.props.validate === 'function');
-        const fieldValidators = this.getFieldValidators(this.fields);
-        const hasFieldLevelValidate = !isEmpty(fieldValidators);
+    try {
+      const hasFormLevelValidate = (typeof this.props.validateForm === 'function');
+      const fieldValidators = this.getFieldValidators(this.fields, this.props.validate);
+      const hasFieldLevelValidate = !isEmpty(fieldValidators);
 
-        if (hasFormLevelValidate || hasFieldLevelValidate) {
-          this.setState({
-            isValidating: true,
-            touched: Object.keys(this.fields).reduce((memo, field) => {
-              memo[field] = true;
-              return memo;
-            }, {})
-          });
-        }
-
-        let errors = {};
-        let fieldErrors = {};
-
-        // Form level validation
-        if (hasFormLevelValidate) {
-          errors = await this.props.validate(this.state.values, this.props);
-        }
-
-        // Field level validation
-        if (hasFieldLevelValidate) {
-          const fieldValidatorNames = Object.keys(fieldValidators);
-
-          await Promise.all(
-            fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values))
-          ).then((result) => {
-            fieldValidatorNames.forEach((name, i) => {
-              fieldErrors[name] = result[i];
-            });
-          });
-        }
-
-        errors = { ...errors, ...fieldErrors };
-        this.setState({ errors });
-        canSubmit = this.hasErrors(errors);
-      } catch (e) {
-        canSubmit = false;
-        console.log(e);
-      } finally {
-        // set isValidating to false
-        this.setState({ isValidating: false });
+      if (hasFormLevelValidate || hasFieldLevelValidate) {
+        this.setState({
+          isValidating: true
+        });
       }
+
+      let errors = {};
+      let fieldErrors = {};
+
+      // Form level validation
+      if (hasFormLevelValidate) {
+        errors = await this.props.validateForm(this.state.values, this.props);
+      }
+
+      // Field level validation
+      if (hasFieldLevelValidate) {
+        const fieldValidatorNames = Object.keys(fieldValidators);
+
+        await Promise.all(
+          fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values))
+        ).then((result) => {
+          fieldValidatorNames.forEach((name, i) => {
+            fieldErrors[name] = result[i];
+          });
+        });
+      }
+      errors = { ...errors, ...fieldErrors };
+      this.setState({
+        errors,
+        touched: Object.keys(errors).reduce((memo, field) => {
+          memo[field] = true;
+          return memo;
+        }, {})
+      });
+      canSubmit = this.hasErrors(errors);
+    } catch (e) {
+      // What should we do when validation fail ?
+      canSubmit = false;
+      console.log(e);
+    } finally {
+      // set isValidating to false
+      this.setState({ isValidating: false });
+    }
 
     if (canSubmit) {
       this.setState({ isSubmitting: true });
@@ -174,14 +177,17 @@ export default class Form extends PureComponent {
     });
   }
 
-  getFieldValidators(fields) {
-    return Object.keys(fields).reduce((memo, name) => {
+  getFieldValidators(fields = {}, validateObj = {}) {
+    // validator from predefined form field take precedency over validator from the validate prop at the form level
+    const validatorsFromField = Object.keys(fields).reduce((memo, name) => {
       if (fields?.[name]?.validate) {
         memo[name] = fields[name].validate;
       }
 
       return memo;
     }, {});
+
+    return { ...validateObj, ...validatorsFromField };
   }
 
   setSubmitting(value) {
@@ -228,11 +234,11 @@ export default class Form extends PureComponent {
 
     const fieldName = getFieldNameForElement(event.target);
     const fieldValue = getFieldValueForElement(event.target);
-
-    const toValue = this.fields?.[fieldName]?.toValue || identity;
+    // field level toValue takes precedency
+    const toValue = this.fields?.[fieldName]?.toValue || this.props?.toValue?.[fieldName] || identity;
     const values = {
       ...this.state.values,
-      [fieldName]: toValue(fieldValue)
+      [fieldName]: isFunction(toValue) ? toValue(fieldValue) :fieldValue
     };
 
     this.setState({ values });
@@ -256,9 +262,8 @@ export default class Form extends PureComponent {
     event.stopPropagation?.();
     event.stopImmediatePropagation?.();
     const fieldName = getFieldNameForElement(event.target);
-    
-    this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
 
+    this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
     const validateOnBlur = this.state.validateOnBlur;
     const fieldValidator = this.fields?.[fieldName]?.validate;
     const fieldValue = this.state.values[fieldName];
@@ -278,9 +283,9 @@ export default class Form extends PureComponent {
 
   getRawValues() {
     return Object.keys(this.state.values).reduce((memo, fieldName) => {
-      const fromValue = this.fields?.[fieldName]?.fromValue || identity;
+      const fromValue = this.fields?.[fieldName]?.fromValue || this.props?.fromValue?.[fieldName] || identity;
 
-      memo[fieldName] = fromValue(this.state.values[fieldName]);
+      memo[fieldName] = isFunction(fromValue) ?  fromValue(this.state.values[fieldName]) : fieldValue;
 
       return memo;
     }, {});
@@ -288,15 +293,9 @@ export default class Form extends PureComponent {
 
   render() {
     const children = this.props.children;
-    // return children if it is not a function
-    // useful when creating form using predefined form controls which already knows how to talk to
-    // the form component.
+    
     if (typeof children !== 'function') {
-      return (
-        <FormContext.Provider value={this.formData}>
-          {children}
-        </FormContext.Provider>
-      );
+      throw new Error('Children of form must be a function.');
     }
 
     const propsForRender = {

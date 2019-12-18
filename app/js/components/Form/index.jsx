@@ -23,12 +23,14 @@ export default class Form extends PureComponent {
     this.setSubmitting = this.setSubmitting.bind(this);
     this.resetForm = this.resetForm.bind(this);
     this.setErrors = this.setErrors.bind(this);
+    this.handleValue = this.handleValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.setField = this.setField.bind(this);
     this.unsetField = this.unsetField.bind(this);
     this.resetFormToValues = this.resetFormToValues.bind(this);
     this.setFieldValue = this.setFieldValue.bind(this);
+    this.setTouched = this.setTouched.bind(this);
     this.fields = {};
 
     this.state = {
@@ -47,7 +49,9 @@ export default class Form extends PureComponent {
       handleBlur: this.handleBlur,
       handleChange: this.handleChange,
       setField: this.setField,
-      unsetField: this.unsetField
+      unsetField: this.unsetField,
+      setTouched: this.setTouched,
+      setFieldValue: this.setFieldValue
     };
 
     Object.defineProperties(this.formData, {
@@ -219,15 +223,14 @@ export default class Form extends PureComponent {
   // and imperatively set the field value when user click the undo button.
   // or we can implement custom form control
   setFieldValue(fieldName, fieldValue) {
-    this.handleChange(fieldName, fieldValue);
+    this.handleValue(fieldName, fieldValue);
   }
 
-  async handleChange(event, callback, ...args) {
-    event.stopPropagation?.();
-    event.stopImmediatePropagation?.();
+  setTouched(fieldName, touched = true) {
+    this.setState({ touched: { ...this.state.touched, [fieldName]: touched } });
+  }
 
-    const fieldName = getFieldNameForElement(event.target);
-    const fieldValue = getFieldValueForElement(event.target);
+  async handleValue(fieldName, fieldValue) {
     const values = {
       ...this.state.values,
       [fieldName]: fieldValue
@@ -246,6 +249,13 @@ export default class Form extends PureComponent {
         console.log(e);
       }
     }
+  }
+
+  async handleChange(event, callback, ...args) {
+    event.stopPropagation?.();
+    event.stopImmediatePropagation?.();
+
+    await this.handleValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target));
 
     callback && callback(...args);
   }
@@ -281,8 +291,6 @@ export default class Form extends PureComponent {
     }
 
     const propsForRender = {
-      handleChange: this.handleChange,
-      handleBlur: this.handleBlur,
       handleSubmit: this.submitForm,
       handleReset: this.resetForm,
       values: this.state.values,
@@ -291,7 +299,7 @@ export default class Form extends PureComponent {
       isSubmitting: this.state.isSubmitting,
       isValidating: this.state.isValidating,
       resetForm: this.resetFormToValues,
-      setFieldValue: this.setFieldValue
+      ...this.formData
     };
 
     // Define dirty and isValid as read only getter

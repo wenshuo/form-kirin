@@ -16,13 +16,14 @@ header {
 }
 
 input[type="text"] {
+  box-sizing: border-box;
   padding: 0.3rem 0.5rem;
   border: 2px solid gray;
   font-size: 1rem;
   outline: none;
   border-radius: 5px;
   line-height: 1.2;
-  height: 1.5rem;
+  height: 2.2rem;
   margin-bottom: 0.5rem;
   color: #555;
 }
@@ -45,4 +46,10 @@ input[type="text"] {
 .form-header {
   margin-bottom: 2rem;
   font-size: 1.5rem;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
 }

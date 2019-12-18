@@ -2,13 +2,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 
-import MagicWrapper from '../../components/MagicWrapper';
+import FormControlWrapper from '../../components/FormControlWrapper';
 
 export default function CustomTextInput(props) {
   const fieldProps = omit(props, ['validate', 'label']);
 
   return (
-    <MagicWrapper {...props}>
+    <FormControlWrapper {...props}>
       {
         ({ value, handleBlur, handleChange, error, touched }) => (
           <div>
@@ -20,7 +20,7 @@ export default function CustomTextInput(props) {
           </div>
         )
       }
-    </MagicWrapper>
+    </FormControlWrapper>
   );
 }
 

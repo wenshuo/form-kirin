@@ -1,0 +1,16 @@
+.container {
+  border: 1px solid gray;
+}
+
+.item {
+  padding: 0.2rem 0.5rem;
+  text-transform: capitalize;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.control {
+  width: 100%;
+}

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
 import cx from 'classnames';
 
-import MagicWrapper from '../MagicWrapper';
+import FormControlWrapper from '../FormControlWrapper';
 import styles from './index.module.scss';
 
 function valueProp(value, type, valueFromProp) {
@@ -25,7 +25,7 @@ export default function BasicField(props) {
   const fieldProps = omit(props, ['handleBlur', 'handleChange', 'validate',  'tagName']);
 
   return (
-    <MagicWrapper {...props}>
+    <FormControlWrapper {...props}>
       {
         ({ value, handleChange, handleBlur }) => {
           return (
@@ -39,7 +39,7 @@ export default function BasicField(props) {
           );
         }
       }
-    </MagicWrapper>
+    </FormControlWrapper>
   );
 }
 

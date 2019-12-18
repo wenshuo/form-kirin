@@ -4,6 +4,7 @@ import Form from '../../components/Form';
 import List from '../../components/List';
 import TextInput from './CustomInput';
 import Checkbox from './CustomCheckbox';
+import Autocomplete from './Autocomplete';
 
 const initialValues = {};
 
@@ -30,6 +31,14 @@ function uniqueGuests(value) {
   return '';
 }
 
+const items = [
+  { label: 'Jack' },
+  { label: 'Rose' },
+  { label: 'Mary' },
+  { label: 'Tom' },
+  { label: 'Lily' }
+];
+
 export default function CustomFormFieldExample() {
   return (
     <div>
@@ -54,7 +63,7 @@ export default function CustomFormFieldExample() {
               {
                 values.hasGuests && (
                   <section className="section">
-                    <TextInput id="guests" name="guests" label="who are they:" validate={uniqueGuests} />
+                    <Autocomplete name="guests" validate={uniqueGuests} items={items} />
                   </section>
                 )
               }

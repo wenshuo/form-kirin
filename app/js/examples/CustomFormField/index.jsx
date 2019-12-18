@@ -20,17 +20,14 @@ function isRequired(value, name) {
   return '';
 }
 
-function fromList(value = []) {
-  return value.join(',');
-}
-
-function toList(value) {
-  return value ? value.split(',') : [];
-}
-
 function uniqueGuests(value) {
-  const uniqueList = [...new Set(value)];
-  return uniqueList.length !== value.length ? 'Guest names must be unique.' : '';
+  if (value) {
+    const names = value.split(',');
+    const uniqueList = [...new Set(names)];
+    return uniqueList.length !== names.length ? 'Guest names must be unique.' : '';
+  }
+
+  return '';
 }
 
 export default function CustomFormFieldExample() {
@@ -57,7 +54,7 @@ export default function CustomFormFieldExample() {
               {
                 values.hasGuests && (
                   <section className="section">
-                    <TextInput id="guests" name="guests" label="who are they:" toValue={toList} fromValue={fromList} validate={uniqueGuests} />
+                    <TextInput id="guests" name="guests" label="who are they:" validate={uniqueGuests} />
                   </section>
                 )
               }

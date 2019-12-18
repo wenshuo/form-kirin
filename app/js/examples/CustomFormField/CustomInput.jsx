@@ -5,15 +5,15 @@ import omit from 'lodash/omit';
 import MagicWrapper from '../../components/MagicWrapper';
 
 export default function CustomTextInput(props) {
-  const fieldProps = omit(props, ['validate', 'label', 'toValue', 'fromValue']);
+  const fieldProps = omit(props, ['validate', 'label']);
 
   return (
     <MagicWrapper {...props}>
       {
-        ({ rawValue, handleBlur, handleChange, error, touched }) => (
+        ({ value, handleBlur, handleChange, error, touched }) => (
           <div>
             <label htmlFor={props.id}>{props.label}</label>
-            <input type="text" {...fieldProps} onChange={handleChange} onBlur={handleBlur} value={rawValue || ''} />
+            <input type="text" {...fieldProps} onChange={handleChange} onBlur={handleBlur} value={value || ''} />
             {
               touched && error && <div className="error">{error}</div>
             }

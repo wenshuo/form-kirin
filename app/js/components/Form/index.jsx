@@ -29,7 +29,6 @@ export default class Form extends PureComponent {
     this.unsetField = this.unsetField.bind(this);
     this.resetFormToValues = this.resetFormToValues.bind(this);
     this.setFieldValue = this.setFieldValue.bind(this);
-    this.getRawValues = this.getRawValues.bind(this);
     this.fields = {};
 
     this.state = {
@@ -56,11 +55,6 @@ export default class Form extends PureComponent {
         enumerable: false,
         configurable: false,
         get: () => this.state.values
-      },
-      rawValues: {
-        enumerable: false,
-        configurable: false,
-        get: this.getRawValues
       },
       errors: {
         enumerable: false,
@@ -234,11 +228,9 @@ export default class Form extends PureComponent {
 
     const fieldName = getFieldNameForElement(event.target);
     const fieldValue = getFieldValueForElement(event.target);
-    // field level toValue takes precedency
-    const toValue = this.fields?.[fieldName]?.toValue || this.props?.toValue?.[fieldName] || identity;
     const values = {
       ...this.state.values,
-      [fieldName]: isFunction(toValue) ? toValue(fieldValue) :fieldValue
+      [fieldName]: fieldValue
     };
 
     this.setState({ values });
@@ -281,19 +273,9 @@ export default class Form extends PureComponent {
     callback && callback(...args);
   }
 
-  getRawValues() {
-    return Object.keys(this.state.values).reduce((memo, fieldName) => {
-      const fromValue = this.fields?.[fieldName]?.fromValue || this.props?.fromValue?.[fieldName] || identity;
-
-      memo[fieldName] = isFunction(fromValue) ?  fromValue(this.state.values[fieldName]) : fieldValue;
-
-      return memo;
-    }, {});
-  }
-
   render() {
     const children = this.props.children;
-    
+
     if (typeof children !== 'function') {
       throw new Error('Children of form must be a function.');
     }
@@ -323,11 +305,6 @@ export default class Form extends PureComponent {
         enumerable: false,
         configurable: false,
         get: () => this.hasErrors(this.state.errors)
-      },
-      rawValues: {
-        enumerable: false,
-        configurable: false,
-        get: this.getRawValues
       }
     });
 

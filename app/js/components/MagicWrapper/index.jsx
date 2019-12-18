@@ -20,8 +20,6 @@ export default class MagicWrapper extends Component {
 
       this.context.setField({
         validate: this.props.validate,
-        toValue: this.props.toValue,
-        fromValue: this.props.fromValue,
         name: fieldName
       });
     }

@@ -29,7 +29,7 @@ const validate = {
 
     if (!fieldValue) {
       errors = 'Quantity is required.';
-    } else if (fieldValue > 10) {
+    } else if (Number(fieldValue) > 10) {
       errors = 'Please select 1 to 9.';
     }
 
@@ -37,23 +37,11 @@ const validate = {
   }
 };
 
-const toValue = {
-  quantity(value) {
-    return parseInt(value);
-  }
-};
-
-const fromValue = {
-  quantity(value) {
-    return String(value);
-  }
-};
-
 export default function RenderPropExample() {
   return (
     <div>
       <h3 className="u-text-center  form-header">Basic Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validate={validate} toValue={toValue} fromValue={fromValue}>
+      <Form initialValues={initialValues} onSubmit={submitForm} validate={validate}>
         {
           ({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>

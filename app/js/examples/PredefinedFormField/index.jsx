@@ -9,6 +9,8 @@ import RadioSet from '../../components/RadioSet';
 import Radio from '../../components/Radio';
 import Textarea from '../../components/Textarea';
 import Select from '../../components/Select';
+import EmailField from '../../components/EmailField';
+import NumberField from '../../components/NumberField';
 import List from '../../components/List';
 
 const initialValues = {
@@ -20,9 +22,9 @@ function submitForm(values, setSubmitting) {
   setTimeout(() => setSubmitting(false), 2000);
 }
 
-function validateFirst(value) {
-  if (value.length < 5) {
-    return 'first name must be 5 char longs.';
+function isRequired(fieldValue, fieldName) {
+  if (!fieldValue) {
+    return `${fieldName} is required.`;
   }
 
   return '';
@@ -57,7 +59,7 @@ export default function PredefinedFormFieldExample() {
                       type="text"
                       id="firstName"
                       name="firstName"
-                      validate={validateFirst}
+                      validate={isRequired}
                     />
                   </LabelField>
                 </Field>
@@ -70,6 +72,7 @@ export default function PredefinedFormFieldExample() {
                       type="text"
                       id="lastName"
                       name="lastName"
+                      validate={isRequired}
                     />
                   </LabelField>
                 </Field>
@@ -113,6 +116,28 @@ export default function PredefinedFormFieldExample() {
                       <option value="friends">Friends</option>
                       <option value="others">others</option>
                     </Select>
+                  </LabelField>
+                </Field>
+              </section>
+
+              <section className="section">
+                <Field errorMessage={touched.email && errors.email}>
+                  <LabelField text="Email:">
+                    <EmailField
+                      id="email"
+                      name="email"
+                    />
+                  </LabelField>
+                </Field>
+              </section>
+
+              <section className="section">
+                <Field errorMessage={touched.years && errors.years}>
+                  <LabelField text="How long have you been working here:">
+                    <NumberField
+                      id="years"
+                      name="years"
+                    />
                   </LabelField>
                 </Field>
               </section>

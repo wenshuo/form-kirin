@@ -22,7 +22,7 @@ function valueProp(value, type, valueFromProp) {
 
 export default function BasicField(props) {
   const { className, tagName: Wrapper, type } = props;
-  const fieldProps = omit(props, ['handleBlur', 'handleChange', 'validate',  'tagName', 'toValue', 'fromValue']);
+  const fieldProps = omit(props, ['handleBlur', 'handleChange', 'validate',  'tagName']);
 
   return (
     <MagicWrapper {...props}>

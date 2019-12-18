@@ -3,16 +3,17 @@ import PropTypes from 'prop-types';
 
 import BasicField from '../BasicField';
 
-function toValue(value) {
-  return Number(value);
-}
+// Regex for number(including negative, integer, floating number)
+function validate(value) {
+  if (value) {
+    return /^-?\d*(\.\d+)?$/.test(value) ? '' : `${value} is not a number.`;  
+  }
 
-function fromValue(value) {
-  return String(value);
+  return '';
 }
 
 export default function NumberField(props) {
   return(
-    <BasicField {...props} toValue={toValue} fromValue={fromValue} />
+    <BasicField validate={validate} {...props}  type="number" />
   );
 }

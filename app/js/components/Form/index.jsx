@@ -9,7 +9,13 @@ import {
 } from '../../helpers/utils';
 import FormContext from '../../contexts/form';
 
-const identity = v => v;
+function mergeErrors(target = {}, source = {}) {
+  return Object.keys(source).reduce((memo, key) => {
+    memo[key] = `${memo[key] || ''}${source[key]}`;
+
+    return memo;
+  }, target);
+}
 
 export default class Form extends PureComponent {
   constructor(props) {
@@ -23,7 +29,7 @@ export default class Form extends PureComponent {
     this.setSubmitting = this.setSubmitting.bind(this);
     this.resetForm = this.resetForm.bind(this);
     this.setErrors = this.setErrors.bind(this);
-    this.handleValue = this.handleValue.bind(this);
+    this.updateValue = this.updateValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.setField = this.setField.bind(this);
@@ -117,7 +123,10 @@ export default class Form extends PureComponent {
           });
         });
       }
-      errors = { ...errors, ...fieldErrors };
+      // Merge errors
+      console.log(errors, fieldErrors);
+      errors = mergeErrors(errors, fieldErrors);
+      console.log(errors);
       this.setState({
         errors,
         touched: Object.keys(errors).reduce((memo, field) => {
@@ -223,14 +232,14 @@ export default class Form extends PureComponent {
   // and imperatively set the field value when user click the undo button.
   // or we can implement custom form control
   setFieldValue(fieldName, fieldValue) {
-    this.handleValue(fieldName, fieldValue);
+    this.updateValue(fieldName, fieldValue);
   }
 
   setTouched(fieldName, touched = true) {
     this.setState({ touched: { ...this.state.touched, [fieldName]: touched } });
   }
 
-  async handleValue(fieldName, fieldValue) {
+  async updateValue(fieldName, fieldValue) {
     const values = {
       ...this.state.values,
       [fieldName]: fieldValue
@@ -239,7 +248,7 @@ export default class Form extends PureComponent {
     this.setState({ values });
 
     const validateOnChange = this.state.validateOnChange;
-    const fieldValidator = this.fields?.[fieldName]?.validate;
+    const fieldValidator = this.fields?.[fieldName]?.validate || this.props?.validate?.[fieldName];
     // Call field level validation if defined
     if (validateOnChange && fieldValidator) {
       try {
@@ -255,7 +264,7 @@ export default class Form extends PureComponent {
     event.stopPropagation?.();
     event.stopImmediatePropagation?.();
 
-    await this.handleValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target));
+    await this.updateValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target));
 
     callback && callback(...args);
   }
@@ -264,10 +273,9 @@ export default class Form extends PureComponent {
     event.stopPropagation?.();
     event.stopImmediatePropagation?.();
     const fieldName = getFieldNameForElement(event.target);
-
     this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
     const validateOnBlur = this.state.validateOnBlur;
-    const fieldValidator = this.fields?.[fieldName]?.validate;
+    const fieldValidator = this.fields?.[fieldName]?.validate || this.props?.validate?.[fieldName];
     const fieldValue = this.state.values[fieldName];
 
     // Call field level validation if defined

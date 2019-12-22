@@ -21,9 +21,7 @@ export default class Form extends PureComponent {
   constructor(props) {
     super(props);
 
-    if (!isObject(props.initialValues)) {
-      throw new Error('initialValues must be object');
-    }
+    const initialValues = props.initialValues || {};
 
     this.submitForm = this.submitForm.bind(this);
     this.setSubmitting = this.setSubmitting.bind(this);
@@ -40,14 +38,15 @@ export default class Form extends PureComponent {
     this.fields = {};
 
     this.state = {
-      initialValues: props.initialValues,
-      values: { ...props.initialValues },
+      initialValues: initialValues,
+      values: { ...initialValues },
       validateOnBlur: props.validateOnBlur,
       validateOnChange: props.validateOnChange,
       errors: {},
       touched: {},
       isSubmitting: false,
-      isValidating: false
+      isValidating: false,
+      submitCount: 0
     };
 
     this.formData = {
@@ -80,9 +79,8 @@ export default class Form extends PureComponent {
   }
 
   async submitForm(event) {
-    event.preventDefault();
-    event.stopPropagation();
-
+    event.preventDefault?.();
+    event.stopPropagation?.();
     // can't submit form during submission
     if (this.state.isSubmitting || !this.props.onSubmit) {
       return false;
@@ -124,9 +122,7 @@ export default class Form extends PureComponent {
         });
       }
       // Merge errors
-      console.log(errors, fieldErrors);
-      errors = mergeErrors(errors, fieldErrors);
-      console.log(errors);
+      errors = mergeErrors((isObject(errors) ? errors : {}), fieldErrors);
       this.setState({
         errors,
         touched: Object.keys(errors).reduce((memo, field) => {
@@ -145,15 +141,14 @@ export default class Form extends PureComponent {
     }
 
     if (canSubmit) {
-      this.setState({ isSubmitting: true });
+      this.setState({ isSubmitting: true, submitCount: this.state.submitCount + 1 });
       this.props.onSubmit(this.state.values, this.setSubmitting);
     }
   }
 
   resetForm(event) {
+    this.props.onReset?.(this.state.values, event);
     this.setState(this.defaultFormState());
-
-    this.props.onReset?.(event);
   }
 
   defaultFormState(overwrites) {
@@ -163,6 +158,7 @@ export default class Form extends PureComponent {
       errors: {},
       isSubmitting: false,
       isValidating: false,
+      submitCount: 0,
       ...overwrites
     };
   }
@@ -307,6 +303,7 @@ export default class Form extends PureComponent {
       isSubmitting: this.state.isSubmitting,
       isValidating: this.state.isValidating,
       resetForm: this.resetFormToValues,
+      submitCount: this.state.submitCount,
       ...this.formData
     };
 

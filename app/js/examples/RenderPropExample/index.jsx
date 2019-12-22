@@ -18,13 +18,13 @@ function submitForm(values, setSubmitting) {
 }
 
 const validate = {
-  firstName(fieldValue, fieldName) {
+  firstName(fieldValue) {
     return !fieldValue ? 'First name is required.' : '';
   },
-  lastName(fieldValue, fieldName) {
+  lastName(fieldValue) {
     return !fieldValue ? 'Last name is required.' : '';
   },
-  quantity(fieldValue, fieldName) {
+  quantity(fieldValue) {
     let errors = '';
 
     if (!fieldValue) {

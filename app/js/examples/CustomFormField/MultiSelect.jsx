@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import MagicWrapper from '../../components/MagicWrapper';
 
 import styles from './MultiSelect.module.scss';
@@ -82,3 +83,10 @@ export default class MultiSelect extends Component {
     );
   }
 }
+
+MultiSelect.propTypes = {
+  name: PropTypes.string,
+  items: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string
+  }))
+};

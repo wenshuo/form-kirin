@@ -1,7 +1,5 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import omit from 'lodash/omit';
-import cx from 'classnames';
 
 import FormContext from '../../contexts/form';
 

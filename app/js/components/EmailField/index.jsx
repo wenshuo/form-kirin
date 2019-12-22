@@ -1,11 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 
 import BasicField from '../BasicField';
 
-function validate(fieldValue, fieldName) {
+function validate(fieldValue) {
   if (fieldValue) {
-    return /^.+@.+\..+$/.test(fieldValue) ? '' : `${fieldValue} is not a valid email address.`;  
+    return /^.+@.+\..+$/.test(fieldValue) ? '' : `${fieldValue} is not a valid email address.`;
   }
 
   return '';

@@ -227,6 +227,7 @@ export default class Form extends PureComponent {
   // For example we can implement to undo action button by keeping track values of a field
   // and imperatively set the field value when user click the undo button.
   // or we can implement custom form control
+  // TODO add opiton to control validation
   setFieldValue(fieldName, fieldValue) {
     this.updateValue(fieldName, fieldValue);
   }

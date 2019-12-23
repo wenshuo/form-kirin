@@ -38,6 +38,26 @@ function createFormWithDefinedControl(props, controlProps) {
   );
 }
 
+function createUserDefinedForm(props = {}, fieldProps = {}, errors = {}) {
+  return mount(
+    <Form {...props}>
+      {
+        ({ handleSubmit, handleReset, setFieldValue, setTouched, setErrors }) => (
+          <form onSubmit={handleSubmit} onReset={handleReset}>
+            <input
+              name="firstName"
+              onChange={e => { setFieldValue('firstName', e.target.value); setErrors(errors); } }
+              onBlur={() => setTouched('firstName', true)}
+              {...fieldProps}
+            />
+            <button type="submit">submit</button>
+          </form>
+        )
+      }
+    </Form>
+  );
+}
+
 function simulateEvent(event, el, fieldName, fieldValue) {
   el.simulate(event, {
     target: {
@@ -493,6 +513,67 @@ describe('Form', () => {
         expect(handleBlur.called).to.be.true;
         done();
       }, 0);
+    });
+  });
+
+  describe('setFieldValue', () => {
+    it('set value', () => {
+      const el = createUserDefinedForm();
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      expect(el.state('values').firstName).to.eql('Jack');
+    });
+
+    it('do not run field validation when validateOnChange is falsy', () => {
+      const validateFirstName = sinon.spy();
+      const el = createUserDefinedForm({
+        validateOnChange: false,
+        validate: { firstName: validateFirstName }
+      });
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      expect(validateFirstName.called).to.be.false;
+    });
+
+    it('run field validation when validateOnChange is true', () => {
+      const validateFirstName = sinon.spy();
+      const el = createUserDefinedForm({
+        validateOnChange: true,
+        validate: { firstName: validateFirstName }
+      });
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      expect(validateFirstName.called).to.be.true;
+    });
+
+    it('set field validation errors', (done) => {
+      const errorMsg = 'firstName is requird.';
+      const validateFirstName = () => errorMsg;
+      const el = createUserDefinedForm({
+        validateOnChange: true,
+        validate: { firstName: validateFirstName }
+      });
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      setTimeout(() => {
+        expect(el.state('errors').firstName).to.eql(errorMsg);
+        done();
+      }, 0);
+    });
+  });
+
+  describe('setTouched', () => {
+    it('set field touched', () => {
+      const el = createUserDefinedForm();
+      simulateEvent('blur', el.find('input'), 'firstName');
+      expect(el.state('touched').firstName).to.be.true;
+    });
+  });
+
+  describe('setErrors', () => {
+    it('set errors', () => {
+      const errors = {
+        firstName: 'first name is required.'
+      };
+      const el = createUserDefinedForm({ validateOnChange: true }, {}, errors);
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      expect(el.state('errors')).to.eql(errors);
     });
   });
 });

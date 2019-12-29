@@ -44,7 +44,7 @@ export default function BasicField(props) {
 }
 
 BasicField.propTypes = {
-  tagName: PropTypes.string,
+  tagName: PropTypes.oneOf(['input', 'textarea', 'select']),
   className: PropTypes.string,
   type: PropTypes.string,
   value: PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool])

@@ -3,6 +3,7 @@ import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import Form from '.';
 import BasicField from '../BasicField';
+import { simulateEvent } from '../../helpers/test';
 
 /* eslint-disable no-empty-function */
 function createBasicForm(props) {
@@ -56,16 +57,6 @@ function createUserDefinedForm(props = {}, fieldProps = {}, errors = {}) {
       }
     </Form>
   );
-}
-
-function simulateEvent(event, el, fieldName, fieldValue) {
-  el.simulate(event, {
-    target: {
-      getAttribute: () => fieldName,
-      tagName: 'input',
-      value: fieldValue
-    }
-  });
 }
 
 describe('Form', () => {

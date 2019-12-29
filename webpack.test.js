@@ -36,13 +36,16 @@ module.exports = {
           {
             loader: MiniCssExtractPlugin.loader,
             options: {
-              hmr: process.env.NODE_ENV === 'development'
+              hmr: false
             }
           },
           {
             loader: 'css-loader',
             options: {
-              modules: true,
+              modules: {
+                mode: 'local',
+                localIdentName: '[name]__[local]'
+              },
               sourceMap: true,
               importLoaders: 2
             }

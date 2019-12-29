@@ -39,16 +39,6 @@ export default class FormControlWrapper extends Component {
     this?.context.handleBlur?.(event, this.props.handleBlur, event);
   }
 
-  fieldValue(el) {
-    const elementName = el.tagName.toLowerCase();
-    // handle select with or without multiple
-    if (elementName === 'select') {
-      return Array.from(el.selectedOptions).map(e => e.value);
-    }
-
-    return el.getAttribute('type') === 'checkbox' ? el.checked : el.value;
-  }
-
   render() {
     const { children } = this.props;
 

@@ -10,7 +10,7 @@ function cssLoaderOptions(cssModuleOptions, loaderOptions) {
       {
         loader: MiniCssExtractPlugin.loader,
         options: {
-          hmr: process.env.NODE_ENV === 'development'
+          hmr: true
         }
       },
       {

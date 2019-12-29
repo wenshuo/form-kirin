@@ -3,9 +3,9 @@ import PropTypes from 'prop-types';
 
 import styles from './index.module.scss';
 
-export default function Field({ children, errorMessage }) {
+export default function Field({ children, errorMessage, className }) {
   return (
-    <div>
+    <div className={className}>
       {children}
       {
         errorMessage && (
@@ -18,5 +18,6 @@ export default function Field({ children, errorMessage }) {
 
 Field.propTypes = {
   children: PropTypes.node,
-  errorMessage: PropTypes.string
+  errorMessage: PropTypes.string,
+  className: PropTypes.string
 };

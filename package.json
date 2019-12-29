@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint --ext .jsx --ext .js app/js",
-    "test": "karma start karma.config.js --auto-watch --no-single-run",
+    "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
     "build": "webpack --config webpack.config.js --progress --display-error-details",
-    "start": "webpack-dev-server --config webpack.config.js --progress --watch"
+    "start": "NODE_ENV=development webpack-dev-server --config webpack.config.js --progress --watch"
   },
   "dependencies": {
     "classnames": "^2.2.6",

@@ -4,19 +4,20 @@ import cx from 'classnames';
 
 import styles from './index.module.scss';
 
-function Item({ children }) {
+function Item({ children, className }) {
   return (
-    <li className={styles.item}>{children}</li>
+    <li className={cx(styles.item, className)}>{children}</li>
   );
 }
 
 Item.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
+  className: PropTypes.string
 };
 
-export default function List({ children, stacked }) {
+export default function List({ children, stacked, className }) {
   return (
-    <ul className={cx(styles.container, { [styles.stacked]: stacked })}>
+    <ul className={cx(styles.container, className, { [styles.stacked]: stacked })}>
       {children}
     </ul>
   );
@@ -24,7 +25,8 @@ export default function List({ children, stacked }) {
 
 List.propTypes = {
   children: PropTypes.node,
-  stacked: PropTypes.bool
+  stacked: PropTypes.bool,
+  className: PropTypes.string
 };
 
 List.Item = Item;

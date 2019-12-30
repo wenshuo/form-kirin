@@ -37,7 +37,7 @@ const validate = {
   }
 };
 
-export default function RenderPropExample() {
+function RenderPropExample() {
   return (
     <div>
       <h3 className="u-text-center  form-header">Basic Form</h3>
@@ -119,3 +119,6 @@ export default function RenderPropExample() {
     </div>
   );
 }
+
+export default { title: 'RenderProp' };
+export const FormExample = () => <RenderPropExample />;

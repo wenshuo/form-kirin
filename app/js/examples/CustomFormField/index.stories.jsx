@@ -7,6 +7,7 @@ import LabelField from '../../components/LabelField';
 import TextInput from './CustomInput';
 import Checkbox from './CustomCheckbox';
 import MultiSelect from './MultiSelect';
+import '../index.scss';
 
 const initialValues = {};
 
@@ -71,7 +72,7 @@ const validateForm = (values) => {
   return errors;
 };
 
-export default function CustomFormFieldExample() {
+function CustomFormFieldExample() {
   return (
     <div>
       <h3 className="u-text-center form-header">Guest List Form</h3>
@@ -119,3 +120,6 @@ export default function CustomFormFieldExample() {
     </div>
   );
 }
+
+export const FormExample = () => <CustomFormFieldExample />;
+export default { title: 'CustomFormField' };

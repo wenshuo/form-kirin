@@ -1,20 +1,18 @@
 {
   "name": "react-form",
   "version": "1.0.0",
-  "description": "basic setup for react project",
-  "main": "index.js",
+  "description": "form and components written in React",
+  "keywords": ["form"],
+  "main": "./app/js/index.js",
   "scripts": {
     "lint": "eslint --ext .jsx --ext .js app/js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
-    "build": "webpack --config webpack.config.js --progress --display-error-details",
-    "start": "NODE_ENV=development webpack-dev-server --config webpack.config.js --progress --watch"
+    "start": "start-storybook -p 9001 -c .stories"
   },
   "dependencies": {
     "classnames": "^2.2.6",
     "lodash": "^4.17.15",
-    "prop-types": "^15.7.2",
-    "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "prop-types": "^15.7.2"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",
@@ -23,6 +21,7 @@
     "@babel/plugin-transform-async-to-generator": "^7.7.4",
     "@babel/preset-env": "^7.7.6",
     "@babel/preset-react": "^7.7.4",
+    "@storybook/react": "^5.2.8",
     "autoprefixer": "^9.7.3",
     "babel-loader": "^8.0.6",
     "chai": "^4.2.0",
@@ -46,15 +45,22 @@
     "node-sass": "^4.13.0",
     "postcss": "^7.0.24",
     "postcss-loader": "^3.0.0",
-    "react-router-dom": "^5.1.2",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
     "regenerator-runtime": "^0.13.3",
     "sass-loader": "^8.0.0",
     "sinon": "^7.5.0",
-    "style-loader": "^1.0.1",
+    "style-loader": "^1.1.2",
     "webpack": "^4.41.2",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   },
-  "author": "",
+  "peerDependencies": {
+    "react": ">=16"
+  },
+  "author": {
+    "name": "wenshuo huang",
+    "email": "jack_rock_lee@yahoo.com"
+  },
   "license": "ISC"
 }

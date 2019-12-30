@@ -58,24 +58,6 @@ export default class Form extends PureComponent {
       setTouched: this.setTouched,
       setFieldValue: this.setFieldValue
     };
-
-    Object.defineProperties(this.formData, {
-      values: {
-        enumerable: false,
-        configurable: false,
-        get: () => this.state.values
-      },
-      errors: {
-        enumerable: false,
-        configurable: false,
-        get: () => this.state.errors
-      },
-      touched: {
-        enumerable: false,
-        configurable: false,
-        get: () => this.state.touched
-      },
-    });
   }
 
   async submitForm(event) {
@@ -323,7 +305,7 @@ export default class Form extends PureComponent {
     });
 
     return (
-      <FormContext.Provider value={this.formData}>
+      <FormContext.Provider value={propsForRender}>
         {children(propsForRender)}
       </FormContext.Provider>
     );

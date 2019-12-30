@@ -13,6 +13,8 @@ import EmailField from '../../components/EmailField';
 import NumberField from '../../components/NumberField';
 import List from '../../components/List';
 
+import '../index.scss';
+
 const initialValues = {
   source: []
 };
@@ -44,7 +46,7 @@ function validateForm(values) {
   return errors;
 }
 
-export default function PredefinedFormFieldExample() {
+function PredefinedFormFieldExample() {
   return (
     <div>
       <h3 className="u-text-center  form-header">Information Form</h3>
@@ -165,3 +167,6 @@ export default function PredefinedFormFieldExample() {
     </div>
   );
 }
+
+export const FormExample = () => <PredefinedFormFieldExample />;
+export default { title: 'PredefinedFormField' };

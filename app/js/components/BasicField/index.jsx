@@ -4,7 +4,6 @@ import omit from 'lodash/omit';
 import cx from 'classnames';
 
 import FormControlWrapper from '../FormControlWrapper';
-import styles from './index.module.scss';
 
 function valueProp(value, type, valueFromProp) {
   let inputProps = {};
@@ -30,7 +29,7 @@ export default function BasicField(props) {
         ({ value, handleChange, handleBlur }) => {
           return (
             <Wrapper
-              className={cx(styles.input, className)}
+              className={className}
               {...fieldProps}
               {...valueProp(value, type, props.value)}
               onChange={handleChange}

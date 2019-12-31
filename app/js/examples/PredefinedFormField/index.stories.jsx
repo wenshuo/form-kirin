@@ -48,7 +48,7 @@ function validateForm(values) {
 
 function PredefinedFormFieldExample() {
   return (
-    <div>
+    <div className="example">
       <h3 className="u-text-center  form-header">Information Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validateForm={validateForm}>
         {

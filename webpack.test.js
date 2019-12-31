@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
@@ -89,10 +88,6 @@ module.exports = {
       // both options are optional
       filename: '[name].css',
       chunkFilename: '[id].css',
-    }),
-    new HtmlWebpackPlugin({
-      template: path.resolve(__dirname, './app/template.hbs')
-    }),
-    new webpack.HotModuleReplacementPlugin()
+    })
   ]
 };

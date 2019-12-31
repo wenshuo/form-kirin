@@ -39,7 +39,7 @@ const validate = {
 
 function RenderPropExample() {
   return (
-    <div>
+    <div className="example">
       <h3 className="u-text-center  form-header">Basic Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validate={validate}>
         {

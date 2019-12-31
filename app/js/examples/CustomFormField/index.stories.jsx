@@ -74,7 +74,7 @@ const validateForm = (values) => {
 
 function CustomFormFieldExample() {
   return (
-    <div>
+    <div className="example">
       <h3 className="u-text-center form-header">Guest List Form</h3>
       <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validate} validateForm={validateForm}>
         {

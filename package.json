@@ -2,7 +2,9 @@
   "name": "react-form",
   "version": "1.0.0",
   "description": "form and components written in React",
-  "keywords": ["form"],
+  "keywords": [
+    "form"
+  ],
   "main": "./app/js/index.js",
   "scripts": {
     "lint": "eslint --ext .jsx --ext .js app/js",
@@ -33,7 +35,6 @@
     "eslint-plugin-react": "^7.17.0",
     "handlebars": "^4.5.3",
     "handlebars-loader": "^1.7.1",
-    "html-webpack-plugin": "^3.2.0",
     "karma": "^4.4.1",
     "karma-chai": "^0.1.0",
     "karma-chrome-launcher": "^3.1.0",

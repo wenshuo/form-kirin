@@ -34,3 +34,11 @@ export function getFieldValueForElement(el) {
 
   return el.getAttribute('type') === 'checkbox' ? el.checked : el.value;
 }
+
+export function isNumber(value) {
+  return /^-?\d*(\.\d+)?$/.test(value);
+}
+
+export function isString(value) {
+  return typeof value === 'string';
+}

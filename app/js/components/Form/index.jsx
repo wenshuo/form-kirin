@@ -287,6 +287,8 @@ export default class Form extends PureComponent {
       isValidating: this.state.isValidating,
       resetForm: this.resetFormToValues,
       submitCount: this.state.submitCount,
+      enableValidationProps: this.props.enableValidationProps,
+      validationProps: this.props.validationProps,
       ...this.formData
     };
 

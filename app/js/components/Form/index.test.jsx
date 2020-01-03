@@ -380,10 +380,10 @@ describe('Form', () => {
       }, {
         validate
       });
-      expect(el.instance().fields.firstName).to.eql({
-        name: 'firstName',
-        validate
-      });
+      const field = el.instance().fields.firstName;
+
+      expect(field.name).to.eql('firstName');
+      expect(field).to.have.property('validate');
     });
 
     it('deregister field when unmount', () => {
@@ -565,6 +565,87 @@ describe('Form', () => {
       const el = createUserDefinedForm({ validateOnChange: true }, {}, errors);
       simulateEvent('change', el.find('input'), 'firstName', 'Jack');
       expect(el.state('errors')).to.eql(errors);
+    });
+  });
+
+  describe('validation props', () => {
+    let el;
+    const validate = (value, name) => {
+      return value && value.startsWith('test') ? `${name} can not start with test.` : '';
+    };
+
+    const validationProps = {
+      isEmail({ value, fieldName }) {
+        return /^.+@.+\..+$/.test(value) ? '' : `${fieldName} must be a valid email.`;
+      }
+    };
+
+    beforeEach(() => {
+      el = mount(
+        <Form validateOnBlur enableValidationProps validationProps={validationProps}>
+          {
+            ({ values, handleChange, handleSubmit }) => (
+              <form onSubmit={handleSubmit}>
+                <BasicField
+                  id="firstName"
+                  name="firstName"
+                  required
+                  minLength="5"
+                  validate={validate}
+                />
+                <BasicField
+                  id="email"
+                  name="email"
+                  required
+                  type="email"
+                  isEmail
+                />
+                <BasicField
+                  id="quantity"
+                  name="quantity"
+                  type="number"
+                  required
+                  max="10"
+                />
+                <button type="submit">submit</button>
+              </form>
+            )
+          }
+        </Form>
+      );
+    });
+
+    it('enableValidationProps', (done) => {
+      simulateEvent('blur', el.find('input#firstName'), 'firstName');
+      setTimeout(() => {
+        expect(el.state('errors').firstName).to.eql('firstName is required.');
+        done();
+      }, 0);
+    });
+
+    it('join error messages for validation props', (done) => {
+      simulateEvent('change', el.find('input#firstName'), 'firstName', 'test');
+      simulateEvent('blur', el.find('input#firstName'), 'firstName');
+
+      setTimeout(() => {
+        const msg = 'firstName can\'t be shorter than 5 characters. You enter 4 characters.firstName can not start with test.';
+        expect(el.state('errors').firstName).to.eql(msg);
+        done();
+      }, 0);
+    });
+
+    it('form level validation props', (done) => {
+      simulateEvent('change', el.find('input#email'), 'email', 'test');
+      simulateEvent('blur', el.find('input#email'), 'email');
+
+      setTimeout(() => {
+        expect(el.state('errors').email).to.eql('email must be a valid email.');
+        done();
+      }, 0);
+    });
+
+    it('must not forward custom validation props to form control', () => {
+      expect(el.find('input#email').props()).to.not.have.property('isEmail');
     });
   });
 });

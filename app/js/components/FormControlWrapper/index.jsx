@@ -5,6 +5,7 @@ import cx from 'classnames';
 
 import FormContext from '../../contexts/form';
 import { getFieldName } from '../../helpers/utils';
+import { getValidator } from '../../validation';
 
 export default class FormControlWrapper extends Component {
   constructor(props) {
@@ -12,14 +13,17 @@ export default class FormControlWrapper extends Component {
 
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
+    this.validate = this.validate.bind(this);
   }
 
   componentDidMount() {
     if (this.context) {
       const fieldName = getFieldName(this.props);
-
+      const enableValidationProps = this.context.enableValidationProps;
+      this.validator = getValidator(this.props, this.context.validationProps);
+      
       this.context.setField({
-        validate: this.props.validate,
+        validate: (enableValidationProps && this.validator) || this.props.validate ? this.validate : null,
         name: fieldName
       });
     }
@@ -37,6 +41,20 @@ export default class FormControlWrapper extends Component {
 
   handleBlur(event) {
     this?.context.handleBlur?.(event, this.props.handleBlur, event);
+  }
+
+  validate(...args) {
+    let errors = '';
+
+    if (this.validator) {
+      errors += this.validator.validate(this.props.errorMessages, ...args);
+    }
+
+    if (this.props.validate) {
+      errors += this.props.validate(...args);
+    }
+
+    return errors;
   }
 
   render() {

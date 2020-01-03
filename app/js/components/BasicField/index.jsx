@@ -4,6 +4,9 @@ import omit from 'lodash/omit';
 import cx from 'classnames';
 
 import FormControlWrapper from '../FormControlWrapper';
+import { nonNativeProps } from '../../validation/validator';
+
+const PROPS_TO_EXCLUDE = ['handleBlur', 'handleChange', 'validate',  'tagName', 'errorMessages'];
 
 function valueProp(value, type, valueFromProp) {
   let inputProps = {};
@@ -21,16 +24,15 @@ function valueProp(value, type, valueFromProp) {
 
 export default function BasicField(props) {
   const { className, tagName: Wrapper, type } = props;
-  const fieldProps = omit(props, ['handleBlur', 'handleChange', 'validate',  'tagName']);
 
   return (
     <FormControlWrapper {...props}>
       {
-        ({ value, handleChange, handleBlur }) => {
+        ({ value, handleChange, handleBlur, validationProps }) => {
           return (
             <Wrapper
               className={className}
-              {...fieldProps}
+              {...omit(props, [...PROPS_TO_EXCLUDE, ...nonNativeProps(validationProps)])}
               {...valueProp(value, type, props.value)}
               onChange={handleChange}
               onBlur={handleBlur}

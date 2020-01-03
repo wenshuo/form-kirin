@@ -7,7 +7,7 @@
   ],
   "main": "./app/js/index.js",
   "scripts": {
-    "lint": "eslint --ext .jsx --ext .js app/js",
+    "lint": "eslint --ext .jsx --ext .js --ignore-pattern *.stories.jsx app/js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
     "start": "start-storybook -p 9001 -c .stories"
   },

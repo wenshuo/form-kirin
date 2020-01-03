@@ -11,13 +11,14 @@ describe('Number Component:', () => {
 
   beforeEach(() => {
     el = mount(
-      <Form validateOnChange>
+      <Form validateOnChange enableValidationProps>
         {
           () => (
             <NumberField
               id="field"
               name="field"
               className="test"
+              isNumber
             />
           )
         }
@@ -33,10 +34,10 @@ describe('Number Component:', () => {
     expect(el.find('.test').exists()).to.be.true;
   });
 
-  it('run default validation', (done) => {
+  it('run validation prop', (done) => {
     simulateEvent('change', el.find('input'), 'field', '11df');
     setTimeout(() => {
-      expect(el.state().errors.field).to.eql('11df is not a number.');
+      expect(el.state().errors.field).to.eql('11df is not a valid number.');
       done();
     }, 0);
   });

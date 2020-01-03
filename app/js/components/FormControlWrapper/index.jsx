@@ -21,7 +21,7 @@ export default class FormControlWrapper extends Component {
       const fieldName = getFieldName(this.props);
       const enableValidationProps = this.context.enableValidationProps;
       this.validator = getValidator(this.props, this.context.validationProps);
-      
+
       this.context.setField({
         validate: (enableValidationProps && this.validator) || this.props.validate ? this.validate : null,
         name: fieldName
@@ -43,15 +43,15 @@ export default class FormControlWrapper extends Component {
     this?.context.handleBlur?.(event, this.props.handleBlur, event);
   }
 
-  validate(...args) {
+  async validate(...args) {
     let errors = '';
 
     if (this.validator) {
-      errors += this.validator.validate(this.props.errorMessages, ...args);
+      errors += await this.validator.validate(this.props.errorMessages, ...args);
     }
 
     if (this.props.validate) {
-      errors += this.props.validate(...args);
+      errors += await this.props.validate(...args);
     }
 
     return errors;

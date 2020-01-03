@@ -1,6 +1,5 @@
 import React from 'react';
 import { mount } from 'enzyme';
-import sinon from 'sinon';
 
 import TextareaField from '.';
 import Form from '../Form';

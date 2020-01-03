@@ -584,7 +584,7 @@ describe('Form', () => {
       el = mount(
         <Form validateOnBlur enableValidationProps validationProps={validationProps}>
           {
-            ({ values, handleChange, handleSubmit }) => (
+            ({ handleSubmit }) => (
               <form onSubmit={handleSubmit}>
                 <BasicField
                   id="firstName"

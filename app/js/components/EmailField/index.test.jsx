@@ -33,15 +33,16 @@ describe('Email Component:', () => {
     expect(el.find('.test').exists()).to.be.true;
   });
 
-  it('run default validation', (done) => {
+  it('run validation prop', (done) => {
     el = mount(
-      <Form validateOnChange>
+      <Form validateOnChange enableValidationProps>
         {
           () => (
             <EmailField
               id="field"
               name="field"
               className="test"
+              isEmail
             />
           )
         }

@@ -20,6 +20,15 @@ const MESSAGES = {
   },
   pattern({ value, fieldName }) {
     return `${value || "''"} is not valid value for ${fieldName}.`;
+  },
+  isEmail({ value }) {
+    return `${value || "''"} is not a valid email address.`;
+  },
+  isPhoneNumber({ value }) {
+    return `${value || "''"} is not a valid phone number.`;
+  },
+  isNumber({ value }) {
+    return `${value || "''"} is not a valid number.`;
   }
 };
 
@@ -68,12 +77,42 @@ export const VALIDATION_METHODS = {
     return '';
   },
 
-  pattern({ pattern, errorMessages, value, fieldName }) {
+  pattern({ pattern, errorMessages, value, fieldName, errorName }) {
     if (isString(pattern) && isString(value)) {
-      return new RegExp(pattern).test(value) ? '' : getErrorMessage('pattern', errorMessages, MESSAGES, { value, fieldName, pattern });
+      return new RegExp(pattern).test(value) ? '' : getErrorMessage(errorName || 'pattern', errorMessages, MESSAGES, { value, fieldName, pattern });
     }
 
     return '';
+  },
+
+  isEmail({ isEmail, errorMessages, value, fieldName }) {
+    return VALIDATION_METHODS.pattern({
+      value,
+      fieldName,
+      errorMessages,
+      pattern: isString(isEmail) ? isEmail : '^.+@.+\..+$',
+      errorName: 'isEmail'
+    });
+  },
+
+  isPhoneNumber({ isPhoneNumber, errorMessages, value, fieldName }) {
+    return VALIDATION_METHODS.pattern({
+      value,
+      fieldName,
+      errorMessages,
+      pattern: isString(isPhoneNumber) ? isPhoneNumber : '^[0-9]{3}-[0-9]{3}-[0-9]{4}$',
+      errorName: 'isPhoneNumber'
+    });
+  },
+
+  isNumber({ isNumber, errorMessages, value, fieldName }) {
+    return VALIDATION_METHODS.pattern({
+      value,
+      fieldName,
+      errorMessages,
+      pattern: isString(isNumber) ? isNumber : '^-?\d*(\.\d+)?$',
+      errorName: 'isNumber'
+    });
   }
 };
 
@@ -108,10 +147,11 @@ export default class Validator {
   }
 
   validate(errorMessages, value, fieldName, values) {
-    // TODO make it work with async validations
-    return this.validators
-      .map(({ fn, args }) => fn({ value, fieldName, values, errorMessages, ...args }))
-      .filter(error => !!error).join(' ');
+    return Promise.all(
+      this.validators.map(({ fn, args }) => fn({ value, fieldName, values, errorMessages, ...args }))
+    )
+      .then((messages) => messages.filter(m => !!m).join(' '))
+      .catch(() => '');
   }
 
   addValidateMethod(method, args, formLevelValidators = {}) {

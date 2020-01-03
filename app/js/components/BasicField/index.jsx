@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import omit from 'lodash/omit';
-import cx from 'classnames';
 
 import FormControlWrapper from '../FormControlWrapper';
 import { nonNativeProps } from '../../validation/validator';

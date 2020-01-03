@@ -1,14 +1,8 @@
 import uniq from 'lodash/uniq';
 import Validator, { VALIDATION_METHODS } from './validator';
-import { isNumber } from '../helpers/utils';
-
-const PATTERNS = {
-  email: '^.+@.+\..+$'
-};
 
 export function getValidator(props, formLevelValidators = {}) {
   let validator;
-  const pattern = props.pattern || PATTERNS[props.type];
   // Get list of validators for the corresponding props
   const validators = uniq([
     ...Object.keys(formLevelValidators),

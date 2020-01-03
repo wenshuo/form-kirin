@@ -23,7 +23,7 @@ describe('Validator Class', () => {
 
   it('form level validator take precedency over builtins', () => {
     const formLevelValidators = {
-      maxLength() {}
+      maxLength: () => 'test'
     };
 
     const validator = new Validator();
@@ -50,12 +50,16 @@ describe('Validator Class', () => {
     maxLength.restore();
   });
 
-  it('join each message with single space', () => {
+  it('join each message with single space', (done) => {
     const validator = new Validator();
     validator.addValidateMethod('required');
     validator.addValidateMethod('minLength', 10);
     const expectedResult = 'firstName is required. firstName can\'t be shorter than 10 characters. You enter 0 characters.';
-    expect(validator.validate({}, '', 'firstName')).to.eql(expectedResult);
+    validator.validate({}, '', 'firstName')
+      .then(msg => {
+        expect(msg).to.eql(expectedResult);
+        done();
+      });
   });
 
   describe('getErrorMessage method:', () => {

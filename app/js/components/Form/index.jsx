@@ -9,6 +9,17 @@ import {
 } from '../../helpers/utils';
 import FormContext from '../../contexts/form';
 
+function defaultFormState(overwrites) {
+  return {
+    touched: {},
+    errors: {},
+    isSubmitting: false,
+    isValidating: false,
+    submitCount: 0,
+    ...overwrites
+  };
+}
+
 function mergeErrors(target = {}, source = {}) {
   return Object.keys(source).reduce((memo, key) => {
     memo[key] = `${memo[key] || ''}${source[key]}`;
@@ -58,6 +69,17 @@ export default class Form extends PureComponent {
       setTouched: this.setTouched,
       setFieldValue: this.setFieldValue
     };
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if (props.enableReinitialize && props.initialValues && props.initialValues !== state.initialValues) {
+      return defaultFormState({
+        values: props.initialValues,
+        initialValues: props.initialValues
+      });
+    }
+
+    return {};
   }
 
   async submitForm(event) {
@@ -130,19 +152,7 @@ export default class Form extends PureComponent {
 
   resetForm(event) {
     this.props.onReset?.(this.state.values, event);
-    this.setState(this.defaultFormState());
-  }
-
-  defaultFormState(overwrites) {
-    return {
-      values: this.state.initialValues,
-      touched: {},
-      errors: {},
-      isSubmitting: false,
-      isValidating: false,
-      submitCount: 0,
-      ...overwrites
-    };
+    this.setState(defaultFormState({ values: this.state.initialValues }));
   }
 
   hasErrors(errors = {}) {
@@ -156,10 +166,7 @@ export default class Form extends PureComponent {
   resetFormToValues(newValues) {
     const values = newValues || this.state.initialValues;
 
-    this.setState({
-      ...this.defaultFormState({ values }),
-      initialValues: values
-    });
+    this.setState(defaultFormState({ values, initialValues: values }));
   }
 
   getFieldValidators(fields = {}, validateObj = {}) {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, Component } from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import Form from '.';
@@ -646,6 +646,38 @@ describe('Form', () => {
 
     it('must not forward custom validation props to form control', () => {
       expect(el.find('input#email').props()).to.not.have.property('isEmail');
+    });
+  });
+
+  describe('reinitialize', () => {
+    it('reset states', () => {
+      class TestExample extends Component {
+        constructor(props) {
+          super(props);
+
+          this.state = { initialValues: {} };
+        }
+
+        render() {
+          return (
+            <Form enableReinitialize initialValues={this.state.initialValues}>
+              {
+                ({ values, handleChange }) => (
+                  <form>
+                    <input type="text" name="firstName" value={values.firstName} onChange={handleChange} />
+                    <button type="submit">submit</button>
+                  </form>
+                )
+              }
+            </Form>
+          );
+        }
+      }
+
+      const el = mount(<TestExample />);
+      expect(el.find('input').prop('value')).to.eql(undefined);
+      el.setState({ initialValues: { firstName: 'test' } });
+      expect(el.find('input').prop('value')).to.eql('test');
     });
   });
 });

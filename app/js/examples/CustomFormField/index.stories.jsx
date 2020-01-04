@@ -11,7 +11,7 @@ import '../index.scss';
 
 const initialValues = {};
 
-function submitForm(values, setSubmitting) {
+function submitForm(values, { setSubmitting }) {
   alert(JSON.stringify(values));
   setTimeout(() => setSubmitting(false), 2000);
 }

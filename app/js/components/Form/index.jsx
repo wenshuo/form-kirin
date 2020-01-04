@@ -37,15 +37,20 @@ export default class Form extends PureComponent {
     this.submitForm = this.submitForm.bind(this);
     this.setSubmitting = this.setSubmitting.bind(this);
     this.resetForm = this.resetForm.bind(this);
-    this.setErrors = this.setErrors.bind(this);
     this.updateValue = this.updateValue.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleBlur = this.handleBlur.bind(this);
     this.setField = this.setField.bind(this);
     this.unsetField = this.unsetField.bind(this);
     this.resetFormToValues = this.resetFormToValues.bind(this);
+    this.validateValues = this.validateValues.bind(this);
     this.setFieldValue = this.setFieldValue.bind(this);
+    this.setValues = this.setValues.bind(this);
+    this.setFieldTouched = this.setFieldTouched.bind(this);
     this.setTouched = this.setTouched.bind(this);
+    this.setFieldError = this.setFieldError.bind(this);
+    this.setErrors = this.setErrors.bind(this);
+
     this.fields = {};
 
     this.state = {
@@ -61,13 +66,16 @@ export default class Form extends PureComponent {
     };
 
     this.formData = {
-      setErrors: this.setErrors,
       handleBlur: this.handleBlur,
       handleChange: this.handleChange,
       setField: this.setField,
       unsetField: this.unsetField,
+      setFieldError: this.setFieldError,
+      setErrors: this.setErrors,
+      setFieldTouched: this.setFieldTouched,
       setTouched: this.setTouched,
-      setFieldValue: this.setFieldValue
+      setFieldValue: this.setFieldValue,
+      setValues: this.setValues
     };
   }
 
@@ -90,8 +98,53 @@ export default class Form extends PureComponent {
       return false;
     }
 
-    let canSubmit = true;
-    const values = this.state.values;
+    const errors = await this.validateValues(this.state.values);
+
+    if (this.isFormValid(errors)) {
+      this.setState({ isSubmitting: true, submitCount: this.state.submitCount + 1 });
+      this.props.onSubmit(this.state.values, {
+        setSubmitting: this.setSubmitting,
+        setFieldError: this.setFieldError,
+        setErrors: this.setErrors,
+        setFieldValue: this.setFieldValue,
+        setValues: this.setValues,
+        setFieldTouched: this.setFieldTouched,
+        setTouched: this.setTouched
+      });
+    }
+  }
+
+  resetForm(event) {
+    event && event.preventDefault();
+    this.props.onReset?.(this.state.values, {
+      setSubmitting: this.setSubmitting,
+      setFieldError: this.setFieldError,
+      setErrors: this.setErrors,
+      setFieldValue: this.setFieldValue,
+      setValues: this.setValues,
+      setFieldTouched: this.setFieldTouched,
+      setTouched: this.setTouched
+    });
+    this.setState(defaultFormState({ values: this.state.initialValues }));
+  }
+
+  isFormValid(errors = {}) {
+    // is valid only when all values is empty.
+    return Object.keys(errors).every(key => !errors[key]);
+  }
+
+  // Imperatively reset form to newValues if passed otherwise reset form using initialValues
+  // Useful when we need to reset form values programmatically without user interaction
+  // For example we create a form to update book information
+  // and we can implement prev and next button to load previous and next book information
+  resetFormToValues(newValues) {
+    const values = newValues || this.state.initialValues;
+
+    this.setState(defaultFormState({ values, initialValues: values }));
+  }
+
+  async validateValues(values) {
+    let errors;
 
     // Perform form level validation if there's validate function prop
     try {
@@ -105,12 +158,11 @@ export default class Form extends PureComponent {
         });
       }
 
-      let errors = {};
       let fieldErrors = {};
 
       // Form level validation
       if (hasFormLevelValidate) {
-        errors = await this.props.validateForm(this.state.values, this.props);
+        errors = await this.props.validateForm(values, this.props);
       }
 
       // Field level validation
@@ -129,44 +181,25 @@ export default class Form extends PureComponent {
       errors = mergeErrors((isObject(errors) ? errors : {}), fieldErrors);
       this.setState({
         errors,
-        touched: Object.keys(errors).reduce((memo, field) => {
-          memo[field] = true;
-          return memo;
-        }, {})
+        touched: this.touchedForErrors(errors)
       });
-      canSubmit = this.hasErrors(errors);
     } catch (e) {
       // What should we do when validation fail ?
-      canSubmit = false;
       console.log(e);
+      errors = e;
     } finally {
       // set isValidating to false
       this.setState({ isValidating: false });
     }
 
-    if (canSubmit) {
-      this.setState({ isSubmitting: true, submitCount: this.state.submitCount + 1 });
-      this.props.onSubmit(this.state.values, this.setSubmitting);
-    }
+    return errors;
   }
 
-  resetForm(event) {
-    this.props.onReset?.(this.state.values, event);
-    this.setState(defaultFormState({ values: this.state.initialValues }));
-  }
-
-  hasErrors(errors = {}) {
-    return Object.keys(errors).every(key => !errors[key]);
-  }
-
-  // Imperatively reset form to newValues if passed otherwise reset form using initialValues
-  // Useful when we need to reset form values programmatically without user interaction
-  // For example we create a form to update book information
-  // and we can implement prev and next button to load previous and next book information
-  resetFormToValues(newValues) {
-    const values = newValues || this.state.initialValues;
-
-    this.setState(defaultFormState({ values, initialValues: values }));
+  touchedForErrors(errors) {
+    return Object.keys(errors).reduce((memo, field) => {
+      memo[field] = true;
+      return memo;
+    }, {});
   }
 
   getFieldValidators(fields = {}, validateObj = {}) {
@@ -184,13 +217,6 @@ export default class Form extends PureComponent {
 
   setSubmitting(value) {
     this.setState({ isSubmitting: value });
-  }
-
-  setErrors(errors) {
-    // do not setState when errors is empty to avoid unnecessary rendering
-    if (!isEmpty(errors)) {
-      this.setState({ errors: { ...this.state.errors, ...errors } });
-    }
   }
 
   setField(field) {
@@ -211,21 +237,60 @@ export default class Form extends PureComponent {
     delete this.state.touched[fieldName];
   }
 
+  setValues(values, shouldValidate) {
+    if (isObject(values)) {
+      this.setState({ values });
+
+      if (shouldValidate) {
+        this.validateValues(values);
+      }
+    }
+  }
+
   // Set field value Imperatively
   // useful for change the field value programmatically
   // For example we can implement to undo action button by keeping track values of a field
   // and imperatively set the field value when user click the undo button.
   // or we can implement custom form control
   // TODO add opiton to control validation
-  setFieldValue(fieldName, fieldValue) {
-    this.updateValue(fieldName, fieldValue);
+  setFieldValue(fieldName, fieldValue, shouldValidate = false) {
+    this.updateValue(fieldName, fieldValue, shouldValidate);
   }
 
-  setTouched(fieldName, touched = true) {
+  setFieldTouched(fieldName, touched) {
     this.setState({ touched: { ...this.state.touched, [fieldName]: touched } });
   }
 
-  async updateValue(fieldName, fieldValue) {
+  setTouched(touched) {
+    if (!isEmpty(touched)) {
+      this.setState({ touched });
+    }
+  }
+
+  setFieldError(fieldName, errorMessage, shouldSetTouched) {
+    const newState = {
+      errors: { ...this.state.errors, [fieldName]: errorMessage }
+    };
+
+    if (shouldSetTouched) {
+      newState.touched = { ...this.state.touched, [fieldName]: true };
+    }
+
+    this.setState(newState);
+  }
+
+  setErrors(errors, shouldSetTouched) {
+    // do not setState when errors is empty to avoid unnecessary rendering
+    if (!isEmpty(errors)) {
+      const newState = { errors };
+      if (shouldSetTouched) {
+        newState.touched = this.touchedForErrors(errors);
+      }
+      this.setState(newState);
+    }
+  }
+
+  async updateValue(fieldName, fieldValue, shouldValidate) {
     const values = {
       ...this.state.values,
       [fieldName]: fieldValue
@@ -236,10 +301,10 @@ export default class Form extends PureComponent {
     const validateOnChange = this.state.validateOnChange;
     const fieldValidator = this.fields?.[fieldName]?.validate || this.props?.validate?.[fieldName];
     // Call field level validation if defined
-    if (validateOnChange && fieldValidator) {
+    if (shouldValidate && validateOnChange && fieldValidator) {
       try {
         const fieldErrors = await fieldValidator(values[fieldName], fieldName, values);
-        this.setErrors({ [fieldName]: fieldErrors });
+        this.setFieldError(fieldName, fieldErrors);
       } catch (e) {
         console.log(e);
       }
@@ -250,7 +315,7 @@ export default class Form extends PureComponent {
     event.stopPropagation?.();
     event.stopImmediatePropagation?.();
 
-    await this.updateValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target));
+    await this.updateValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target), true);
 
     callback && callback(...args);
   }
@@ -268,7 +333,7 @@ export default class Form extends PureComponent {
     if (validateOnBlur && fieldValidator) {
       try {
         const fieldErrors = await fieldValidator(fieldValue, fieldName, this.state.values);
-        this.setErrors({ [fieldName]: fieldErrors });
+        this.setFieldError(fieldName, fieldErrors);
       } catch (e) {
         console.log(e);
       }
@@ -309,7 +374,7 @@ export default class Form extends PureComponent {
       isValid: {
         enumerable: false,
         configurable: false,
-        get: () => this.hasErrors(this.state.errors)
+        get: () => this.isFormValid(this.state.errors)
       }
     });
 

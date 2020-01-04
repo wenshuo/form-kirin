@@ -16,6 +16,7 @@ function defaultFormState(overwrites) {
     isSubmitting: false,
     isValidating: false,
     submitCount: 0,
+    shouldRevalidate: false,
     ...overwrites
   };
 }
@@ -79,11 +80,25 @@ export default class Form extends PureComponent {
     };
   }
 
+  componentDidMount() {
+    if (this.props.validateOnMount) {
+      this.validateValues(this.state.values);
+    }
+  }
+
+  componentDidUpdate() {
+    if (this.state.shouldRevalidate) {
+      this.setState({ shouldRevalidate: false });
+      this.validateValues(this.state.values);
+    }
+  }
+
   static getDerivedStateFromProps(props, state) {
     if (props.enableReinitialize && props.initialValues && props.initialValues !== state.initialValues) {
       return defaultFormState({
         values: props.initialValues,
-        initialValues: props.initialValues
+        initialValues: props.initialValues,
+        shouldRevalidate: props.validateOnReinitialize
       });
     }
 
@@ -125,7 +140,11 @@ export default class Form extends PureComponent {
       setFieldTouched: this.setFieldTouched,
       setTouched: this.setTouched
     });
-    this.setState(defaultFormState({ values: this.state.initialValues }));
+
+    this.setState(defaultFormState({
+      values: this.state.initialValues,
+      shouldRevalidate: this.props.validateOnReset
+    }));
   }
 
   isFormValid(errors = {}) {
@@ -137,10 +156,14 @@ export default class Form extends PureComponent {
   // Useful when we need to reset form values programmatically without user interaction
   // For example we create a form to update book information
   // and we can implement prev and next button to load previous and next book information
-  resetFormToValues(newValues) {
+  resetFormToValues(newValues, shouldRevalidate) {
     const values = newValues || this.state.initialValues;
 
-    this.setState(defaultFormState({ values, initialValues: values }));
+    this.setState(defaultFormState({
+      values,
+      initialValues: values,
+      shouldRevalidate: shouldRevalidate || this.props.validateOnReset
+    }));
   }
 
   async validateValues(values) {

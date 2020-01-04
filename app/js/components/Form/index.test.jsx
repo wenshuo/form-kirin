@@ -39,16 +39,16 @@ function createFormWithDefinedControl(props, controlProps) {
   );
 }
 
-function createUserDefinedForm(props = {}, fieldProps = {}, errors = {}) {
+function createUserDefinedForm(props = {}, fieldProps = {}, fieldName, errorMsg, shouldSetTouched) {
   return mount(
     <Form {...props}>
       {
-        ({ handleSubmit, handleReset, setFieldValue, setTouched, setErrors }) => (
+        ({ handleSubmit, handleReset, setFieldValue, setFieldTouched, setFieldError }) => (
           <form onSubmit={handleSubmit} onReset={handleReset}>
             <input
               name="firstName"
-              onChange={e => { setFieldValue('firstName', e.target.value); setErrors(errors); } }
-              onBlur={() => setTouched('firstName', true)}
+              onChange={e => { setFieldValue('firstName', e.target.value, true); setFieldError(fieldName, errorMsg, shouldSetTouched); } }
+              onBlur={() => setFieldTouched('firstName', true)}
               {...fieldProps}
             />
             <button type="submit">submit</button>
@@ -80,11 +80,13 @@ describe('Form', () => {
         'isValidating',
         'resetForm',
         'setErrors',
+        'setFieldError',
         'handleBlur',
         'handleChange',
         'setField',
         'unsetField',
         'setTouched',
+        'setFieldTouched',
         'setFieldValue',
         'dirty',
         'isValid'
@@ -119,15 +121,18 @@ describe('Form', () => {
         });
     });
 
-    it('set isSubmitting to true before calling user defined onSubmit handler', () => {
+    it('set isSubmitting to true before calling user defined onSubmit handler', (done) => {
       // eslint-disable-next-line no-empty-function
       const el = createBasicForm({ onSubmit: () => {} });
       el.find('form').simulate('submit');
-      expect(el.state('isSubmitting')).to.be.true;
+      setTimeout(() => {
+        expect(el.state('isSubmitting')).to.be.true;
+        done();
+      }, 0);
     });
 
     it('set isSubmitting to false after setSubmitting is called', () => {
-      const onSubmit = (values, setSubmitting) => {
+      const onSubmit = (values, { setSubmitting }) => {
         setSubmitting(false);
         expect(el.state('isSubmitting')).to.be.false;
       };
@@ -150,7 +155,7 @@ describe('Form', () => {
 
     it('set isValidating to false before submission', () => {
       const el = createBasicForm({
-        onSubmit(values, setSubmitting) {
+        onSubmit(values, { setSubmitting }) {
           setSubmitting(false);
           expect(el.state('isValidating')).to.be.false;
         }
@@ -549,7 +554,7 @@ describe('Form', () => {
     });
   });
 
-  describe('setTouched', () => {
+  describe('setFieldTouched', () => {
     it('set field touched', () => {
       const el = createUserDefinedForm();
       simulateEvent('blur', el.find('input'), 'firstName');
@@ -557,14 +562,99 @@ describe('Form', () => {
     });
   });
 
-  describe('setErrors', () => {
+  describe('setTouched', () => {
+    it('set touched', (done) => {
+      const initialValues = {
+        firstName: ''
+      };
+      const touched = {
+        firstName: true
+      };
+      const errors = {
+        firstName: 'this field is required'
+      };
+      const onSubmit = (values, { setErrors, setTouched }) => {
+        //pretend server side validation failed and we setErrors imperatively
+        setErrors(errors);
+        setTouched(touched);
+      };
+
+      const el = createFormWithDefinedControl({ initialValues, onSubmit }, {});
+
+      el.find('form').simulate('submit');
+      setTimeout(() => {
+        expect(el.state('touched')).to.eql(touched);
+        done();
+      }, 0);
+    });
+  });
+
+  describe('setFieldErrors', () => {
     it('set errors', () => {
       const errors = {
         firstName: 'first name is required.'
       };
-      const el = createUserDefinedForm({ validateOnChange: true }, {}, errors);
+      const el = createUserDefinedForm({ validateOnChange: true }, {}, 'firstName', errors.firstName);
       simulateEvent('change', el.find('input'), 'firstName', 'Jack');
       expect(el.state('errors')).to.eql(errors);
+    });
+
+    it('set touched', () => {
+      const errors = {
+        firstName: 'first name is required.'
+      };
+      const el = createUserDefinedForm({ validateOnChange: true }, {}, 'firstName', errors.firstName, true);
+      simulateEvent('change', el.find('input'), 'firstName', 'Jack');
+      expect(el.state('errors')).to.eql(errors);
+      expect(el.state('touched').firstName).to.be.true;
+    });
+  });
+
+  describe('setErrors', () => {
+    it('set errors', (done) => {
+      const initialValues = {
+        firstName: ''
+      };
+      const errors = {
+        firstName: 'this field is required'
+      };
+      const onSubmit = (values, { setErrors }) => {
+        //pretend server side validation failed and we setErrors imperatively
+        setErrors(errors);
+      };
+
+      const el = createFormWithDefinedControl({ initialValues, onSubmit }, {});
+
+      el.find('form').simulate('submit');
+      setTimeout(() => {
+        expect(el.state('errors')).to.eql(errors);
+        done();
+      }, 0);
+    });
+
+    it('set touched', (done) => {
+      const initialValues = {
+        firstName: ''
+      };
+      const errors = {
+        firstName: 'this field is required'
+      };
+      const touched = {
+        firstName: true
+      };
+      const onSubmit = (values, { setErrors }) => {
+        //pretend server side validation failed and we setErrors imperatively
+        setErrors(errors, true);
+      };
+
+      const el = createFormWithDefinedControl({ initialValues, onSubmit }, {});
+
+      el.find('form').simulate('submit');
+      setTimeout(() => {
+        expect(el.state('errors')).to.eql(errors);
+        expect(el.state('touched')).to.eql(touched);
+        done();
+      }, 0);
     });
   });
 
@@ -655,7 +745,7 @@ describe('Form', () => {
         constructor(props) {
           super(props);
 
-          this.state = { initialValues: {} };
+          this.state = { initialValues: { firstName: '' } };
         }
 
         render() {
@@ -675,7 +765,7 @@ describe('Form', () => {
       }
 
       const el = mount(<TestExample />);
-      expect(el.find('input').prop('value')).to.eql(undefined);
+      expect(el.find('input').prop('value')).to.eql('');
       el.setState({ initialValues: { firstName: 'test' } });
       expect(el.find('input').prop('value')).to.eql('test');
     });

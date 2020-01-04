@@ -26,3 +26,11 @@ jobs:
 
       # run tests!
       - run: npm run ci_test
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build:
+          filters:
+            tags:
+              only: /.*/ # run build job for all branches and all tags push

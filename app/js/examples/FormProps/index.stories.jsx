@@ -15,7 +15,6 @@ import List from '../../components/List';
 
 import '../index.scss';
 
-
 const initialValues = {
   firstName: 'Jack',
   lastName: 'Sparrow'
@@ -97,5 +96,199 @@ class ReinitializeExample extends Component {
   }
 }
 
+const initialValuesForValidateOnMountExample = {
+  firstName: '',
+  lastName: ''
+};
+
+const ValidateOnMountExample = () => (
+  <div className="example">
+    <h3 className="u-text-center  form-header">Order Form</h3>
+    <Form
+      initialValues={initialValuesForValidateOnMountExample}
+      onSubmit={submitForm}
+      validateOnBlur
+      enableValidationProps
+      validateOnMount
+    >
+      {
+        ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <section className="section">
+              <Field errorMessage={touched.firstName && errors.firstName}>
+                <LabelField text="First Name:">
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                  />
+                </LabelField>
+              </Field>
+            </section>
+
+            <section className="section">
+              <Field errorMessage={touched.lastName && errors.lastName}>
+                <LabelField text="Last Name:">
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                  />
+                </LabelField>
+              </Field>
+            </section>
+
+            <List>
+              <List.Item>
+                <button type="button" onClick={handleReset}>reset</button>
+              </List.Item>
+              <List.Item>
+                <button type="submit" disabled={isSubmitting}>submit form</button>
+              </List.Item>
+            </List>
+          </form>
+        )
+      }
+    </Form>
+  </div>
+);
+
+class ValidateOnReinitializeExample extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { initialValues };
+    this.resetForm = this.resetForm.bind(this);
+  }
+
+  resetForm() {
+    this.setState({ initialValues: { } });
+  }
+
+  render() {
+    return (
+      <div className="example">
+        <h3 className="u-text-center  form-header">Order Form</h3>
+        <Form
+          initialValues={this.state.initialValues}
+          onSubmit={submitForm}
+          validateOnBlur
+          enableValidationProps
+          enableReinitialize
+          validateOnReinitialize
+        >
+          {
+            ({ values, touched, errors, handleSubmit, isSubmitting }) => (
+              <form onSubmit={handleSubmit} noValidate>
+                <section className="section">
+                  <Field errorMessage={touched.firstName && errors.firstName}>
+                    <LabelField text="First Name:">
+                      <Input
+                        type="text"
+                        id="firstName"
+                        name="firstName"
+                        minLength="5"
+                        required
+                      />
+                    </LabelField>
+                  </Field>
+                </section>
+
+                <section className="section">
+                  <Field errorMessage={touched.lastName && errors.lastName}>
+                    <LabelField text="Last Name:">
+                      <Input
+                        type="text"
+                        id="lastName"
+                        name="lastName"
+                        required
+                        minLength="5"
+                      />
+                    </LabelField>
+                  </Field>
+                </section>
+
+                <List>
+                  <List.Item>
+                    <button type="button" onClick={this.resetForm}>reset</button>
+                  </List.Item>
+                  <List.Item>
+                    <button type="submit" disabled={isSubmitting}>submit form</button>
+                  </List.Item>
+                </List>
+              </form>
+            )
+          }
+        </Form>
+      </div>
+    );
+  }
+}
+
+const initialValuesForValidateOnResetExample = {
+  firstName: '',
+  lastName: ''
+};
+
+const ValidateOnResetExample = () => (
+  <div className="example">
+    <h3 className="u-text-center  form-header">Order Form</h3>
+    <Form
+      initialValues={initialValuesForValidateOnResetExample}
+      onSubmit={submitForm}
+      validateOnBlur
+      enableValidationProps
+      validateOnReset
+    >
+      {
+        ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <section className="section">
+              <Field errorMessage={touched.firstName && errors.firstName}>
+                <LabelField text="First Name:">
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    required
+                  />
+                </LabelField>
+              </Field>
+            </section>
+
+            <section className="section">
+              <Field errorMessage={touched.lastName && errors.lastName}>
+                <LabelField text="Last Name:">
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                  />
+                </LabelField>
+              </Field>
+            </section>
+
+            <List>
+              <List.Item>
+                <button type="button" onClick={handleReset}>reset</button>
+              </List.Item>
+              <List.Item>
+                <button type="submit" disabled={isSubmitting}>submit form</button>
+              </List.Item>
+            </List>
+          </form>
+        )
+      }
+    </Form>
+  </div>
+);
+
 export const Reinitialize = () => <ReinitializeExample />;
+export const ValidateOnMount = () => <ValidateOnMountExample />;
+export const ValidateOnReinitialize = () => <ValidateOnReinitializeExample />;
+export const ValidateOnReset = () => <ValidateOnResetExample />;
+
 export default { title: 'FormProps' };

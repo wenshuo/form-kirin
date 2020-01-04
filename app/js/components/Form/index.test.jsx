@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, { useState, Component } from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
@@ -770,5 +771,118 @@ describe('Form', () => {
       expect(el.find('input').prop('value')).to.eql('test');
     });
   });
+
+  describe('validateOnMount', () => {
+    it('by default do not run validate on mount', (done) => {
+      const validateForm = sinon.spy();
+
+      createFormWithDefinedControl({
+        validateForm
+      }, {});
+
+      setTimeout(() => {
+        expect(validateForm.called).to.be.false;
+        done();
+      }, 0);
+    });
+
+    it('execute validation', (done) => {
+      const validateForm = sinon.spy();
+
+      createFormWithDefinedControl({
+        validateForm,
+        validateOnMount: true
+      }, {});
+
+      setTimeout(() => {
+        expect(validateForm.called).to.be.true;
+        done();
+      }, 0);
+    });
+  });
+
+  describe('validateOnReinitialize', () => {
+    class TestExample extends Component {
+      constructor(props) {
+        super(props);
+
+        this.state = { initialValues: { firstName: '' } };
+      }
+
+      render() {
+        return (
+          <Form
+            enableReinitialize
+            initialValues={this.state.initialValues}
+            validateOnReinitialize={this.props.validateOnReinitialize}
+            validateForm={this.props.validateForm}
+          >
+            {
+              ({ values, handleChange }) => (
+                <form>
+                  <input type="text" name="firstName" value={values.firstName} onChange={handleChange} />
+                  <button type="submit">submit</button>
+                </form>
+              )
+            }
+          </Form>
+        );
+      }
+    }
+
+    it('do not execute validation if false', (done) => {
+      const validateForm = sinon.spy();
+
+      const el = mount(<TestExample validateOnReinitialize={false} validateForm={validateForm} />);
+      el.setState({ initialValues: { firstName: 'test' } });
+      setTimeout(() => {
+        expect(validateForm.called).to.be.false;
+        done();
+      }, 0);
+    });
+
+    it('execute validation if true', (done) => {
+      const validateForm = sinon.spy();
+
+      const el = mount(<TestExample validateOnReinitialize validateForm={validateForm} />);
+      el.setState({ initialValues: { firstName: 'test' } });
+      setTimeout(() => {
+        expect(validateForm.called).to.be.true;
+        done();
+      }, 0);
+    });
+  });
+
+  describe('validateOnReset', () => {
+    it('do not execute validation if false', (done) => {
+      const validateForm = sinon.spy();
+
+      const el = createFormWithDefinedControl({
+        validateForm,
+        validateOnReset: false
+      }, {});
+
+      el.find('form').simulate('reset');
+      setTimeout(() => {
+        expect(validateForm.called).to.be.false;
+        done();
+      }, 0);
+    });
+
+    it('execute validation if true', (done) => {
+      const validateForm = sinon.spy();
+
+      const el = createFormWithDefinedControl({
+        validateForm,
+        validateOnReset: true
+      }, {});
+
+      el.find('form').simulate('reset');
+      setTimeout(() => {
+        expect(validateForm.called).to.be.true;
+        done();
+      }, 0);
+    });
+  });
 });
-/* eslint-enable-next-line no-empty-function */
+/* eslint-enable react/prop-types */

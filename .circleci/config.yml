@@ -2,7 +2,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/node:10.15.3
+      - image: circleci/node:10.16.3-browsers
         environment:
           CHROME_BIN: /usr/bin/google-chrome
     working_directory: ~/react-form
@@ -30,7 +30,4 @@ workflows:
   version: 2
   build_and_deploy:
     jobs:
-      - build:
-          filters:
-            tags:
-              only: /.*/ # run build job for all branches and all tags push
+      - build

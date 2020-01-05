@@ -4,7 +4,6 @@ import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
-import LabelField from '../../components/LabelField';
 import RadioSet from '../../components/RadioSet';
 import Radio from '../../components/Radio';
 import Textarea from '../../components/Textarea';
@@ -52,30 +51,26 @@ class ReinitializeExample extends Component {
             ({ values, touched, errors, handleSubmit, isSubmitting }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <section className="section">
-                  <Field errorMessage={touched.firstName && errors.firstName}>
-                    <LabelField text="First Name:">
-                      <Input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        minLength="5"
-                        required
-                      />
-                    </LabelField>
+                  <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                    <Input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      minLength="5"
+                      required
+                    />
                   </Field>
                 </section>
 
                 <section className="section">
-                  <Field errorMessage={touched.lastName && errors.lastName}>
-                    <LabelField text="Last Name:">
-                      <Input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        minLength="5"
-                      />
-                    </LabelField>
+                  <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                    <Input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      required
+                      minLength="5"
+                    />
                   </Field>
                 </section>
 
@@ -115,28 +110,24 @@ const ValidateOnMountExample = () => (
         ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
           <form onSubmit={handleSubmit} noValidate>
             <section className="section">
-              <Field errorMessage={touched.firstName && errors.firstName}>
-                <LabelField text="First Name:">
-                  <Input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    required
-                  />
-                </LabelField>
+              <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                />
               </Field>
             </section>
 
             <section className="section">
-              <Field errorMessage={touched.lastName && errors.lastName}>
-                <LabelField text="Last Name:">
-                  <Input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    required
-                  />
-                </LabelField>
+              <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                />
               </Field>
             </section>
 
@@ -183,30 +174,26 @@ class ValidateOnReinitializeExample extends Component {
             ({ values, touched, errors, handleSubmit, isSubmitting }) => (
               <form onSubmit={handleSubmit} noValidate>
                 <section className="section">
-                  <Field errorMessage={touched.firstName && errors.firstName}>
-                    <LabelField text="First Name:">
-                      <Input
-                        type="text"
-                        id="firstName"
-                        name="firstName"
-                        minLength="5"
-                        required
-                      />
-                    </LabelField>
+                  <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                    <Input
+                      type="text"
+                      id="firstName"
+                      name="firstName"
+                      minLength="5"
+                      required
+                    />
                   </Field>
                 </section>
 
                 <section className="section">
-                  <Field errorMessage={touched.lastName && errors.lastName}>
-                    <LabelField text="Last Name:">
-                      <Input
-                        type="text"
-                        id="lastName"
-                        name="lastName"
-                        required
-                        minLength="5"
-                      />
-                    </LabelField>
+                  <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                    <Input
+                      type="text"
+                      id="lastName"
+                      name="lastName"
+                      required
+                      minLength="5"
+                    />
                   </Field>
                 </section>
 
@@ -246,28 +233,24 @@ const ValidateOnResetExample = () => (
         ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
           <form onSubmit={handleSubmit} noValidate>
             <section className="section">
-              <Field errorMessage={touched.firstName && errors.firstName}>
-                <LabelField text="First Name:">
-                  <Input
-                    type="text"
-                    id="firstName"
-                    name="firstName"
-                    required
-                  />
-                </LabelField>
+              <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                />
               </Field>
             </section>
 
             <section className="section">
-              <Field errorMessage={touched.lastName && errors.lastName}>
-                <LabelField text="Last Name:">
-                  <Input
-                    type="text"
-                    id="lastName"
-                    name="lastName"
-                    required
-                  />
-                </LabelField>
+              <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                />
               </Field>
             </section>
 

@@ -3,7 +3,6 @@ import React from 'react';
 import FormKirin from '../../components/FormKirin';
 import List from '../../components/List';
 import Field from '../../components/Field';
-import LabelField from '../../components/LabelField';
 import TextInput from './CustomInput';
 import Checkbox from './CustomCheckbox';
 import MultiSelect from './MultiSelect';
@@ -96,10 +95,8 @@ function CustomFormFieldExample() {
               {
                 values.hasGuests && (
                   <section className="section">
-                    <Field errorMessage={touched.guests && errors.guests}>
-                      <LabelField text="Select your guest:">
-                        <MultiSelect name="guests" validate={uniqueGuests} items={items} />
-                      </LabelField>
+                    <Field errorMessage={touched.guests && errors.guests} labelText="Select your guest:">
+                      <MultiSelect name="guests" validate={uniqueGuests} items={items} />
                     </Field>
                   </section>
                 )

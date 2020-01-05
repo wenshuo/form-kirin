@@ -4,7 +4,6 @@ import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
-import LabelField from '../../components/LabelField';
 import RadioSet from '../../components/RadioSet';
 import Radio from '../../components/Radio';
 import Textarea from '../../components/Textarea';
@@ -55,28 +54,24 @@ function PredefinedFormFieldExample() {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
               <section className="section">
-                <Field errorMessage={touched.firstName && errors.firstName}>
-                  <LabelField text="First Name:">
-                    <Input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      validate={isRequired}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    validate={isRequired}
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.lastName && errors.lastName}>
-                  <LabelField text="Last Name:">
-                    <Input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      validate={isRequired}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    validate={isRequired}
+                  />
                 </Field>
               </section>
 
@@ -87,14 +82,12 @@ function PredefinedFormFieldExample() {
               {
                 values.admin && (
                   <section className="section">
-                    <Field errorMessage={touched.department && errors.department}>
-                      <LabelField text="Department:">
-                        <Input
-                          type="text"
-                          id="department"
-                          name="department"
-                        />
-                      </LabelField>
+                    <Field errorMessage={touched.department && errors.department} labelText="Department:">
+                      <Input
+                        type="text"
+                        id="department"
+                        name="department"
+                      />
                     </Field>
                   </section>
                 )
@@ -109,46 +102,38 @@ function PredefinedFormFieldExample() {
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.source && errors.source}>
-                  <LabelField text="How do know us:">
-                    <Select id="source" name="source" multiple size={2}>
-                      <option></option>
-                      <option value="internet">Internet</option>
-                      <option value="newspaper">Newspaper</option>
-                      <option value="friends">Friends</option>
-                      <option value="others">others</option>
-                    </Select>
-                  </LabelField>
+                <Field errorMessage={touched.source && errors.source} labelText="How do know us:">
+                  <Select id="source" name="source" multiple size={2}>
+                    <option></option>
+                    <option value="internet">Internet</option>
+                    <option value="newspaper">Newspaper</option>
+                    <option value="friends">Friends</option>
+                    <option value="others">others</option>
+                  </Select>
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.email && errors.email}>
-                  <LabelField text="Email:">
-                    <EmailField
-                      id="email"
-                      name="email"
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.email && errors.email} labelText="Email:">
+                  <EmailField
+                    id="email"
+                    name="email"
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.years && errors.years}>
-                  <LabelField text="How long have you been working here:">
-                    <NumberField
-                      id="years"
-                      name="years"
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.years && errors.years} labelText="How long have you been working here:">
+                  <NumberField
+                    id="years"
+                    name="years"
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.bio && errors.bio}>
-                  <LabelField text="Tell me about you:">
-                    <Textarea id="bio" name="bio" rows="10" cols="50" />
-                  </LabelField>
+                <Field errorMessage={touched.bio && errors.bio} labelText="Tell me about you:">
+                  <Textarea id="bio" name="bio" rows="10" cols="50" />
                 </Field>
               </section>
 

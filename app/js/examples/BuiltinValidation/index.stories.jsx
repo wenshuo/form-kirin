@@ -4,7 +4,6 @@ import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
-import LabelField from '../../components/LabelField';
 import RadioSet from '../../components/RadioSet';
 import Radio from '../../components/Radio';
 import Textarea from '../../components/Textarea';
@@ -58,56 +57,48 @@ function BuiltinValidationExample() {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit} noValidate>
               <section className="section">
-                <Field errorMessage={touched.firstName && errors.firstName}>
-                  <LabelField text="First Name:">
-                    <Input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      minLength="5"
-                      required
-                      errorMessages={firstNameErrors}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    minLength="5"
+                    required
+                    errorMessages={firstNameErrors}
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.lastName && errors.lastName}>
-                  <LabelField text="Last Name:">
-                    <Input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      required
-                      minLength="5"
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    minLength="5"
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.email && errors.email}>
-                  <LabelField text="Email:">
-                    <EmailField
-                      id="email"
-                      name="email"
-                      required
-                      isEmail
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.email && errors.email} labelText="Email:">
+                  <EmailField
+                    id="email"
+                    name="email"
+                    required
+                    isEmail
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.quantity && errors.quantity}>
-                  <LabelField text="How many do you want:">
-                    <NumberField
-                      id="quantity"
-                      name="quantity"
-                      max="10"
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.quantity && errors.quantity} labelText="How many do you want:">
+                  <NumberField
+                    id="quantity"
+                    name="quantity"
+                    max="10"
+                  />
                 </Field>
               </section>
 
@@ -142,56 +133,48 @@ function CustomValidationExample() {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit} noValidate>
               <section className="section">
-                <Field errorMessage={touched.firstName && errors.firstName}>
-                  <LabelField text="First Name:">
-                    <Input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      minLength="5"
-                      required
-                      errorMessages={firstNameErrors}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                  <Input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    minLength="5"
+                    required
+                    errorMessages={firstNameErrors}
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.lastName && errors.lastName}>
-                  <LabelField text="Last Name:">
-                    <Input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      required
-                      minLength="5"
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                  <Input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    required
+                    minLength="5"
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.email && errors.email}>
-                  <LabelField text="Email:">
-                    <EmailField
-                      id="email"
-                      name="email"
-                      isEmail
-                      required
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.email && errors.email} labelText="Email:">
+                  <EmailField
+                    id="email"
+                    name="email"
+                    isEmail
+                    required
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.quantity && errors.quantity}>
-                  <LabelField text="How many do you want:">
-                    <NumberField
-                      id="quantity"
-                      name="quantity"
-                      positive
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.quantity && errors.quantity} labelText="How many do you want:">
+                  <NumberField
+                    id="quantity"
+                    name="quantity"
+                    positive
+                  />
                 </Field>
               </section>
 

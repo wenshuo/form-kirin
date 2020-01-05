@@ -1,7 +1,6 @@
 import React from 'react';
 
 import FormKirin from '../../components/FormKirin';
-import LabelField from '../../components/LabelField';
 import Field from '../../components/Field';
 import List from '../../components/List';
 
@@ -46,61 +45,53 @@ function RenderPropExample() {
           ({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
               <section className="section">
-                <Field errorMessage={touched.firstName && errors.firstName}>
-                  <LabelField text="First Name:">
-                    <input
-                      type="text"
-                      id="firstName"
-                      name="firstName"
-                      value={values.firstName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={values.firstName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.lastName && errors.lastName}>
-                  <LabelField text="Last Name:">
-                    <input
-                      type="text"
-                      id="lastName"
-                      name="lastName"
-                      value={values.lastName}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={values.lastName}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.products && errors.products}>
-                  <LabelField text="Choose a product to buy:">
-                    <select id="products" name="products" value={values.products} onChange={handleChange} onBlur={handleBlur}>
-                      <option value=""></option>
-                      <option value="iPhone_11">Iphone 11</option>
-                      <option value="Macbook_Air">Macbook Air</option>
-                      <option value="Keyboard">Keyboard</option>
-                      <option value="Mouse">Mouse</option>
-                    </select>
-                  </LabelField>
+                <Field errorMessage={touched.products && errors.products} labelText="Choose a product to buy:">
+                  <select id="products" name="products" value={values.products} onChange={handleChange} onBlur={handleBlur}>
+                    <option value=""></option>
+                    <option value="iPhone_11">Iphone 11</option>
+                    <option value="Macbook_Air">Macbook Air</option>
+                    <option value="Keyboard">Keyboard</option>
+                    <option value="Mouse">Mouse</option>
+                  </select>
                 </Field>
               </section>
 
               <section className="section">
-                <Field errorMessage={touched.quantity && errors.quantity}>
-                  <LabelField text="Quantity:">
-                    <input
-                      type="number"
-                      id="quantity"
-                      name="quantity"
-                      value={values.quantity}
-                      onChange={handleChange}
-                      onBlur={handleBlur}
-                    />
-                  </LabelField>
+                <Field errorMessage={touched.quantity && errors.quantity} labelText="Quantity:">
+                  <input
+                    type="number"
+                    id="quantity"
+                    name="quantity"
+                    value={values.quantity}
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
                 </Field>
               </section>
 

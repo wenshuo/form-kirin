@@ -1,7 +1,7 @@
 import React from 'react';
 import ResetButton from '.';
 import FormKirin from '../FormKirin';
-import LabelField from '../LabelField';
+import Field from '../Field';
 
 const initialValues = {
   firstName: '',
@@ -18,25 +18,25 @@ export const ResetButtonExample = () => (
         ({ values, handleChange }) => (
           <form>
             <section className="section">
-              <LabelField text="First Name:">
+              <Field labelText="First Name:">
                 <input
                   id="firstName"
                   name="firstName"
                   value={values.firstName}
                   onChange={handleChange}
                 />
-              </LabelField>
+              </Field>
             </section>
 
             <section className="section">
-              <LabelField text="Last Name:">
+              <Field labelText="Last Name:">
                 <input
                   id="lastName"
                   name="lastName"
                   value={values.lastName}
                   onChange={handleChange}
                 />
-              </LabelField>
+              </Field>
             </section>
 
             <ResetButton value="reset form" />

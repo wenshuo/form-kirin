@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
+import { cx } from '../../helpers/utils';
 
 import BasicField from '../BasicField';
 import styles from './index.module.scss';

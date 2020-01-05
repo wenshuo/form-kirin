@@ -10,11 +10,11 @@
     "lint": "eslint --ext .jsx --ext .js --ignore-pattern *.stories.jsx app/js",
     "ci_test": "karma start karma.config.js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
-    "start": "start-storybook -p 9001 -c .stories"
+    "start": "start-storybook -p 9001 -c .stories",
+    "build:prod": "webpack --config webpack.prod.js --progress --display-error",
+    "build:analyze": "webpack --config webpack.analyze.js --progress --display-error --profile --json > stats.json"
   },
   "dependencies": {
-    "classnames": "^2.2.6",
-    "lodash": "^4.17.15",
     "prop-types": "^15.7.2"
   },
   "devDependencies": {
@@ -54,9 +54,13 @@
     "sinon": "^7.5.0",
     "style-loader": "^1.1.2",
     "webpack": "^4.41.2",
+    "webpack-bundle-analyzer": "^3.6.0",
     "webpack-cli": "^3.3.10",
     "webpack-dev-server": "^3.9.0"
   },
+  "files": [
+    "dist"
+  ],
   "peerDependencies": {
     "react": ">=16"
   },

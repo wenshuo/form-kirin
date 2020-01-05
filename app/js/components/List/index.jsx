@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
+import { cx } from '../../helpers/utils';
 
 import styles from './index.module.scss';
 
@@ -17,7 +17,7 @@ Item.propTypes = {
 
 export default function List({ children, stacked, className }) {
   return (
-    <ul className={cx(styles.container, className, { [styles.stacked]: stacked })}>
+    <ul className={cx(styles.container, className, stacked && styles.stacked)}>
       {children}
     </ul>
   );

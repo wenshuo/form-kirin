@@ -1,6 +1,6 @@
 import React, { PureComponent, createContext } from 'react';
-import isEmpty from 'lodash/isEmpty';
-import isEqual from 'lodash/isEqual';
+import { isEmpty, isEqual } from '../../helpers/utils';
+
 import {
   isObject,
   isFunction,

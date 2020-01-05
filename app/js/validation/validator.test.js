@@ -64,7 +64,7 @@ describe('Validator Class', () => {
 
   describe('getErrorMessage method:', () => {
     it('user defined string message', () => {
-      const msg = getErrorMessage('required', { required: '${fieldName} is required.' }, {}, { fieldName: 'first name' });
+      const msg = getErrorMessage('required', { required: 'first name is required.' }, {}, { fieldName: 'first name' });
       expect(msg).to.eql('first name is required.');
     });
 

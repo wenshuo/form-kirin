@@ -1,6 +1,6 @@
 import React, { Children } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
+import { cx } from '../../helpers/utils';
 
 import styles from './index.module.scss';
 
@@ -13,7 +13,7 @@ export default function Field({ id, labelText, children, errorMessage, inline, c
         labelText && (
           <label
             htmlFor={field.props.id || id}
-            className={cx(styles.label, { [styles.label_inline]: inline })}
+            className={cx(styles.label, inline && styles.label_inline)}
           >
             {labelText}
           </label>

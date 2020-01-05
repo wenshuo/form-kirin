@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import omit from 'lodash/omit';
-import cx from 'classnames';
+import { omit } from '../../helpers/utils';
 
 import FormContext from '../../contexts/form';
 import { getFieldName } from '../../helpers/utils';

@@ -1,4 +1,4 @@
-import uniq from 'lodash/uniq';
+import { uniq } from '../helpers/utils';
 import Validator, { VALIDATION_METHODS } from './validator';
 
 export function getValidator(props, formLevelValidators = {}) {

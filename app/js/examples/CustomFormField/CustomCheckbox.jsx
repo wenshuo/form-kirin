@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import FormControlWrapper from '../../components/FormControlWrapper';
-import omit from 'lodash/omit';
+import { omit } from '../../helpers/utils';
 
 export default function CustomCheckbox(props) {
   const fieldProps = omit(props, ['validate', 'label']);

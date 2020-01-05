@@ -42,3 +42,34 @@ export function isNumber(value) {
 export function isString(value) {
   return typeof value === 'string';
 }
+
+export function cx(...args) {
+  return args.filter(arg => !!arg).join(' ');
+}
+
+export function omit(target, propsToExclude = []) {
+  return Object.keys(target).reduce((memo, key) => {
+    if (propsToExclude.indexOf(key) === -1) {
+      memo[key] = target[key];
+    }
+    return memo;
+  }, {});
+}
+
+export function isEmpty(value) {
+  return [undefined, null, false, true, ''].includes(value) || (isObject(value) && Object.keys(value).length === 0);
+}
+
+function equalObjects(a, b) {
+  const keys = Object.keys(a);
+
+  return keys.length === Object.keys(b) && keys.every(k => Object.is(a[k], b[k]));
+}
+
+export function isEqual(a, b) {
+  return Object.is(a, b) || (isObject(a) && isObject(b) && equalObjects(a, b));
+}
+
+export function uniq(values) {
+  return [...new Set(values)];
+}

@@ -1,6 +1,5 @@
 import { isNumber, isString } from '../helpers/utils';
-import template from 'lodash/template';
-import uniq from 'lodash/uniq';
+import { uniq } from '../helpers/utils';
 
 const MESSAGES = {
   required({ fieldName }) {
@@ -130,11 +129,9 @@ export function nonNativeProps(formLevelValidators = {}) {
 export function getErrorMessage(key, userDefinedMsg = {}, defaultMsg = {}, context = {}) {
   let message = userDefinedMsg[key] || defaultMsg[key];
 
-  if (isString(message)) {
-    message = template(message)(context);
-  } else if (typeof message === 'function') {
+  if (typeof message === 'function') {
     message = message(context);
-  } else {
+  } else if (!isString(message)){
     message = '';
   }
 

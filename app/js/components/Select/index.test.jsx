@@ -2,7 +2,7 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import Select from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 import { simulateEvent } from '../../helpers/test';
 
 describe('Select Component:', () => {
@@ -10,7 +10,7 @@ describe('Select Component:', () => {
 
   beforeEach(() => {
     el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <Select
@@ -24,7 +24,7 @@ describe('Select Component:', () => {
             </Select>
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 
@@ -50,7 +50,7 @@ describe('Select Component:', () => {
 
   it('select multiple option', (done) => {
     el = mount(
-      <Form initialValues={{ field: [] }}>
+      <FormKirin initialValues={{ field: [] }}>
         {
           () => (
             <Select
@@ -65,7 +65,7 @@ describe('Select Component:', () => {
             </Select>
           )
         }
-      </Form>
+      </FormKirin>
     );
 
     simulateEvent('change', el.find('select'), 'field', ['banana', 'pear']);

@@ -1,6 +1,6 @@
 import React from 'react';
 import ResetButton from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 import LabelField from '../LabelField';
 
 const initialValues = {
@@ -13,7 +13,7 @@ export default { title: 'ResetButton' };
 export const ResetButtonExample = () => (
   <div className="example">
     <h3>Form</h3>
-    <Form initialValues={initialValues}>
+    <FormKirin initialValues={initialValues}>
       {
         ({ values, handleChange }) => (
           <form>
@@ -43,6 +43,6 @@ export const ResetButtonExample = () => (
           </form>
         )
       }
-    </Form>
+    </FormKirin>
   </div>
 );

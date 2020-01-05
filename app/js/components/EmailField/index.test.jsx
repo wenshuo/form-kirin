@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 
 import EmailField from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 import { simulateEvent } from '../../helpers/test';
 
 describe('Email Component:', () => {
@@ -11,7 +11,7 @@ describe('Email Component:', () => {
 
   beforeEach(() => {
     el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <EmailField
@@ -21,7 +21,7 @@ describe('Email Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 
@@ -35,7 +35,7 @@ describe('Email Component:', () => {
 
   it('run validation prop', (done) => {
     el = mount(
-      <Form validateOnChange enableValidationProps>
+      <FormKirin validateOnChange enableValidationProps>
         {
           () => (
             <EmailField
@@ -46,7 +46,7 @@ describe('Email Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
     simulateEvent('change', el.find('input'), 'field', 'example.com');
     setTimeout(() => {
@@ -59,7 +59,7 @@ describe('Email Component:', () => {
     const validate = sinon.spy();
 
     el = mount(
-      <Form validateOnChange>
+      <FormKirin validateOnChange>
         {
           () => (
             <EmailField
@@ -70,7 +70,7 @@ describe('Email Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
     simulateEvent('change', el.find('input'), 'field', 'example.com');
     expect(validate.called).to.be.true;

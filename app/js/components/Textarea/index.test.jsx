@@ -2,14 +2,14 @@ import React from 'react';
 import { mount } from 'enzyme';
 
 import TextareaField from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 
 describe('Textarea Component:', () => {
   let el;
 
   beforeEach(() => {
     el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <TextareaField
@@ -19,7 +19,7 @@ describe('Textarea Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 

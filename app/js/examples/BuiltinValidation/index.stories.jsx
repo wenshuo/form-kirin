@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from '../../components/Form';
+import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
@@ -48,7 +48,7 @@ function BuiltinValidationExample() {
   return (
     <div className="example">
       <h3 className="u-text-center  form-header">Order Form</h3>
-      <Form
+      <FormKirin
         initialValues={initialValues}
         onSubmit={submitForm}
         validateOnBlur
@@ -122,7 +122,7 @@ function BuiltinValidationExample() {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     </div>
   );
 }
@@ -131,7 +131,7 @@ function CustomValidationExample() {
   return (
     <div className="example">
       <h3 className="u-text-center  form-header">Order Form</h3>
-      <Form
+      <FormKirin
         initialValues={initialValues}
         onSubmit={submitForm}
         validateOnBlur
@@ -206,7 +206,7 @@ function CustomValidationExample() {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from '../../components/Form';
+import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
@@ -50,7 +50,7 @@ function PredefinedFormFieldExample() {
   return (
     <div className="example">
       <h3 className="u-text-center  form-header">Information Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validateForm={validateForm}>
+      <FormKirin initialValues={initialValues} onSubmit={submitForm} validateOnBlur validateForm={validateForm}>
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
@@ -163,7 +163,7 @@ function PredefinedFormFieldExample() {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     </div>
   );
 }

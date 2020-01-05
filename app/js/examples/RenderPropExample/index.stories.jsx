@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from '../../components/Form';
+import FormKirin from '../../components/FormKirin';
 import LabelField from '../../components/LabelField';
 import Field from '../../components/Field';
 import List from '../../components/List';
@@ -41,7 +41,7 @@ function RenderPropExample() {
   return (
     <div className="example">
       <h3 className="u-text-center  form-header">Basic Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validate={validate}>
+      <FormKirin initialValues={initialValues} onSubmit={submitForm} validate={validate}>
         {
           ({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
@@ -115,7 +115,7 @@ function RenderPropExample() {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     </div>
   );
 }

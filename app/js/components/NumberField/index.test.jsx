@@ -3,7 +3,7 @@ import { mount } from 'enzyme';
 import sinon from 'sinon';
 
 import NumberField from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 import { simulateEvent } from '../../helpers/test';
 
 describe('Number Component:', () => {
@@ -11,7 +11,7 @@ describe('Number Component:', () => {
 
   beforeEach(() => {
     el = mount(
-      <Form validateOnChange enableValidationProps>
+      <FormKirin validateOnChange enableValidationProps>
         {
           () => (
             <NumberField
@@ -22,7 +22,7 @@ describe('Number Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 
@@ -46,7 +46,7 @@ describe('Number Component:', () => {
     const validate = sinon.spy();
 
     el = mount(
-      <Form validateOnChange>
+      <FormKirin validateOnChange>
         {
           () => (
             <NumberField
@@ -57,7 +57,7 @@ describe('Number Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
     simulateEvent('change', el.find('input'), 'field', '11');
     expect(validate.called).to.be.true;

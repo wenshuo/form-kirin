@@ -1,13 +1,13 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import BasicField from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 
 describe('BasicField', () => {
   describe('create wrapper', () => {
     it('input element as default', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -16,14 +16,14 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
       expect(el.find('input').exists()).to.be.true;
     });
 
     it('input element', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -33,14 +33,14 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
       expect(el.find('input').exists()).to.be.true;
     });
 
     it('textarea element', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -50,14 +50,14 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
       expect(el.find('textarea').exists()).to.be.true;
     });
 
     it('input element', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -67,7 +67,7 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
       expect(el.find('select').exists()).to.be.true;
     });
@@ -76,7 +76,7 @@ describe('BasicField', () => {
   describe('value prop', () => {
     it('text input', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -87,7 +87,7 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
 
       el.setState({ values: { field: 'hello' }});
@@ -96,7 +96,7 @@ describe('BasicField', () => {
 
     it('textarea', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -106,7 +106,7 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
 
       el.setState({ values: { field: 'hello' }});
@@ -115,7 +115,7 @@ describe('BasicField', () => {
 
     it('checkbox', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -126,7 +126,7 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
 
       el.setState({ values: { field: true }});
@@ -135,7 +135,7 @@ describe('BasicField', () => {
 
     it('radio', () => {
       const el = mount(
-        <Form>
+        <FormKirin>
           {
             () => (
               <BasicField
@@ -147,7 +147,7 @@ describe('BasicField', () => {
               />
             )
           }
-        </Form>
+        </FormKirin>
       );
 
       el.setState({ values: { field: 'apple' }});
@@ -157,7 +157,7 @@ describe('BasicField', () => {
 
   it('pass handlers', () => {
     const el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <BasicField
@@ -166,7 +166,7 @@ describe('BasicField', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
 
     expect(el.find('input').props()).to.have.property('onChange');
@@ -175,7 +175,7 @@ describe('BasicField', () => {
 
   it('attach className to container', () => {
     const el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <BasicField
@@ -186,7 +186,7 @@ describe('BasicField', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
 
     expect(el.find('input.test').exists()).to.be.true;

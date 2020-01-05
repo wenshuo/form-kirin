@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import Form from '../../components/Form';
+import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
@@ -41,7 +41,7 @@ class ReinitializeExample extends Component {
     return (
       <div className="example">
         <h3 className="u-text-center  form-header">Order Form</h3>
-        <Form
+        <FormKirin
           initialValues={this.state.initialValues}
           onSubmit={submitForm}
           validateOnBlur
@@ -90,7 +90,7 @@ class ReinitializeExample extends Component {
               </form>
             )
           }
-        </Form>
+        </FormKirin>
       </div>
     );
   }
@@ -104,7 +104,7 @@ const initialValuesForValidateOnMountExample = {
 const ValidateOnMountExample = () => (
   <div className="example">
     <h3 className="u-text-center  form-header">Order Form</h3>
-    <Form
+    <FormKirin
       initialValues={initialValuesForValidateOnMountExample}
       onSubmit={submitForm}
       validateOnBlur
@@ -151,7 +151,7 @@ const ValidateOnMountExample = () => (
           </form>
         )
       }
-    </Form>
+    </FormKirin>
   </div>
 );
 
@@ -171,7 +171,7 @@ class ValidateOnReinitializeExample extends Component {
     return (
       <div className="example">
         <h3 className="u-text-center  form-header">Order Form</h3>
-        <Form
+        <FormKirin
           initialValues={this.state.initialValues}
           onSubmit={submitForm}
           validateOnBlur
@@ -221,7 +221,7 @@ class ValidateOnReinitializeExample extends Component {
               </form>
             )
           }
-        </Form>
+        </FormKirin>
       </div>
     );
   }
@@ -235,7 +235,7 @@ const initialValuesForValidateOnResetExample = {
 const ValidateOnResetExample = () => (
   <div className="example">
     <h3 className="u-text-center  form-header">Order Form</h3>
-    <Form
+    <FormKirin
       initialValues={initialValuesForValidateOnResetExample}
       onSubmit={submitForm}
       validateOnBlur
@@ -282,7 +282,7 @@ const ValidateOnResetExample = () => (
           </form>
         )
       }
-    </Form>
+    </FormKirin>
   </div>
 );
 

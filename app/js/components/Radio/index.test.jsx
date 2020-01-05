@@ -1,14 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Radio from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 
 describe('Radio Component:', () => {
   let el;
 
   beforeEach(() => {
     el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <Radio
@@ -20,7 +20,7 @@ describe('Radio Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 

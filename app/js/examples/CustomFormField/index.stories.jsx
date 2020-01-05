@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Form from '../../components/Form';
+import FormKirin from '../../components/FormKirin';
 import List from '../../components/List';
 import Field from '../../components/Field';
 import LabelField from '../../components/LabelField';
@@ -76,7 +76,7 @@ function CustomFormFieldExample() {
   return (
     <div className="example">
       <h3 className="u-text-center form-header">Guest List Form</h3>
-      <Form initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validate} validateForm={validateForm}>
+      <FormKirin initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validate} validateForm={validateForm}>
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
             <form onSubmit={handleSubmit}>
@@ -116,7 +116,7 @@ function CustomFormFieldExample() {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     </div>
   );
 }

@@ -1,14 +1,14 @@
 import React from 'react';
 import { mount } from 'enzyme';
 import Checkbox from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 
 describe('Checkbox Component:', () => {
   let el;
 
   beforeEach(() => {
     el = mount(
-      <Form>
+      <FormKirin>
         {
           () => (
             <Checkbox
@@ -19,7 +19,7 @@ describe('Checkbox Component:', () => {
             />
           )
         }
-      </Form>
+      </FormKirin>
     );
   });
 

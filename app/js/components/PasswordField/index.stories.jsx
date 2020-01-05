@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PasswordField from '.';
-import Form from '../Form';
+import FormKirin from '../FormKirin';
 
 export default { title: 'PasswordField' };
 
@@ -18,7 +18,7 @@ class ShowPasswordExample extends Component {
 
   render() {
     return (
-      <Form>
+      <FormKirin>
         {
           () => (
             <form>
@@ -31,7 +31,7 @@ class ShowPasswordExample extends Component {
             </form>
           )
         }
-      </Form>
+      </FormKirin>
     );
   }
 }

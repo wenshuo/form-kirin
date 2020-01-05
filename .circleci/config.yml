@@ -5,7 +5,7 @@ jobs:
       - image: circleci/node:10.16.3-browsers
         environment:
           CHROME_BIN: /usr/bin/google-chrome
-    working_directory: ~/react-form
+    working_directory: ~/form-kirin
 
     steps:
       - checkout
@@ -13,7 +13,7 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-            - react-form-dependencies-{{ checksum "package.json" }}
+            - form-kirin-dependencies-{{ checksum "package.json" }}
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
 
@@ -22,7 +22,7 @@ jobs:
       - save_cache:
           paths:
             - node_modules
-          key: react-form-dependencies-{{ checksum "package.json" }}
+          key: form-kirin-dependencies-{{ checksum "package.json" }}
 
       # run tests!
       - run: npm run ci_test

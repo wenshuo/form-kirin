@@ -11,7 +11,7 @@
     "ci_test": "karma start karma.config.js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
     "start": "start-storybook -p 9001 -c .stories",
-    "build:prod": "webpack --config webpack.prod.js --progress --display-error",
+    "build:prod": "webpack --config webpack.prod.js --progress --display-error --display-modules",
     "build:analyze": "webpack --config webpack.analyze.js --progress --display-error --profile --json > stats.json"
   },
   "dependencies": {

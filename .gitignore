@@ -3,3 +3,4 @@ dist
 .nvmrc
 .DS_Store
 stats.json
+npm-debug.log

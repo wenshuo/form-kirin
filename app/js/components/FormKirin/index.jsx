@@ -1,9 +1,8 @@
-import React, { PureComponent, createContext } from 'react';
+import React, { PureComponent } from 'react';
 import { isEmpty, isEqual } from '../../helpers/utils';
-
+import PropTypes from 'prop-types';
 import {
   isObject,
-  isFunction,
   getFieldNameForElement,
   getFieldValueForElement
 } from '../../helpers/utils';
@@ -106,16 +105,17 @@ export default class FormKirin extends PureComponent {
   }
 
   async submitForm(event) {
-    event.preventDefault?.();
-    event.stopPropagation?.();
+    event.preventDefault && event.preventDefault();
+    event.stopPropagation && event.stopPropagation();
     // can't submit form during submission
     if (this.state.isSubmitting || !this.props.onSubmit) {
       return false;
     }
 
     const errors = await this.validateValues(this.state.values);
+    const canSumbit = this.isFormValid(errors);
 
-    if (this.isFormValid(errors)) {
+    if (canSumbit) {
       this.setState({ isSubmitting: true, submitCount: this.state.submitCount + 1 });
       this.props.onSubmit(this.state.values, {
         setSubmitting: this.setSubmitting,
@@ -127,11 +127,14 @@ export default class FormKirin extends PureComponent {
         setTouched: this.setTouched
       });
     }
+
+    return canSumbit;
   }
 
   resetForm(event) {
-    event && event.preventDefault();
-    this.props.onReset?.(this.state.values, {
+    event.preventDefault && event.preventDefault();
+
+    this.props.onReset && this.props.onReset(this.state.values, {
       setSubmitting: this.setSubmitting,
       setFieldError: this.setFieldError,
       setErrors: this.setErrors,
@@ -228,7 +231,7 @@ export default class FormKirin extends PureComponent {
   getFieldValidators(fields = {}, validateObj = {}) {
     // validator from predefined form field take precedency over validator from the validate prop at the form level
     const validatorsFromField = Object.keys(fields).reduce((memo, name) => {
-      if (fields?.[name]?.validate) {
+      if (fields[name] && fields[name].validate) {
         memo[name] = fields[name].validate;
       }
 
@@ -313,6 +316,16 @@ export default class FormKirin extends PureComponent {
     }
   }
 
+  getFieldValidator(target, fieldName) {
+    let validator = target.fields[fieldName] && target.fields[fieldName].validate;
+
+    if (!validator) {
+      validator = target.props.validate && target.props.validate[fieldName];
+    }
+
+    return validator;
+  }
+
   async updateValue(fieldName, fieldValue, shouldValidate) {
     const values = {
       ...this.state.values,
@@ -322,7 +335,7 @@ export default class FormKirin extends PureComponent {
     this.setState({ values });
 
     const validateOnChange = this.state.validateOnChange;
-    const fieldValidator = this.fields?.[fieldName]?.validate || this.props?.validate?.[fieldName];
+    const fieldValidator = this.getFieldValidator(this, fieldName);
     // Call field level validation if defined
     if (shouldValidate && validateOnChange && fieldValidator) {
       try {
@@ -335,8 +348,8 @@ export default class FormKirin extends PureComponent {
   }
 
   async handleChange(event, callback, ...args) {
-    event.stopPropagation?.();
-    event.stopImmediatePropagation?.();
+    event.stopPropagation && event.stopPropagation();
+    event.stopImmediatePropagation && event.stopImmediatePropagation();
 
     await this.updateValue(getFieldNameForElement(event.target), getFieldValueForElement(event.target), true);
 
@@ -344,12 +357,12 @@ export default class FormKirin extends PureComponent {
   }
 
   async handleBlur(event, callback, ...args) {
-    event.stopPropagation?.();
-    event.stopImmediatePropagation?.();
+    event.stopPropagation && event.stopPropagation();
+    event.stopImmediatePropagation && event.stopImmediatePropagation();
     const fieldName = getFieldNameForElement(event.target);
     this.setState({ touched: { ...this.state.touched, [fieldName]: true }});
     const validateOnBlur = this.state.validateOnBlur;
-    const fieldValidator = this.fields?.[fieldName]?.validate || this.props?.validate?.[fieldName];
+    const fieldValidator = this.getFieldValidator(this, fieldName);
     const fieldValue = this.state.values[fieldName];
 
     // Call field level validation if defined
@@ -408,3 +421,20 @@ export default class FormKirin extends PureComponent {
     );
   }
 }
+
+FormKirin.propTypes = {
+  initialValues: PropTypes.object,
+  validateOnBlur: PropTypes.bool,
+  validateOnChange: PropTypes.bool,
+  validateOnReinitialize: PropTypes.bool,
+  validateOnReset: PropTypes.bool,
+  validateOnMount: PropTypes.bool,
+  enableReinitialize: PropTypes.bool,
+  enableValidationProps: PropTypes.bool,
+  onSubmit: PropTypes.func,
+  onReset: PropTypes.func,
+  validateForm: PropTypes.func,
+  validate: PropTypes.object,
+  validationProps: PropTypes.object,
+  children: PropTypes.func
+};

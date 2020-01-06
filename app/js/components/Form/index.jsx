@@ -18,5 +18,5 @@ export default function Form(props) {
 }
 
 Form.propTypes = {
-  children: PropTypes.func
+  children: PropTypes.node
 };

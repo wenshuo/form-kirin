@@ -1,6 +1,6 @@
+// eslint-disable-next-line no-unused-vars
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { omit } from '../../helpers/utils';
 
 import FormContext from '../../contexts/form';
 import { getFieldName } from '../../helpers/utils';
@@ -35,11 +35,11 @@ export default class FormControlWrapper extends Component {
   }
 
   handleChange(event) {
-    this?.context.handleChange?.(event, this.props.handleChange, event);
+    this.context.handleChange(event, this.props.handleChange, event);
   }
 
   handleBlur(event) {
-    this?.context.handleBlur?.(event, this.props.handleBlur, event);
+    this.context.handleBlur(event, this.props.handleBlur, event);
   }
 
   async validate(...args) {
@@ -69,9 +69,9 @@ export default class FormControlWrapper extends Component {
       ...this.context,
       handleChange: this.handleChange,
       handleBlur: this.handleBlur,
-      value: this?.context?.values?.[fieldName],
-      error: this?.context?.errors?.[fieldName],
-      touched: this?.context?.touched?.[fieldName]
+      value: this.context.values[fieldName],
+      error: this.context.errors[fieldName],
+      touched: this.context.touched[fieldName]
     });
   }
 }
@@ -79,5 +79,10 @@ export default class FormControlWrapper extends Component {
 FormControlWrapper.contextType = FormContext;
 
 FormControlWrapper.propTypes = {
-  className: PropTypes.string
+  className: PropTypes.string,
+  validate: PropTypes.func,
+  errorMessages: PropTypes.object,
+  children: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleBlur: PropTypes.func
 };

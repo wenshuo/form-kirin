@@ -31,7 +31,7 @@ export default function BasicField(props) {
           return (
             <Wrapper
               className={className}
-              {...omit(props, [...PROPS_TO_EXCLUDE, ...nonNativeProps(validationProps)])}
+              {...omit(props, PROPS_TO_EXCLUDE.concat(nonNativeProps(validationProps)))}
               {...valueProp(value, type, props.value)}
               onChange={handleChange}
               onBlur={handleBlur}

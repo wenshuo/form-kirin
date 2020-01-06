@@ -71,5 +71,17 @@ export function isEqual(a, b) {
 }
 
 export function uniq(values) {
-  return [...new Set(values)];
+  // avoid using set to remove duplicate values, it reduce the bundle size by 5kb.
+  if (Array.isArray(values)) {
+    const result = [];
+    values.forEach((value) => {
+      if (result.indexOf(value) === -1) {
+        result.push(value);
+      }
+    });
+
+    return result;
+  }
+
+  return values;
 }

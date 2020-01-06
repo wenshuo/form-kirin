@@ -15,7 +15,6 @@ module.exports = {
     libraryTarget: 'umd'
   },
   optimization: {
-    concatenateModules: true,
     splitChunks: {
       cacheGroups: {
         styles: {
@@ -77,7 +76,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json']
   },
-  mode: 'development', // will configure definePlugin to set process.env.NODE_ENV to production
+  mode: 'production', // will configure definePlugin to set process.env.NODE_ENV to production
   devtool: 'source-map',
   externals: {
     react: {

@@ -11,7 +11,7 @@ module.exports = {
     filename: '[name].umd.js',
     sourceMapFilename: '[name].umd.map',
     path: path.resolve(__dirname, './dist'),
-    library: 'FormKirin',
+    library: 'formKirin',
     libraryTarget: 'umd'
   },
   optimization: {

@@ -1,5 +1,4 @@
-import { isNumber, isString } from '../helpers/utils';
-import { uniq } from '../helpers/utils';
+import { isNumber, isString, uniq } from '../helpers/utils';
 
 const MESSAGES = {
   required({ fieldName }) {

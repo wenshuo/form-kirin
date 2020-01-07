@@ -269,9 +269,69 @@ const ValidateOnResetExample = () => (
   </div>
 );
 
+const resource = {
+  get(values) {
+    return sessionStorage.getItem('formExampleData') || {};
+  },
+  update(values, { setSubmitting }) {
+    sessionStorage.setItem('formExampleData', JSON.stringify(values));
+    setSubmitting(false);
+    alert('Data is saved to sessionStorage.');
+  }
+};
+
+const ResourceExample = () => (
+  <div className="example">
+    <h3 className="u-text-center  form-header">Order Form</h3>
+    <FormKirin
+      validateOnBlur
+      enableValidationProps
+      resource={resource}
+    >
+      {
+        ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
+          <form onSubmit={handleSubmit} noValidate>
+            <section className="section">
+              <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+                <Input
+                  type="text"
+                  id="firstName"
+                  name="firstName"
+                  required
+                />
+              </Field>
+            </section>
+
+            <section className="section">
+              <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+                <Input
+                  type="text"
+                  id="lastName"
+                  name="lastName"
+                  required
+                />
+              </Field>
+            </section>
+
+            <List>
+              <List.Item>
+                <button type="button" onClick={handleReset}>reset</button>
+              </List.Item>
+              <List.Item>
+                <button type="submit" disabled={isSubmitting}>submit form</button>
+              </List.Item>
+            </List>
+          </form>
+        )
+      }
+    </FormKirin>
+  </div>
+);
+
 export const Reinitialize = () => <ReinitializeExample />;
 export const ValidateOnMount = () => <ValidateOnMountExample />;
 export const ValidateOnReinitialize = () => <ValidateOnReinitializeExample />;
 export const ValidateOnReset = () => <ValidateOnResetExample />;
+export const Resource = () => <ResourceExample />;
 
 export default { title: 'FormProps' };

@@ -1,8 +1,10 @@
 import React, { PureComponent } from 'react';
-import { isEmpty, isEqual } from '../../helpers/utils';
 import PropTypes from 'prop-types';
 import {
+  isEmpty,
+  isEqual,
   isObject,
+  isFunction,
   getFieldNameForElement,
   getFieldValueForElement
 } from '../../helpers/utils';
@@ -14,6 +16,7 @@ function defaultFormState(overwrites) {
     errors: {},
     isSubmitting: false,
     isValidating: false,
+    isLoading: false,
     submitCount: 0,
     shouldRevalidate: false,
     ...overwrites
@@ -28,11 +31,15 @@ function mergeErrors(target = {}, source = {}) {
   }, target);
 }
 
+function shouldLoadFromResource(props) {
+  return props.resource && isFunction(props.resource.get);
+}
+
 export default class FormKirin extends PureComponent {
   constructor(props) {
     super(props);
-
-    const initialValues = props.initialValues || {};
+    // When form is bound to resource, initialValues comes from get method.
+    const initialValues = shouldLoadFromResource(props) ? {} : (props.initialValues || {});
 
     this.submitForm = this.submitForm.bind(this);
     this.setSubmitting = this.setSubmitting.bind(this);
@@ -50,8 +57,10 @@ export default class FormKirin extends PureComponent {
     this.setTouched = this.setTouched.bind(this);
     this.setFieldError = this.setFieldError.bind(this);
     this.setErrors = this.setErrors.bind(this);
-
+    this.setLoading = this.setLoading.bind(this);
+    this.bindResource = this.bindResource.bind(this);
     this.fields = {};
+    this.resource = this.bindResource(props.resource);
 
     this.state = {
       initialValues: initialValues,
@@ -80,7 +89,23 @@ export default class FormKirin extends PureComponent {
   }
 
   componentDidMount() {
-    if (this.props.validateOnMount) {
+    if (shouldLoadFromResource(this.props)) {
+      const resource = this.resource;
+      // resource.get should either return values synchronously or a promise that resolve to values
+      try {
+        this.setLoading(true);
+
+        Promise.resolve(resource.get())
+          .then((values) => {
+            if (!isEmpty(values)) {
+              this.resetFormToValues(values, this.props.validateOnMount);
+            }
+          });
+      } catch (e) {
+        console.log(e);
+      }
+
+    } else if (this.props.validateOnMount) {
       this.validateValues(this.state.values);
     }
   }
@@ -93,7 +118,7 @@ export default class FormKirin extends PureComponent {
   }
 
   static getDerivedStateFromProps(props, state) {
-    if (props.enableReinitialize && props.initialValues && props.initialValues !== state.initialValues) {
+    if (!shouldLoadFromResource(props) && props.enableReinitialize && props.initialValues && props.initialValues !== state.initialValues) {
       return defaultFormState({
         values: props.initialValues,
         initialValues: props.initialValues,
@@ -104,11 +129,30 @@ export default class FormKirin extends PureComponent {
     return {};
   }
 
+  bindResource(resource) {
+    if (isObject(resource)) {
+      return Object.keys(resource).reduce((memo, key) => {
+        if (isFunction(resource[key])) {
+          memo[key] = (...args) => {
+            return resource[key](this.state.values, this.formSetters(), this.props, ...args);
+          };
+        }
+
+        return memo;
+      }, {});
+    }
+
+    return null;
+  }
+
   async submitForm(event) {
     event.preventDefault && event.preventDefault();
     event.stopPropagation && event.stopPropagation();
-    // can't submit form during submission
-    if (this.state.isSubmitting || !this.props.onSubmit) {
+    // If no onSubmit prop is provided, look for resource.update as onSubmit handler
+    // Tip: when binding form to resource with update method, we should not provide onSubmit.
+    const onSubmit = this.props.onSubmit || (this.resource && this.resource.update);
+
+    if (this.state.isSubmitting || !onSubmit) {
       return false;
     }
 
@@ -117,32 +161,36 @@ export default class FormKirin extends PureComponent {
 
     if (canSumbit) {
       this.setState({ isSubmitting: true, submitCount: this.state.submitCount + 1 });
-      this.props.onSubmit(this.state.values, {
-        setSubmitting: this.setSubmitting,
-        setFieldError: this.setFieldError,
-        setErrors: this.setErrors,
-        setFieldValue: this.setFieldValue,
-        setValues: this.setValues,
-        setFieldTouched: this.setFieldTouched,
-        setTouched: this.setTouched
-      });
+      const args = this.props.onSubmit ? [
+        this.state.values,
+        this.formSetters(),
+        this.props
+      ] : [];
+
+      onSubmit(...args);
     }
 
     return canSumbit;
   }
 
-  resetForm(event) {
-    event.preventDefault && event.preventDefault();
-
-    this.props.onReset && this.props.onReset(this.state.values, {
-      setSubmitting: this.setSubmitting,
+  formSetters(setters = {}) {
+    return {
       setFieldError: this.setFieldError,
       setErrors: this.setErrors,
       setFieldValue: this.setFieldValue,
       setValues: this.setValues,
       setFieldTouched: this.setFieldTouched,
-      setTouched: this.setTouched
-    });
+      setTouched: this.setTouched,
+      setLoading: this.setLoading,
+      setSubmitting: this.setSubmitting,
+      ...setters
+    };
+  }
+
+  resetForm(event) {
+    event.preventDefault && event.preventDefault();
+
+    this.props.onReset && this.props.onReset(this.state.values, this.formSetters(), this.props);
 
     this.setState(defaultFormState({
       values: this.state.initialValues,
@@ -196,7 +244,7 @@ export default class FormKirin extends PureComponent {
         const fieldValidatorNames = Object.keys(fieldValidators);
 
         await Promise.all(
-          fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values))
+          fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values, this.props))
         ).then((result) => {
           fieldValidatorNames.forEach((name, i) => {
             fieldErrors[name] = result[i];
@@ -239,6 +287,10 @@ export default class FormKirin extends PureComponent {
     }, {});
 
     return { ...validateObj, ...validatorsFromField };
+  }
+
+  setLoading(isLoading) {
+    this.setState({ isLoading });
   }
 
   setSubmitting(value) {
@@ -378,6 +430,7 @@ export default class FormKirin extends PureComponent {
     callback && callback(...args);
   }
 
+
   render() {
     const children = this.props.children;
 
@@ -397,6 +450,7 @@ export default class FormKirin extends PureComponent {
       submitCount: this.state.submitCount,
       enableValidationProps: this.props.enableValidationProps,
       validationProps: this.props.validationProps,
+      resource: this.resource,
       ...this.formData
     };
 
@@ -436,5 +490,6 @@ FormKirin.propTypes = {
   validateForm: PropTypes.func,
   validate: PropTypes.object,
   validationProps: PropTypes.object,
-  children: PropTypes.func
+  children: PropTypes.func,
+  resource: PropTypes.object
 };

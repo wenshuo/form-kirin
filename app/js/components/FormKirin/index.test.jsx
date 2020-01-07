@@ -90,7 +90,8 @@ describe('Form', () => {
         'setFieldTouched',
         'setFieldValue',
         'dirty',
-        'isValid'
+        'isValid',
+        'resource'
       ];
 
       const props = callback.args[0][0];
@@ -218,6 +219,20 @@ describe('Form', () => {
       },0);
     });
 
+    it('pass arguments to field level validation', (done) => {
+      const validateFirstName = sinon.spy();
+      const el = createFormWithDefinedControl({
+        initialValues: { firstName: '' },
+        onSubmit: sinon.spy()
+      }, { validate: validateFirstName });
+      el.find('form').simulate('submit');
+
+      setTimeout(() => {
+        expect(validateFirstName.calledWith('', 'firstName', el.state('values'), el.props())).to.be.true;
+        done();
+      },0);
+    });
+
     it('run field level async validation', (done) => {
       const onSubmit = sinon.spy();
       const validateFirstName = () => {
@@ -297,7 +312,8 @@ describe('Form', () => {
       el.setState({ values: formData });
       el.find('form').simulate('submit');
       setTimeout(() => {
-        expect(onSubmit.calledWith(formData)).to.be.true;
+        const instance = el.instance();
+        expect(onSubmit.calledWith(formData, instance.formSetters(), el.props())).to.be.true;
         done();
       }, 0);
     });
@@ -372,6 +388,8 @@ describe('Form', () => {
         expect(el.state('isSubmitting')).to.be.false;
         expect(el.state('isValidating')).to.be.false;
         expect(el.state('submitCount')).to.eql(0);
+        const instance = el.instance();
+        expect(onReset.calledWith({ firstName: 'Jack' }, instance.formSetters(), el.props())).to.be.true;
         done();
       }, 0);
     });
@@ -882,6 +900,194 @@ describe('Form', () => {
         expect(validateForm.called).to.be.true;
         done();
       }, 0);
+    });
+  });
+
+  describe('resource', () => {
+    describe('get', () => {
+      it('set loading to true', (done) => {
+        let resolveValue;
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => {
+              return new Promise((resolve) => {
+                resolveValue = resolve;
+              });
+            }
+          }
+        });
+        expect(el.state().isLoading).to.be.true;
+        resolveValue();
+
+        setTimeout(() => {
+          expect(el.state().isLoading).to.be.true;
+          done();
+        }, 0);
+      });
+
+      it('set loading to false', (done) => {
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: (currentValues, { setLoading }) => setLoading(false)
+          }
+        });
+
+        setTimeout(() => {
+          expect(el.state().isLoading).to.be.false;
+          done();
+        }, 0);
+      });
+
+      it('initialize form sync', (done) => {
+        const values = {
+          firstName: 'it works'
+        };
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => values
+          }
+        });
+
+        setTimeout(() => {
+          expect(el.state().values).to.eql(values);
+          done();
+        }, 0);
+      });
+
+      it('initialize form async', (done) => {
+        const values = {
+          firstName: 'it works'
+        };
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => Promise.resolve(values)
+          }
+        });
+
+        setTimeout(() => {
+          expect(el.state().values).to.eql(values);
+          done();
+        }, 0);
+      });
+
+      it('pass arguments', (done) => {
+        const getMethod = sinon.spy();
+
+        const resource = {
+          get: getMethod
+        };
+
+
+        const el = createFormWithDefinedControl({
+          resource
+        });
+
+        setTimeout(() => {
+          const instance = el.instance();
+          expect(getMethod.calledWith({}, instance.formSetters(), el.props())).to.be.true;
+          done();
+        }, 0);
+      });
+
+      it('validate after get if validateOnMount is on', (done) => {
+        const values = {
+          firstName: 'test'
+        };
+
+        const el = createFormWithDefinedControl({
+          validateOnMount: true,
+          validateForm(formValues) {
+            return {
+              firstName: formValues.firstName === values.firstName && 'first name is not valid'
+            };
+          },
+          resource: {
+            get: () => Promise.resolve(values)
+          }
+        });
+
+        setTimeout(() => {
+          expect(el.state().values).to.eql(values);
+          expect(el.state().errors.firstName).to.eql('first name is not valid');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('update', () => {
+      it('onSubmit takes precedency', (done) => {
+        const onSubmit = sinon.spy();
+        const submitForm = sinon.spy();
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => ({}),
+            update: submitForm
+          },
+          onSubmit
+        });
+
+        el.find('form').simulate('submit');
+        setTimeout(() => {
+          expect(onSubmit.called).to.be.true;
+          expect(submitForm.called).to.be.false;
+          done();
+        }, 0);
+      });
+
+      it('call resource update for form submit', (done) => {
+        const submitForm = sinon.spy();
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => ({}),
+            update: submitForm
+          }
+        });
+
+        el.find('form').simulate('submit');
+        setTimeout(() => {
+          expect(submitForm.called).to.be.true;
+          done();
+        }, 0);
+      });
+
+      it('pass arguments', (done) => {
+        const submitForm = sinon.spy();
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            get: () => ({}),
+            update: submitForm
+          }
+        });
+
+        el.find('form').simulate('submit');
+        setTimeout(() => {
+          const instance = el.instance();
+          expect(submitForm.calledWith(el.state().values, instance.formSetters(), el.props())).to.be.true;
+          done();
+        }, 0);
+      });
+    });
+
+    describe('other methods', () => {
+      it('pass arguments', () => {
+        const deleteAction = sinon.spy();
+
+        const el = createFormWithDefinedControl({
+          resource: {
+            delete: deleteAction
+          }
+        });
+
+        const instance = el.instance();
+        instance.resource.delete();
+        expect(deleteAction.calledWith(el.state().values, instance.formSetters(), el.props())).to.be.true;
+      });
     });
   });
 });

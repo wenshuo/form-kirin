@@ -40,10 +40,10 @@ function RenderPropExample() {
   return (
     <div className="example">
       <h3 className="u-text-center  form-header">Basic Form</h3>
-      <FormKirin initialValues={initialValues} onSubmit={submitForm} validate={validate}>
+      <FormKirin initialValues={initialValues} onSubmit={submitForm} validate={validate} validateOnBlur>
         {
           ({ values, touched, errors, handleChange, handleBlur, handleSubmit, isSubmitting, handleReset }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                   <input
@@ -97,7 +97,7 @@ function RenderPropExample() {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={handleReset}>reset</button>
+                  <button type="reset" disabled={isSubmitting}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>

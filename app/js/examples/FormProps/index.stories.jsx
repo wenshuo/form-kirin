@@ -108,7 +108,7 @@ const ValidateOnMountExample = () => (
     >
       {
         ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                 <Input
@@ -133,7 +133,7 @@ const ValidateOnMountExample = () => (
 
             <List>
               <List.Item>
-                <button type="button" onClick={handleReset}>reset</button>
+                <button type="reset" disabled={isSubmitting}>reset</button>
               </List.Item>
               <List.Item>
                 <button type="submit" disabled={isSubmitting}>submit form</button>
@@ -231,7 +231,7 @@ const ValidateOnResetExample = () => (
     >
       {
         ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                 <Input
@@ -256,7 +256,7 @@ const ValidateOnResetExample = () => (
 
             <List>
               <List.Item>
-                <button type="button" onClick={handleReset}>reset</button>
+                <button type="reset" disabled={isSubmitting}>reset</button>
               </List.Item>
               <List.Item>
                 <button type="submit" disabled={isSubmitting}>submit form</button>
@@ -290,7 +290,7 @@ const ResourceExample = () => (
     >
       {
         ({ values, touched, errors, handleSubmit, handleReset, isSubmitting }) => (
-          <form onSubmit={handleSubmit} noValidate>
+          <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                 <Input
@@ -315,7 +315,7 @@ const ResourceExample = () => (
 
             <List>
               <List.Item>
-                <button type="button" onClick={handleReset}>reset</button>
+                <button type="reset" disabled={isSubmitting}>reset</button>
               </List.Item>
               <List.Item>
                 <button type="submit" disabled={isSubmitting}>submit form</button>

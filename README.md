@@ -484,6 +484,14 @@ Form-kirin supports form and field level, sync and async data validations in two
 
 Form-kirin will run validations at different life cycle of a form, and we can control when to trigger validations by passing props(validateOnBlur, validateOnChange and more, please see the api for more information) to the FormKirin component, by default form-kirin will only run validations right before form submission.
 
+Validations errors are passed as errors arguments in the render prop function, the errors object mimic the shape of the values object.
+Additionally, form-kirin keep track of the touched state for each form control, the touched state is passed as touched argument in the render prop. Displaying error message for form controls that are not touched seems not so user friendly, therefore we could make use of the touched state and only show error message when a field is touched.
+
+Since form-kirin takes care of validation, we should add noValidate when using html form element. The built-in Form component will add noValidate prop for you. To reduce verbosity, we could use the the built-in Form component since it also attach onSubmit and onReset handlers for you.
+
+### isValidating state
+Before running validations in form submission, form values reinitialization and form values reset, form-kirin will set isValidating to true and set it back to false once validations finish. We could use this state to show proper UI to users.
+
 Example: synchronous form level and field level validations.
 ```
 import { FormKirin, Field, BasicField: Input } from 'form-kirin';
@@ -804,3 +812,206 @@ function submitForm(values, { setSubmitting }) {
   }
 </FormKirin>
 ```
+
+## API
+### FormKirin component
+This component keep track of all form related state and pass the state down to its children via render prop function.
+
+### FormKirin props
+`initialValues:`
+object that is used to initialized the form. Keys must be either the name or id of the form control, that says each form control must have either a name or id prop. If no initialValues is passed, an empty object is used instead.
+
+`enableReinitialize:`
+when true, reinitialize form values if initialValues changes. Default is false.
+
+`validateOnReinitialize:`
+When true, trigger validations when form is reinitialized. Default is false.
+
+`validateOnBlur:`
+When true, trigger field level validations when field loses focus. Default is false.
+
+`validateOnChange:`
+When true, trigger field level validations when field value changes. Default is false.
+
+`validateOnReset:`
+When true, trigger validations when form is reset. Default is false.
+
+`validateOnMount:`
+When true, trigger validations after form is mounted. Default is false.
+
+`enableValidationProps:`
+When true, enable validations bound to props. Default is false.
+Built-in validations props are `required, min, max, minLength, maxLength, pattern`. We could also extend the set of validation props using the validationProps prop or the addValidations method.
+
+`validateForm:`
+Function that define form level validations, it receive current form values, object of setter methods, and props passed the FormKirin component as arguments. Form level validations are triggered before form submission and optionally during form reinitialization and form reset. The function should return an object that mimics the shape of the form values if there are errors otherwise return nothing.
+`validateForm(values, setters, props)`
+
+`validate:`
+Object of functions, useful to define field validators for native html form controls. This object should mimic the shape of form values.
+Each field validator function will receive current field value, field name, entire form values object and current set of props as argument and should either return error message string or nothing.
+
+`validationProps:`
+Object of custom validators used as prop. Keys of this object can be used as props for form controls. Values should be functions that accept same set of arguments as field level validators.
+
+`onSubmit:`
+Handler function for form submission. It receives current form values, object of setter methods, and current set of props as arguments.
+`onSubmit(values, setters, props)`
+
+`onReset:`
+Handler function form form reset. It receives current form values, object of setter methods, and current set of props as arguments.
+`onReset(values, setters, props)`
+
+`children`:
+Render prop function that should return the form markups.
+
+`resource:`
+A object that contain methods for form actions such as initialization, form submission and etc.
+When `resource.get` is defined, form-kirin will call this method for form initialization, and pass current form values, object of setter methods, and current set of props as arguments.
+This function can be sync or async, the sync version must return an object and the async version must resolve an object. When `resource.update` is defined and no onSubmit is present, form-kirin will call this function for form submission. This function can be sync or async, the sync version must return an object and the async version must resolve an object. Other than these `get` and `update`, the resource can contain any other methods that you want to support your own needs. FormKirin will pass the same arguments as the `get` and `update` methods to these custom methods. The wrapped resource object will be passed to the render prop function.
+
+
+### render prop arguments
+FormKirin will pass all related form data and useful setter methods as an object to the render prop function.
+
+`handleSubmit:`
+Form submit handler that we should pass to the form element onSubmit prop.
+
+`handleReset:`
+Form reset handler that we should pass to the form element onReset prop.
+
+`values:`
+Form values. Keys are either name or id of the field controls.
+
+`errors:`
+Form validation errors. It mimics the shape of values.
+
+`touched:`
+The touched state. It mimics the shape of values.
+
+`isSubmitting:`
+Boolean value that indicates whether form submission finishes or not.
+
+`isValidating:`
+Boolean value that indicates whether form validation finished or not.
+
+`submitCount:`
+Number of form submission.
+
+`resource:`
+An wrapped resource object that each method will receive current form values, an object of setter method and current set of props as arguments.
+
+`dirty:`
+Readonly Boolean that indicates if any of the form values changes since initialization.
+
+`isValid:`
+Readonly Boolean that indicates if any of the form has any validation errors.
+
+`handleBlur:`
+Handler that should pass to a form control's onBlur to keep track of touched state.
+
+`handleChange:`
+Handler that should pass to a form control's onChange to keep track of field value.
+
+`resetForm:`
+Setter method that imperatively reset form to the initialValues or optionally to something different as specified in the first argument.
+`resetForm(values, shouldRevalidate)`
+
+`setFieldError:`
+Setter method that imperatively set validation error for a form control.
+`setFieldError(fieldName, errorMessage, shouldSetTouched)`
+
+`setErrors:`
+Setter method that imperatively set validation errors for all form controls.
+`setErrors(errors, shouldSetTouched)`
+
+`setFieldTouched:`
+Setter method that imperatively set touched state for a form control.
+`setFieldTouched(fieldName, touched)`
+
+`setTouched:`
+Setter method that imperatively set touched state for entire form.
+`setTouched(touched)`
+
+`setFieldValue:`
+Setter method that imperatively set value for a form control.
+`setFieldValue(fieldName, fieldValue, shouldValidate = false)`
+
+`setValues:`
+Setter method that imperatively set values for the entire form.
+`setValues(values, shouldValidate)`
+
+### Built-in Form Controls
+`TextField`: render `input[type="text"]` field
+  - `name:` required, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+
+`<TextField name="firstName" {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`EmailField`: render `input[type="email"]` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `isEmail:` `boolean` `optional`, validation prop, will check if value is email.
+
+`<EmailField name="myEmail" isEmail {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`PasswordField`: render `input[type="password"]` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `showPassword:` `boolean` `optional`, when true render a text input instead of password input. Default is false.
+
+`<PasswordField name="secret" showPassword={false} {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`NumberField`: render `input[type="number"]` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `isNumber:` `boolean` `optional`, validation prop, will check if value is a number positive or negative.
+
+`<NumberField name="amount" isNumber {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`Checkbox`: render `input[type="checkbox"]` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `id:` `string`, `required when label prop is present`, id of the control, will be used as label's htmlFor prop.
+  - `label:` `string`, text for html label.
+
+`<Checkbox name="isAdmin" id="isAdmin" label="isAdmin" {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`Radio`: render `input[type="radio"]` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `id:` `string`, `required`, id of the control, will be used as label's htmlFor prop.
+  - `label:` `string`, `required`, text for html label.
+
+`<Radio name="fruit" id="apple" label="apple" {...otherProps} />`
+otherProps will be forwarded to underlying input element.
+
+`RadioSet`: render radio group
+  - `children:` `nodes`, `required`, list of Radio component
+  - `stacked:` `boolean`, `optional`, when true, render each radio in separate line, otherwise render them inline. Default is false.
+
+```
+<RadioSet stacked={false}>
+  <Radio name="fruit" id="apple" label="apple" />
+  <Radio name="fruit" id="pear" label="pear" />
+  <Radio name="fruit" id="banana" label="banana" />
+</RadioSet>
+```
+
+`Select`: render `select` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+  - `multi:` `boolean`, `optional`, when true, allow user to select multiple options and set field value to array of selected values. Default is false.
+
+```
+<Select name="roles" id="roles" {...otherProps}>
+  <option value="engineer">Engineer</option>
+  <option value="manager">Manager</option>
+  <option value="QA">QA</option>
+</Select>
+otherProps will be forwarded to underlying select element.
+```
+
+`Textarea`: render `textarea` field
+  - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
+
+`<Textarea name="bio" id="bio" {...otherProps} />`
+otherProps will be forwarded to underlying select element.

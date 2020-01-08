@@ -52,7 +52,7 @@ function PredefinedFormFieldExample() {
       <FormKirin initialValues={initialValues} onSubmit={submitForm} validateOnBlur validateForm={validateForm}>
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                   <Input
@@ -139,7 +139,7 @@ function PredefinedFormFieldExample() {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={handleReset}>reset</button>
+                  <button type="reset" disabled={isSubmitting}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>

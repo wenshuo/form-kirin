@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 
 import List from '../List';
 
-export default function RadioSet({ children, stacked }) {
+export default function RadioSet({ children, stacked, className }) {
   return (
-    <List>
+    <List className={className} stacked={stacked}>
       {
         Children.toArray(children).map((child, i) => (
-          <List.Item key={i} stacked={stacked}>
+          <List.Item key={i}>
             {child}
           </List.Item>
         ))
@@ -19,5 +19,6 @@ export default function RadioSet({ children, stacked }) {
 
 RadioSet.propTypes = {
   children: PropTypes.node,
-  stacked: PropTypes.bool
+  stacked: PropTypes.bool,
+  className: PropTypes.string
 };

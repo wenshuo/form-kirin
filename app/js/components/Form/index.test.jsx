@@ -32,4 +32,8 @@ describe('Form Component', () => {
     expect(el.find('form').props()).to.have.property('onSubmit');
     expect(el.find('form').props()).to.have.property('onReset');
   });
+
+  it('add noValidate', () => {
+    expect(el.find('form').props()).to.have.property('noValidate');
+  });
 });

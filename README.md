@@ -1,5 +1,13 @@
 ## form-kirin
 
+### how to install
+`npm install form-kirin`
+
+or if you use `yarn`
+`yarn add form-kirin`
+
+then pull in components `import { FormKirin, Form } from 'form-kirin';`
+
 ### features
 1. get values in and out the form
 2. validations and error handling
@@ -15,6 +23,10 @@ There are a few examples written using react storybooks.
 1. npm install
 1. npm start
 ```
+
+### styling
+None of the built-in components come with stylings, but they add css class names to elements. Please read the source code to see what are the class names.
+Additionally each built-in component accept className prop and attach it to the container element, to provide custom styling, we could make use of this prop.
 
 ### How does it work ?
 The FormKirin component keep all related state internally and pass those data to your form in a render prop.
@@ -262,7 +274,6 @@ import {
   Field,
   BasicField: Input,
   Checkbox,
-  RadioSet,
   Radio,
   EmailField,
   NumberField,
@@ -324,11 +335,11 @@ function onSubmit() {
         }
 
         <section className="section">
-          <RadioSet>
+          <div>
             <Radio name="role" id="role1" value="manager" label="Manager" />
             <Radio name="role" id="role2" value="engineer" label="Engineer" />
             <Radio name="role" id="role3" value="QA" label="QA" />
-          </RadioSet>
+          </div>
         </section>
 
         <section className="section">
@@ -367,111 +378,6 @@ function onSubmit() {
           </Field>
         </section>
 
-        <button type="submit" disabled={isSubmitting}>submit form</button>
-      </Form>
-    )
-  }
-</FormKirin>
-```
-
-Example: use MagicWrapper component to build custom form control.
-```
-import { FormKirin, Form, MagicWrapper } from 'form-kirin';
-
-// Create a multi select component using magic wrapper.
-// The MagicWrapper component accept a render prop and pass all necessary data to the render prop function.
-class MultiSelect extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = { isOpen: false };
-    this.hideDropdown = this.hideDropdown.bind(this);
-    this.showDropdown = this.showDropdown.bind(this);
-    this.handleClick = this.handleClick.bind(this);
-  }
-
-  componentDidMount() {
-    document.addEventListener('click', this.hideDropdown);
-  }
-
-  componentWillUnmount() {
-    document.removeEventListener('click', this.hideDropdown);
-  }
-
-  hideDropdown(event) {
-    const classes = event.target.getAttribute('class') || '';
-
-    if (!classes.includes(styles.item) && !classes.includes(styles.control)) {
-      this.setState({ isOpen: false });
-    }
-  }
-
-  showDropdown() {
-    this.setState({ isOpen: true });
-  }
-
-  handleClick(item, currentValue = '', setValue) {
-    if (!currentValue.includes(item.label)) {
-      this.setState({ isOpen: false });
-      setValue(this.props.name, `${currentValue}${currentValue ? ',' : ''}${item.label}`);
-    }
-  }
-
-  render() {
-    const { name, items } = this.props;
-
-    return (
-      <MagicWrapper>
-        {
-          ({ handleChange, handleBlur, values, setFieldValue }) => (
-            <div>
-              <input
-                className={styles.control}
-                type="text"
-                name={name}
-                onChange={handleChange}
-                onFocus={this.showDropdown}
-                onBlur={handleBlur}
-                value={values[name] || ''}
-                autoComplete="off"
-              />
-              {
-                this.state.isOpen && (
-                  <ul className={styles.container}>
-                    {
-                      items.map(item => (
-                        <li
-                          className={styles.item}
-                          key={item.label}
-                          onClick={() => this.handleClick(item, values[name], setFieldValue)}
-                        >
-                          {item.label}
-                        </li>
-                      ))
-                    }
-                  </ul>
-                )
-              }
-            </div>
-          )
-        }
-      </MagicWrapper>
-    );
-  }
-}
-
-// use MultiSelect component that is created above
-const items = [
-  { label: 'apple' },
-  { label: 'pear' },
-  { label: 'banana' }
-];
-
-<FormKirin>
-  {
-    ({ isSubmitting }) => (
-      <Form>
-        <MultiSelect name="fruit" items={items} />
         <button type="submit" disabled={isSubmitting}>submit form</button>
       </Form>
     )
@@ -941,6 +847,21 @@ Setter method that imperatively set value for a form control.
 Setter method that imperatively set values for the entire form.
 `setValues(values, shouldValidate)`
 
+`setField:`
+Setter method that set meta information for a form control. Internally form-kirin uses this method to register field level validation that specified in the validate prop on a built-in form control. Useful when we want to implement custom control that need to specify validation using the similar manner. Note that alternatively we can specify field level validations using validate prop at the FormKirin component, it works for both native html form control and built-in form controls from form-kirin.
+```
+const field = {
+  name: '[name or id of a form control]',
+  validate: '[validate function]'
+};
+
+setField(field);
+```
+
+`unsetField:`
+Remove meta of a form control and also all related internal state.
+`unsetField(fieldName)`
+
 ### Built-in Form Controls
 `TextField`: render `input[type="text"]` field
   - `name:` required, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
@@ -985,18 +906,6 @@ otherProps will be forwarded to underlying input element.
 `<Radio name="fruit" id="apple" label="apple" {...otherProps} />`
 otherProps will be forwarded to underlying input element.
 
-`RadioSet`: render radio group
-  - `children:` `nodes`, `required`, list of Radio component
-  - `stacked:` `boolean`, `optional`, when true, render each radio in separate line, otherwise render them inline. Default is false.
-
-```
-<RadioSet stacked={false}>
-  <Radio name="fruit" id="apple" label="apple" />
-  <Radio name="fruit" id="pear" label="pear" />
-  <Radio name="fruit" id="banana" label="banana" />
-</RadioSet>
-```
-
 `Select`: render `select` field
   - `name:` `string`, `required`, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
   - `multi:` `boolean`, `optional`, when true, allow user to select multiple options and set field value to array of selected values. Default is false.
@@ -1015,3 +924,158 @@ otherProps will be forwarded to underlying select element.
 
 `<Textarea name="bio" id="bio" {...otherProps} />`
 otherProps will be forwarded to underlying select element.
+
+`Field:`
+utility component that wraps its children with label and error message.
+  - `errorMessage:` `string`, `optional`, error message to show
+  - `id:` `string`, `required when labelText is present`, pass to htmlFor prop.
+  - `labelText:` `string or node`, `optional`, render html label when this prop is present
+  - `inline:` `boolean`, `optional`, when true, render label inline with children content. Default is false.
+  - `children:` `node`, form control to wrap.
+
+```
+<Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+  <Input
+    type="text"
+    id="lastName"
+    name="lastName"
+    validate={isRequired}
+  />
+</Field>
+
+Note: When children has id, the label element will use that id as value for the label htmlFor prop.
+```
+
+`Form:`
+It renders html form component and attach noValidate, onSubmit and onReset handlers and forward props to the underlying html form element. You don't have use this component for creating new forms but it helps reduce verbosity and save some typings.
+  - `children:` `node`
+
+```
+<FormKirin>
+  {
+    () => (
+      <Form>
+        <Input
+          type="text"
+          id="firstName"
+          name="firstName"
+        />
+
+        <Input
+          type="text"
+          id="lastName"
+          name="lastName"
+        />
+      </Form>
+    )
+  }
+</FormKirin>
+```
+
+### Create custom form control
+The form-kirin library ships with MagicWrapper component that hooks into the FormKirin component and pass all related internal form state plus setter methods to the render prop function. The set of props passed are exactly the same as those pass in the FormKirin component render prop function.
+
+Example: use MagicWrapper component to build custom form control.
+```
+import { FormKirin, Form, MagicWrapper } from 'form-kirin';
+
+// Create a multi select component using magic wrapper.
+// The MagicWrapper component accept a render prop and pass all necessary data to the render prop function.
+class MultiSelect extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = { isOpen: false };
+    this.hideDropdown = this.hideDropdown.bind(this);
+    this.showDropdown = this.showDropdown.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+  }
+
+  componentDidMount() {
+    document.addEventListener('click', this.hideDropdown);
+  }
+
+  componentWillUnmount() {
+    document.removeEventListener('click', this.hideDropdown);
+  }
+
+  hideDropdown(event) {
+    const classes = event.target.getAttribute('class') || '';
+
+    if (!classes.includes(styles.item) && !classes.includes(styles.control)) {
+      this.setState({ isOpen: false });
+    }
+  }
+
+  showDropdown() {
+    this.setState({ isOpen: true });
+  }
+
+  handleClick(item, currentValue = '', setValue) {
+    if (!currentValue.includes(item.label)) {
+      this.setState({ isOpen: false });
+      setValue(this.props.name, `${currentValue}${currentValue ? ',' : ''}${item.label}`);
+    }
+  }
+
+  render() {
+    const { name, items } = this.props;
+
+    return (
+      <MagicWrapper>
+        {
+          ({ handleChange, handleBlur, values, setFieldValue }) => (
+            <div>
+              <input
+                className={styles.control}
+                type="text"
+                name={name}
+                onChange={handleChange}
+                onFocus={this.showDropdown}
+                onBlur={handleBlur}
+                value={values[name] || ''}
+                autoComplete="off"
+              />
+              {
+                this.state.isOpen && (
+                  <ul className={styles.container}>
+                    {
+                      items.map(item => (
+                        <li
+                          className={styles.item}
+                          key={item.label}
+                          onClick={() => this.handleClick(item, values[name], setFieldValue)}
+                        >
+                          {item.label}
+                        </li>
+                      ))
+                    }
+                  </ul>
+                )
+              }
+            </div>
+          )
+        }
+      </MagicWrapper>
+    );
+  }
+}
+
+// use MultiSelect component that is created above
+const items = [
+  { label: 'apple' },
+  { label: 'pear' },
+  { label: 'banana' }
+];
+
+<FormKirin>
+  {
+    ({ isSubmitting }) => (
+      <Form>
+        <MultiSelect name="fruit" items={items} />
+        <button type="submit" disabled={isSubmitting}>submit form</button>
+      </Form>
+    )
+  }
+</FormKirin>
+```

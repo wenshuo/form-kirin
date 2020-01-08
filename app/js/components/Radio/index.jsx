@@ -3,13 +3,12 @@ import PropTypes from 'prop-types';
 
 import { cx } from '../../helpers/utils';
 import BasicField from '../BasicField';
-import styles from './index.module.scss';
 
 export default function Radio(props) {
   return (
-    <label htmlFor={props.id} className={cx(styles.container, props.className)}>
+    <label htmlFor={props.id} className={cx('FormKirin-radio', props.className)}>
       <BasicField {...props} type="radio" />
-      <span className={styles.label}>{ props.label }</span>
+      <span className="FormKirin-radio-label">{ props.label }</span>
     </label>
   );
 }

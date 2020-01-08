@@ -2,7 +2,7 @@ import React from 'react';
 
 import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
-import List from '../../components/List';
+import List from '../List';
 
 const initialValues = {
   firstName: '',

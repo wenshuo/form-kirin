@@ -35,11 +35,11 @@ export default class FormControlWrapper extends Component {
   }
 
   handleChange(event) {
-    this.context.handleChange(event, this.props.handleChange, event);
+    this.context.handleChange(event, this.props.onChange, event);
   }
 
   handleBlur(event) {
-    this.context.handleBlur(event, this.props.handleBlur, event);
+    this.context.handleBlur(event, this.props.onBlur, event);
   }
 
   async validate(...args) {
@@ -69,9 +69,9 @@ export default class FormControlWrapper extends Component {
       ...this.context,
       handleChange: this.handleChange,
       handleBlur: this.handleBlur,
-      value: this.context.values[fieldName],
-      error: this.context.errors[fieldName],
-      touched: this.context.touched[fieldName]
+      fieldValue: this.context.values[fieldName],
+      fieldError: this.context.errors[fieldName],
+      fieldTouched: this.context.touched[fieldName]
     });
   }
 }
@@ -83,6 +83,6 @@ FormControlWrapper.propTypes = {
   validate: PropTypes.func,
   errorMessages: PropTypes.object,
   children: PropTypes.func,
-  handleChange: PropTypes.func,
-  handleBlur: PropTypes.func
+  onChange: PropTypes.func,
+  onBlur: PropTypes.func
 };

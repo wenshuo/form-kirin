@@ -27,12 +27,12 @@ export default function BasicField(props) {
   return (
     <FormControlWrapper {...props}>
       {
-        ({ value, handleChange, handleBlur, validationProps }) => {
+        ({ fieldValue, handleChange, handleBlur, validationProps }) => {
           return (
             <Wrapper
               className={className}
               {...omit(props, PROPS_TO_EXCLUDE.concat(nonNativeProps(validationProps)))}
-              {...valueProp(value, type, props.value)}
+              {...valueProp(fieldValue, type, props.value)}
               onChange={handleChange}
               onBlur={handleBlur}
             />

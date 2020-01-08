@@ -8,7 +8,7 @@ export default function Form(props) {
     <FormContext.Consumer>
       {
         ({ handleSubmit, handleReset }) => (
-          <form {...props} onSubmit={handleSubmit} onReset={handleReset}>
+          <form {...props} noValidate onSubmit={handleSubmit} onReset={handleReset}>
             {props.children}
           </form>
         )

@@ -78,7 +78,7 @@ function CustomFormFieldExample() {
       <FormKirin initialValues={initialValues} onSubmit={submitForm} validateOnBlur validate={validate} validateForm={validateForm}>
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} onReset={handleReset}>
 
               <section className="section">
                 <TextInput id="firstName" name="firstName" validate={isRequired} label="First Name:" />
@@ -104,7 +104,7 @@ function CustomFormFieldExample() {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={handleReset}>reset</button>
+                  <button type="reset" disabled={isSubmitting}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>

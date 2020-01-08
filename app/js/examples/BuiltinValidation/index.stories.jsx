@@ -55,7 +55,7 @@ function BuiltinValidationExample() {
       >
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                   <Input
@@ -104,7 +104,7 @@ function BuiltinValidationExample() {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={handleReset}>reset</button>
+                  <button type="reset" disabled={isSubmitting}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>
@@ -131,7 +131,7 @@ function CustomValidationExample() {
       >
         {
           ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
-            <form onSubmit={handleSubmit} noValidate>
+            <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
                   <Input
@@ -180,7 +180,7 @@ function CustomValidationExample() {
 
               <List>
                 <List.Item>
-                  <button type="button" onClick={handleReset}>reset</button>
+                  <button type="reset" disabled={isSubmitting}>reset</button>
                 </List.Item>
                 <List.Item>
                   <button type="submit" disabled={isSubmitting}>submit form</button>

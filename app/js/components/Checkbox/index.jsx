@@ -6,6 +6,10 @@ import BasicField from '../BasicField';
 import styles from './index.module.scss';
 
 export default function Checkbox(props) {
+  if (!props.label) {
+    return (<BasicField {...props} type="checkbox" />);
+  }
+
   return (
     <label htmlFor={props.id} className={cx(styles.container, props.className)}>
       <BasicField {...props} type="checkbox" />
@@ -15,7 +19,7 @@ export default function Checkbox(props) {
 }
 
 Checkbox.propTypes = {
-  id: PropTypes.string.isRequired,
-  label: PropTypes.string.isRequired,
+  id: PropTypes.string,
+  label: PropTypes.string,
   className: PropTypes.string
 };

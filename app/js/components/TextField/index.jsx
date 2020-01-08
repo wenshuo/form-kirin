@@ -2,8 +2,8 @@ import React from 'react';
 
 import BasicField from '../BasicField';
 
-export default function PhoneField(props) {
+export default function TextField(props) {
   return(
-    <BasicField {...props} type="tel" />
+    <BasicField {...props} type="text" />
   );
 }

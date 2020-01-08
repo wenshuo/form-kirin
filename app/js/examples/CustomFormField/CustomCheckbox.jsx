@@ -10,12 +10,12 @@ export default function CustomCheckbox(props) {
   return (
     <FormControlWrapper {...props}>
       {
-        ({ value, handleBlur, handleChange, error, touched }) => (
+        ({ fieldValue, handleBlur, handleChange, fieldError, fieldTouched }) => (
           <div>
-            <input type="checkbox" {...fieldProps} onChange={handleChange} onBlur={handleBlur} checked={!!value} />
+            <input type="checkbox" {...fieldProps} onChange={handleChange} onBlur={handleBlur} checked={!!fieldValue} />
             <label htmlFor={props.id}>{props.label}</label>
             {
-              touched && error && <div className="error">{error}</div>
+              fieldTouched && fieldError && <div className="error">{fieldError}</div>
             }
           </div>
         )

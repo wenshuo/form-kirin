@@ -477,12 +477,12 @@ describe('Form', () => {
       }, 0);
     });
 
-    it('call user defined handleChange', (done) => {
-      const handleChange = sinon.spy();
-      const el = createFormWithDefinedControl({}, { handleChange });
+    it('call user defined onChange', (done) => {
+      const onChange = sinon.spy();
+      const el = createFormWithDefinedControl({}, { onChange });
       simulateEvent('change', el.find('input'), 'firstName', 'Jack');
       setTimeout(() => {
-        expect(handleChange.called).to.be.true;
+        expect(onChange.called).to.be.true;
         done();
       }, 0);
     });
@@ -520,12 +520,12 @@ describe('Form', () => {
       }, 0);
     });
 
-    it('call user defined handleBlur', (done) => {
-      const handleBlur = sinon.spy();
-      const el = createFormWithDefinedControl({}, { handleBlur });
+    it('call user defined onBlur', (done) => {
+      const onBlur = sinon.spy();
+      const el = createFormWithDefinedControl({}, { onBlur });
       simulateEvent('blur', el.find('input'), 'firstName');
       setTimeout(() => {
-        expect(handleBlur.called).to.be.true;
+        expect(onBlur.called).to.be.true;
         done();
       }, 0);
     });

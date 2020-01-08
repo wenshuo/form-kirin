@@ -10,12 +10,12 @@ export default function CustomTextInput(props) {
   return (
     <FormControlWrapper {...props}>
       {
-        ({ value, handleBlur, handleChange, error, touched }) => (
+        ({ fieldValue, handleBlur, handleChange, fieldError, fieldTouched }) => (
           <div>
             <label htmlFor={props.id}>{props.label}</label>
-            <input type="text" {...fieldProps} onChange={handleChange} onBlur={handleBlur} value={value || ''} />
+            <input type="text" {...fieldProps} onChange={handleChange} onBlur={handleBlur} value={fieldValue || ''} />
             {
-              touched && error && <div className="error">{error}</div>
+              fieldTouched && fieldError && <div className="error">{fieldError}</div>
             }
           </div>
         )

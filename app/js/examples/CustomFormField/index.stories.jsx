@@ -1,7 +1,7 @@
 import React from 'react';
 
 import FormKirin from '../../components/FormKirin';
-import List from '../../components/List';
+import List from '../List';
 import Field from '../../components/Field';
 import TextInput from './CustomInput';
 import Checkbox from './CustomCheckbox';

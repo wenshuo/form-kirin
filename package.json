@@ -1,18 +1,29 @@
 {
   "name": "form-kirin",
   "version": "1.0.0",
-  "description": "form and components written in React",
+  "author": {
+    "name": "wenshuo huang"
+  },
+  "license": "MIT",
+  "description": "form library written in React",
   "keywords": [
-    "form"
+    "form-kirin",
+    "form",
+    "react"
   ],
   "main": "./app/js/index.js",
+  "homepage": "https://github.com/wenshuo/form-kirin/blob/master/README.md",
+  "bugs": {
+    "url": "https://github.com/wenshuo/form-kirin/issues"
+  },
   "scripts": {
     "lint": "eslint --ext .jsx --ext .js --ignore-pattern *.stories.jsx app/js",
     "ci_test": "karma start karma.config.js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
     "start": "start-storybook -p 9001 -c .stories",
     "build:prod": "webpack --config webpack.prod.js --progress --display-error --display-modules",
-    "build:analyze": "webpack --config webpack.analyze.js --progress --display-error --profile --json > stats.json"
+    "build:analyze": "webpack --config webpack.analyze.js --progress --display-error --profile --json > stats.json",
+    "release": "echo 123"
   },
   "dependencies": {
     "prop-types": "^15.7.2"
@@ -63,10 +74,5 @@
   ],
   "peerDependencies": {
     "react": ">=16"
-  },
-  "author": {
-    "name": "wenshuo huang",
-    "email": "jack_rock_lee@yahoo.com"
-  },
-  "license": "ISC"
+  }
 }

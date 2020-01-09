@@ -4,13 +4,13 @@ import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
 import Input from '../../components/BasicField';
 import Checkbox from '../../components/Checkbox';
-import RadioSet from '../../components/RadioSet';
+import RadioSet from '../RadioSet';
 import Radio from '../../components/Radio';
 import Textarea from '../../components/Textarea';
 import Select from '../../components/Select';
 import EmailField from '../../components/EmailField';
 import NumberField from '../../components/NumberField';
-import List from '../../components/List';
+import List from '../List';
 
 import '../index.scss';
 

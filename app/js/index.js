@@ -1,15 +1,13 @@
+export { default as FormKirin } from './components/FormKirin';
 export { default as Checkbox } from './components/Checkbox';
 export { default as EmailField } from './components/EmailField';
 export { default as TextField } from './components/TextField';
 export { default as Field } from './components/Field';
 export { default as Form } from './components/Form';
-export { default as FormControlWrapper } from './components/FormControlWrapper';
-export { default as FormKirin } from './components/FormKirin';
 export { default as MagicWrapper } from './components/MagicWrapper';
 export { default as NumberField } from './components/NumberField';
 export { default as PasswordField } from './components/PasswordField';
 export { default as Radio } from './components/Radio';
-export { default as RadioSet } from './components/RadioSet';
 export { default as ResetButton } from './components/ResetButton';
 export { default as Select } from './components/Select';
 export { default as Textarea } from './components/Textarea';

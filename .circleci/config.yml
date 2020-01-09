@@ -1,11 +1,14 @@
+defaults: &defaults
+  docker:
+    - image: circleci/node:10.16.3-browsers
+      environment:
+        CHROME_BIN: /usr/bin/google-chrome
+  working_directory: ~/form-kirin
+
 version: 2
 jobs:
   build:
-    docker:
-      - image: circleci/node:10.16.3-browsers
-        environment:
-          CHROME_BIN: /usr/bin/google-chrome
-    working_directory: ~/form-kirin
+    <<: *defaults
 
     steps:
       - checkout
@@ -26,8 +29,38 @@ jobs:
 
       # run tests!
       - run: npm run ci_test
+  release:
+    <<: *defaults
+    steps:
+      - checkout
+
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+            - form-kirin-dependencies-{{ checksum "package.json" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+
+      - run: npm install
+
+      - save_cache:
+          paths:
+            - node_modules
+          key: form-kirin-dependencies-{{ checksum "package.json" }}
+
+      # run tests!
+      - run: npm run release
 workflows:
   version: 2
   build_and_deploy:
     jobs:
       - build
+      - release:
+          requires:
+            - build
+          context: Production
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /v[0-9]+(\.[0-9]+)*$/     

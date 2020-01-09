@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useState, Component } from 'react';
+import React, { Component } from 'react';
 import { mount, shallow } from 'enzyme';
 import sinon from 'sinon';
 import FormKirin from '.';
@@ -411,30 +411,39 @@ describe('Form', () => {
     });
 
     it('deregister field when unmount', () => {
-      function ConditionalField() {
-        const [show, setShow] = useState(true);
+      class ConditionalField extends Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            show: true
+          };
+          this.hide = this.hide.bind(this);
+        }
 
-        return (
-          <FormKirin initialValues={{ firstName: '' }}>
-            {
-              ({ values, handleChange }) => (
-                <form>
-                  {
-                    show && (
-                      <input
-                        type="text"
-                        name="firstName"
-                        value={values.firstName}
-                        onChange={handleChange}
-                      />
-                    )
-                  }
-                  <button type="button" onClick={() => {setShow(false);}}>hide</button>
-                </form>
-              )
-            }
-          </FormKirin>
-        );
+        hide() {
+          this.setState({ show: false });
+        }
+
+        render() {
+          return (
+            <FormKirin initialValues={{ firstName: '' }}>
+              {
+                () => (
+                  <form>
+                    {
+                      this.state.show && (
+                        <BasicField
+                          name="firstName"
+                        />
+                      )
+                    }
+                    <button type="button" onClick={this.hide}>hide</button>
+                  </form>
+                )
+              }
+            </FormKirin>
+          );
+        }
       }
 
       const el = mount(<ConditionalField />);

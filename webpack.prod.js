@@ -2,17 +2,14 @@ const path = require('path');
 const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
-module.exports = {
+const config = {
   entry: {
     'form-kirin': './app/js/index.js'
   },
   context: path.resolve(__dirname, '.'),
   output: {
-    filename: '[name].umd.js',
-    sourceMapFilename: '[name].umd.map',
     path: path.resolve(__dirname, './dist'),
-    library: 'formKirin',
-    libraryTarget: 'umd'
+    library: 'formKirin'
   },
   optimization: {
     splitChunks: {
@@ -76,7 +73,7 @@ module.exports = {
   resolve: {
     extensions: ['.js', '.jsx', '.json']
   },
-  mode: 'production', // will configure definePlugin to set process.env.NODE_ENV to production
+  mode: 'production',
   devtool: 'source-map',
   externals: {
     react: {
@@ -93,3 +90,33 @@ module.exports = {
     })
   ]
 };
+
+module.exports = [
+  {
+    ...config,
+    output: {
+      ...config.output,
+      filename: '[name].umd.js',
+      sourceMapFilename: '[name].umd.map',
+      libraryTarget: 'umd'
+    }
+  },
+  {
+    ...config,
+    output: {
+      ...config.output,
+      filename: '[name].[hash].js',
+      sourceMapFilename: '[name].[hash].map',
+      libraryTarget: 'var'
+    }
+  },
+  {
+    ...config,
+    output: {
+      ...config.output,
+      filename: '[name].cjs2.js',
+      sourceMapFilename: '[name].cjs2.map',
+      libraryTarget: 'commonjs2'
+    }
+  }
+];

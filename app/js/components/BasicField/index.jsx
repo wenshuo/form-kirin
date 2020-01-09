@@ -25,7 +25,7 @@ export default function BasicField(props) {
   const { className, tagName: Wrapper, type } = props;
 
   return (
-    <FormControlWrapper {...props}>
+    <FormControlWrapper {...omit(props, ['tagName', 'children', 'className'])}>
       {
         ({ fieldValue, handleChange, handleBlur, validationProps }) => {
           return (

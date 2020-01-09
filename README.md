@@ -1,19 +1,21 @@
 ## form-kirin
+React form library that works in simple and configurable and extensible way.
 
-### how to install
+### How to install
 `npm install form-kirin`
 
 or if you use `yarn`
 `yarn add form-kirin`
 
-then pull in components `import { FormKirin, Form } from 'form-kirin';`
+### How to use
+Pull in components `import { FormKirin, Form } from 'form-kirin';`
 
-### features
+### Features
 1. get values in and out the form
 2. validations and error handling
   - field and form level
-  - sync and sync
-  - support validation props including html native props and ability to extend the props
+  - sync and async validation support
+  - support validation props including html native props and ability to extend the set of props
 3. resource binding
 4. form submit and reset
 
@@ -24,12 +26,11 @@ There are a few examples written using react storybooks.
 1. npm start
 ```
 
-### styling
-None of the built-in components come with stylings, but they add css class names to elements. Please read the source code to see what are the class names.
-Additionally each built-in component accept className prop and attach it to the container element, to provide custom styling, we could make use of this prop.
+### Stylings
+None of the built-in components come with stylings, but they add css class names to elements. Please read the source code to see what are the class names. Additionally each built-in component accept a className prop and attach it to the container element to support custom styling.
 
 ### How does it work ?
-The FormKirin component keep all related state internally and pass those data to your form in a render prop.
+The FormKirin component keep all related state internally and pass those data to a render prop that renders the actual form.
 
 ### Get values into the form and get values out
 There are a few different ways to get values into the form.
@@ -39,7 +40,8 @@ There are a few different ways to get values into the form.
 
 Example: initialValues and enableReinitialize
 Initialize form using initialValues prop. When enableReinitialize is on, form-kirin will reinitialize form when initialValues changes.
-Also it resets other form state such as errors, touched and etc. Optionally we can re-run validation when form is reinitialized by configuring the validateOnReinitialize prop.
+Also it resets other form state such as errors, touched and etc. Optionally we can re-run validation when form is reinitialized by configuring the validateOnReinitialize prop to true.
+
 ```
 import { FormKirin } from 'form-kirin';
 
@@ -51,7 +53,7 @@ const initialValues = {
 <FormKirin initialValues={initialValues} enableReinitialize validateOnReinitialize>
   {
     ({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="firstName"
@@ -77,14 +79,15 @@ const initialValues = {
 
 Example: bind resource to form
 Initialize form using values returned from resource.get method, supports sync and async methods.
+
 ```
 import { FormKirin } from 'form-kirin';
 
 const resource = {
   get(values, setters, props) {
-    // Assume we fetch from server
+    // Assume this is an async method
+    // we have to return a promise that resolves the values to use.
     ...
-    return values;
   }
 };
 // No need to pass initialValues when using resource.
@@ -92,7 +95,7 @@ const resource = {
 <FormKirin resource={resource}>
   {
     ({ values, handleChange, handleBlur, handleSubmit, isSubmitting }) => (
-      <form>
+      <form onSubmit={handleSubmit}>
         <input
           type="text"
           name="firstName"
@@ -117,8 +120,8 @@ const resource = {
 ```
 
 ### get values out of the form
-1. the FormKirin component will pass current values to the render prop so that the form controls can display latest form values.
-2. onSubmit handler will receive current form values
+1. The FormKirin component will pass current values to the render prop so that the form controls can display latest form values.
+2. onSubmit handler will receive current form values in the first argument.
 
 Example: form submission
 ```
@@ -167,11 +170,12 @@ function onSubmit(values, { setSubmitting }, props) {
 </FormKirin>
 ```
 
-### reset form values
-pass handleReset from the render prop to the html form component's onReset prop, it will reset the form values to whatever values of the initialValues prop and also it reset all other form data such as errors, touched, and etc and Optionally re-run validation when validateOnReset
-is on.
+### Reset form values
+pass handleReset from the render prop to the html form component's onReset prop, it will reset the form values to current values of the initialValues prop and also it resets all other form data such as errors, touched, and etc and Optionally re-run validation when validateOnReset
+is true.
 
-Example: reset form
+Example: Reset form
+
 ```
 import { FormKirin } from 'form-kirin';
 
@@ -184,7 +188,7 @@ function submitForm(values, { setSubmitting }) {
   ...
 }
 
-// form-kirin will reset form values and call this method if specified
+// This method is optional, Iif onReset is specified on FormKirin component, form-kirin will call this method after it resets the values.
 // This method receives current form values, an object of setter methods, and current set of props.
 function onReset(values, setters, props) {
   // perform additional logics
@@ -223,8 +227,7 @@ function onReset(values, setters, props) {
 
 ### How to create forms ?
 
-Example: use native form controls.
-It is a little bit verbose to create form in this way because we have to pass value, handleChange, handleBlur to each form control. Fortunately, form-kirin comes with form controls that hide this details for you, please see next example.
+Example: use native form controls and attach value, handleChange, and handleBlur from the render prop to the elements. It is verbose to create form in this way because we have to pass value, handleChange, handleBlur to each form control. Fortunately, form-kirin comes with form controls that perform the bindings for you.
 ```
 import { FormKirin } from 'form-kirin';
 
@@ -266,13 +269,14 @@ function submitForm(values, { setSubmitting }) {
 </FormKirin>
 ```
 
-Example: use form controls from form-kirin, under the hook, those build-in form controls use react context to read the data from the FormKirin component.
+Example: Use form controls from form-kirin. Under the hook, these build-in form controls use react context to read the data from the FormKirin component.
+
 ```
 import {
   FormKirin,
   Form,
   Field,
-  BasicField: Input,
+  TextField,
   Checkbox,
   Radio,
   EmailField,
@@ -294,12 +298,11 @@ function onSubmit() {
   onSubmit={submitForm}
 >
   {
-    ({ values, touched, errors, handleSubmit, isSubmitting }) => (
+    ({ values, touched, errors, isSubmitting }) => (
       <Form>
         <section className="section">
           <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-            <Input
-              type="text"
+            <TextField
               id="firstName"
               name="firstName"
             />
@@ -308,8 +311,7 @@ function onSubmit() {
 
         <section className="section">
           <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-            <Input
-              type="text"
+            <TextField
               id="lastName"
               name="lastName"
             />
@@ -324,8 +326,7 @@ function onSubmit() {
           values.admin && (
             <section className="section">
               <Field errorMessage={touched.department && errors.department} labelText="Department:">
-                <Input
-                  type="text"
+                <TextField
                   id="department"
                   name="department"
                 />
@@ -386,21 +387,20 @@ function onSubmit() {
 ```
 
 ### Data validations
-Form-kirin supports form and field level, sync and async data validations in two different ways, functions and validation props.
+form-kirin supports form and field level, sync and async data validations in two different ways, functions and validation props.
 
-Form-kirin will run validations at different life cycle of a form, and we can control when to trigger validations by passing props(validateOnBlur, validateOnChange and more, please see the api for more information) to the FormKirin component, by default form-kirin will only run validations right before form submission.
+form-kirin will run validations at different life cycle of a form, and we can control when to trigger validations by configuring props(validateOnBlur, validateOnChange and more, please see the api for more information) on FormKirin component. By default form-kirin will only run validations right before form submission.
 
-Validations errors are passed as errors arguments in the render prop function, the errors object mimic the shape of the values object.
-Additionally, form-kirin keep track of the touched state for each form control, the touched state is passed as touched argument in the render prop. Displaying error message for form controls that are not touched seems not so user friendly, therefore we could make use of the touched state and only show error message when a field is touched.
+Validation errors are passed to the render prop function, the errors object mimic the shape of the values object. Additionally, form-kirin keep track of the touched state for each form control. Displaying error message for form controls that are not touched seems not ideal, therefore we could make use of the touched state and only show error message when a field is touched.
 
-Since form-kirin takes care of validation, we should add noValidate when using html form element. The built-in Form component will add noValidate prop for you. To reduce verbosity, we could use the the built-in Form component since it also attach onSubmit and onReset handlers for you.
+Since form-kirin takes care of validations, we should add noValidate prop to the html form element to turn off browser validations. The built-in Form component will add noValidate prop for you. To reduce verbosity, we could use the built-in Form component since it also attach onSubmit and onReset handlers for you.
 
 ### isValidating state
-Before running validations in form submission, form values reinitialization and form values reset, form-kirin will set isValidating to true and set it back to false once validations finish. We could use this state to show proper UI to users.
+Before running validations in form submission, form values reinitialization and form reset, form-kirin will set isValidating to true and set it back to false once validations finish. We could use this state to show proper UI to users.
 
-Example: synchronous form level and field level validations.
+Example: Synchronous form level and field level validations.
 ```
-import { FormKirin, Field, BasicField: Input } from 'form-kirin';
+import { FormKirin, Field, TextField } from 'form-kirin';
 
 const initialValues = {
   firstName: '',
@@ -431,13 +431,14 @@ function validateName(value, fieldName, values) {
   return value && value.length < 5 ? 'name must have at least 5 characters.' : '';
 }
 
-// In this example, we want to run field level validations when form control lose focus.
-// Note that form-kirin also run field and form level validations before form submission, this behavior is not configurable at this moment.
+// In this example, we want to run field level validations when a form control loses focus.
+// Note that form-kirin always run field and form level validations before form submission, this behavior is not configurable at this moment.
 // Also field level validation errors are merged with form level validation errors by concatenating the error messages.
 
 <FormKirin
   initialValues={initialValues}
   onSubmit={submitForm}
+  validateForm={validateForm}
   validateOnBlur
 >
   {
@@ -445,7 +446,7 @@ function validateName(value, fieldName, values) {
       <form onSubmit={handleSubmit} noValidate>
         <section className="section">
           <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-            <Input
+            <TextField
               type="text"
               id="firstName"
               name="firstName"
@@ -456,7 +457,7 @@ function validateName(value, fieldName, values) {
 
         <section className="section">
           <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-            <Input
+            <validateForm
               type="text"
               id="lastName"
               name="lastName"
@@ -472,9 +473,9 @@ function validateName(value, fieldName, values) {
 </FormKirin>
 ```
 
-Example: asynchronous form level and field level validations.
+Example: Asynchronous form level and field level validations.
 ```
-import { FormKirin, Field, BasicField: Input } from 'form-kirin';
+import { FormKirin, Field, TextField } from 'form-kirin';
 
 const initialValues = {
   firstName: '',
@@ -488,7 +489,7 @@ function submitForm(values) {
 // asynchronous form level validation
 function validateForm(values) {
   // asynchronous validation must return a promise
-  // we can run server validations but for simplicity we just wrap it in a promise in this example.
+  // we could run server validations but for simplicity we just wrap it in a promise in this example.
   return new Promise((resolve) => {
     const errors = {};
 
@@ -507,19 +508,20 @@ function validateForm(values) {
 // asynchronous field validation
 function validateName(value, fieldName, values) {
   // asynchronous validation must return a promise
-  // we can run server validations but for simplicity we just wrap it in a promise in this example.
+  // we could run server validations but for simplicity we just wrap it in a promise in this example.
   return new Promise((resolve) => {
     resolve(value && value.length < 5 ? 'name must have at least 5 characters.' : '');
   });
 }
 
-// In this example, we want to run field level validations when form control lose focus.
-// Note that form-kirin also run field and form level validations before form submission, this behavior is not configurable at this moment.
+// In this example, we want to run field level validations when a form control loses focus.
+// Note that form-kirin always run field and form level validations before form submission, this behavior is not configurable at this moment.
 // Also field level validation errors are merged with form level validation errors by concatenating the error messages.
 
 <FormKirin
   initialValues={initialValues}
   onSubmit={submitForm}
+  validateForm={validateForm}
   validateOnBlur
 >
   {
@@ -527,8 +529,7 @@ function validateName(value, fieldName, values) {
       <form onSubmit={handleSubmit} noValidate>
         <section className="section">
           <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-            <Input
-              type="text"
+            <TextField
               id="firstName"
               name="firstName"
               validate={validateName}
@@ -538,8 +539,7 @@ function validateName(value, fieldName, values) {
 
         <section className="section">
           <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-            <Input
-              type="text"
+            <TextField
               id="lastName"
               name="lastName"
               validate={validateName}
@@ -554,10 +554,10 @@ function validateName(value, fieldName, values) {
 </FormKirin>
 ```
 
-Example: field level validations for built-in form controls via props. Form-kirin comes with validations for native html attributes (required, min, max, maxlength, minlength, and pattern), and we can overwrite the error message for these props by passing errorMessages prop to those built-in form controls. The errorMessages should be an object that contains key for a validation prop such as required, min and etc and the value should be the error message for the prop. By default, validation props are disabled, we can enable this feature by passing enableValidationProps to the FormKirin component.
+Example: Field level validations for built-in form controls via props. Form-kirin comes with validations for native html attributes (required, min, max, maxlength, minlength, and pattern), and we can overwrite the error messages for these props by passing errorMessages prop to those built-in form controls. The errorMessages should be an object that contains key for a validation prop such as required, min and etc and the value should be the error message for the prop. By default, validation props are disabled, we can enable this feature by passing enableValidationProps to the FormKirin component.
 
 ```
-import { FormKirin, Field, NumberField, EmailField, BasicField: Input } from 'form-kirin';
+import { FormKirin, Field, NumberField, EmailField, TextField } from 'form-kirin';
 
 const initialValues = {
   firstName: '',
@@ -586,8 +586,7 @@ function submitForm(values, { setSubmitting }) {
       <form onSubmit={handleSubmit} noValidate>
         <section className="section">
           <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-            <Input
-              type="text"
+            <TextField
               id="firstName"
               name="firstName"
               minLength="5"
@@ -599,8 +598,7 @@ function submitForm(values, { setSubmitting }) {
 
         <section className="section">
           <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-            <Input
-              type="text"
+            <TextField
               id="lastName"
               name="lastName"
               required
@@ -636,17 +634,18 @@ function submitForm(values, { setSubmitting }) {
 </FormKirin>
 ```
 
-Example: create new validation prop by passing validationProps prop to the FormKirin component.
+Example: Create new validation props by passing validationProps prop to the FormKirin component.
+Note: New validations created in this way will only work for controls in the form with validationProps prop.
 ```
-import { FormKirin, Field, NumberField, EmailField, BasicField: Input } from 'form-kirin';
+import { FormKirin, Field, NumberField, EmailField, TextField } from 'form-kirin';
 
 const initialValues = {
   firstName: '',
   lastName: ''
 };
 
-// add new validation props at the form level
-// we can use the new validation prop in any built-in form controls within this form.
+// Add new validation props at the form level
+// We can use the new validation prop in any built-in form controls within this form.
 const validationProps = {
   positive({ value, fieldName }) {
     return value && value <= 0 ? `${fieldName} must be a positive number.` : '';
@@ -657,6 +656,7 @@ function submitForm(values, { setSubmitting }) {
   ...
 }
 
+// Important, we have to set enableValidationProps to turn on validation props feature.
 <FormKirin
   initialValues={initialValues}
   onSubmit={submitForm}
@@ -669,8 +669,7 @@ function submitForm(values, { setSubmitting }) {
       <form onSubmit={handleSubmit} noValidate>
         <section className="section">
           <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-            <Input
-              type="text"
+            <TextField
               id="firstName"
               name="firstName"
               minLength="5"
@@ -681,8 +680,7 @@ function submitForm(values, { setSubmitting }) {
 
         <section className="section">
           <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-            <Input
-              type="text"
+            <TextField
               id="lastName"
               name="lastName"
               required
@@ -719,13 +717,90 @@ function submitForm(values, { setSubmitting }) {
 </FormKirin>
 ```
 
+Example: Add global validation props so that we can use those props in all forms created by form-kirin
+```
+import { FormKirin, Field, TextField, NumberField, EmailField, addValidations } from 'form-kirin';
+
+const initialValues = {};
+
+function submitForm(values) {
+  ...
+}
+
+// here we add global validation props
+addValidations({
+  isEmailAddress({ value, fieldName }) {
+    return !/^.+@.+\..+$/.test(value) && `${value || "''"} is not a valid email address.`;
+  }
+});
+
+<FormKirin
+  initialValues={initialValues}
+  onSubmit={submitForm}
+  validateOnBlur
+  enableValidationProps
+>
+  {
+    ({ values, touched, errors, handleSubmit, isSubmitting, handleReset }) => (
+      <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
+        <section className="section">
+          <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
+            <TextField
+              id="firstName2"
+              name="firstName"
+              minLength="5"
+              required
+            />
+          </Field>
+        </section>
+
+        <section className="section">
+          <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
+            <TextField
+              id="lastName2"
+              name="lastName"
+              required
+              minLength="5"
+            />
+          </Field>
+        </section>
+
+        <section className="section">
+          <Field errorMessage={touched.email && errors.email} labelText="Email:">
+            <EmailField
+              id="email2"
+              name="email"
+              isEmailAddress
+              required
+            />
+          </Field>
+        </section>
+
+        <section className="section">
+          <Field errorMessage={touched.quantity && errors.quantity} labelText="How many do you want:">
+            <NumberField
+              id="quantity2"
+              name="quantity"
+              positive
+            />
+          </Field>
+        </section>
+
+        <button type="reset" disabled={isSubmitting}>reset</button>
+        <button type="submit" disabled={isSubmitting}>submit form</button>
+      </form>
+    )
+  }
+</FormKirin>
+```
+
 ## API
 ### FormKirin component
-This component keep track of all form related state and pass the state down to its children via render prop function.
+This component keeps track of all form related state and passes the state down to its children via render prop function.
 
 ### FormKirin props
 `initialValues:`
-object that is used to initialized the form. Keys must be either the name or id of the form control, that says each form control must have either a name or id prop. If no initialValues is passed, an empty object is used instead.
+object that is used to initialized the form. Keys must be either the name or id of form controls, that says each form control must have either a name or id prop. If no initialValues is passed, an empty object is used instead.
 
 `enableReinitialize:`
 when true, reinitialize form values if initialValues changes. Default is false.
@@ -747,18 +822,38 @@ When true, trigger validations after form is mounted. Default is false.
 
 `enableValidationProps:`
 When true, enable validations bound to props. Default is false.
-Built-in validations props are `required, min, max, minLength, maxLength, pattern`. We could also extend the set of validation props using the validationProps prop or the addValidations method.
+Built-in validations props are `required, min, max, minLength, maxLength, pattern`. We could also extend the set of validation props using the validationProps prop or the addValidations method for adding global validation props.
 
 `validateForm:`
-Function that define form level validations, it receive current form values, object of setter methods, and props passed the FormKirin component as arguments. Form level validations are triggered before form submission and optionally during form reinitialization and form reset. The function should return an object that mimics the shape of the form values if there are errors otherwise return nothing.
+Function that define form level validations, it receive current form values, object of setter methods, and props passed the FormKirin component as arguments. Form level validations are triggered before form submission and optionally during form reinitialization and form reset. The function should return an object that mimics the shape of the form values if there are errors otherwise should return empty object.
 `validateForm(values, setters, props)`
 
 `validate:`
 Object of functions, useful to define field validators for native html form controls. This object should mimic the shape of form values.
-Each field validator function will receive current field value, field name, entire form values object and current set of props as argument and should either return error message string or nothing.
+Each field validator function will receive current field value, field name, entire form values object and current set of props as argument and should either return error message string or nothing. Each key of this object should be name or id of form controls and value should be a function.
+```
+validate = {
+  firstName(value, name, values) {
+    ...
+  },
+  lastName(value, name, values) {
+    ...
+  }
+};
+```
 
 `validationProps:`
-Object of custom validators used as prop. Keys of this object can be used as props for form controls. Values should be functions that accept same set of arguments as field level validators.
+Object of custom validators used as prop. Keys of this object can be used as props for form controls. Values should be functions that receive a context object which contains value, fieldName, errorMessages prop of the field control, and the value of the validation prop.
+```
+validationProps = {
+  isEmail({ value, fieldName, isEmail, errorMessages }) {
+    ...
+  },
+  isNumber({ value, fieldName, isNumber, errorMessages }) {
+    ...
+  }
+};
+```
 
 `onSubmit:`
 Handler function for form submission. It receives current form values, object of setter methods, and current set of props as arguments.
@@ -768,17 +863,15 @@ Handler function for form submission. It receives current form values, object of
 Handler function form form reset. It receives current form values, object of setter methods, and current set of props as arguments.
 `onReset(values, setters, props)`
 
-`children`:
-Render prop function that should return the form markups.
+`children:`
+Render prop function that should render the form.
 
 `resource:`
-A object that contain methods for form actions such as initialization, form submission and etc.
-When `resource.get` is defined, form-kirin will call this method for form initialization, and pass current form values, object of setter methods, and current set of props as arguments.
-This function can be sync or async, the sync version must return an object and the async version must resolve an object. When `resource.update` is defined and no onSubmit is present, form-kirin will call this function for form submission. This function can be sync or async, the sync version must return an object and the async version must resolve an object. Other than these `get` and `update`, the resource can contain any other methods that you want to support your own needs. FormKirin will pass the same arguments as the `get` and `update` methods to these custom methods. The wrapped resource object will be passed to the render prop function.
-
+A object that contains methods for form actions such as initialization, form submission and etc.
+When `resource.get` is defined, form-kirin will call this method for form initialization, and pass current form values, object of setter methods, and current set of props as arguments. This function can be sync or async, the sync version must return an object and the async version must return a promise that resolves the values. When `resource.update` is defined and no onSubmit is provided, form-kirin will call this function for form submission. The update method can be sync or async, the async version must return a promise. Other than these `get` and `update`, the resource can contain any other methods that you want to support your own needs. FormKirin will pass the same arguments as the `get` and `update` methods to these custom methods. The wrapped resource object will be passed to the render prop function.
 
 ### render prop arguments
-FormKirin will pass all related form data and useful setter methods as an object to the render prop function.
+FormKirin will pass all related form data and setter methods as an object to the render prop function, we could use es6 destructure syntax to get the data that needed for form creation.
 
 `handleSubmit:`
 Form submit handler that we should pass to the form element onSubmit prop.
@@ -811,7 +904,7 @@ An wrapped resource object that each method will receive current form values, an
 Readonly Boolean that indicates if any of the form values changes since initialization.
 
 `isValid:`
-Readonly Boolean that indicates if any of the form has any validation errors.
+Readonly Boolean that indicates if the form has any validation errors.
 
 `handleBlur:`
 Handler that should pass to a form control's onBlur to keep track of touched state.
@@ -848,7 +941,7 @@ Setter method that imperatively set values for the entire form.
 `setValues(values, shouldValidate)`
 
 `setField:`
-Setter method that set meta information for a form control. Internally form-kirin uses this method to register field level validation that specified in the validate prop on a built-in form control. Useful when we want to implement custom control that need to specify validation using the similar manner. Note that alternatively we can specify field level validations using validate prop at the FormKirin component, it works for both native html form control and built-in form controls from form-kirin.
+Setter method that set meta information for a form control. Internally form-kirin uses this method to register field level validation that specified in the validate prop on a built-in form control. Useful when we want to implement custom control that need to specify validation in similar way. Alternatively we can specify field level validations using validate prop at the FormKirin component, it works for both native html form control and built-in form controls from form-kirin.
 ```
 const field = {
   name: '[name or id of a form control]',
@@ -955,14 +1048,12 @@ It renders html form component and attach noValidate, onSubmit and onReset handl
   {
     () => (
       <Form>
-        <Input
-          type="text"
+        <TextField
           id="firstName"
           name="firstName"
         />
 
-        <Input
-          type="text"
+        <TextField
           id="lastName"
           name="lastName"
         />

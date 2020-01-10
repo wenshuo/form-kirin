@@ -16,7 +16,8 @@ Include the following in your html file:
 <script src="https://unpkg.com/form-kirin/dist/form-kirin.umd.js"></script>
 ```
 
-This file will add FormKirin to the window object, and you can access component and methods by doing `window.FormKirin.<component name or method name>`
+This file will add formKirin to the window object, and you can access component and methods by doing `window.formKirin.<component name or method name>`.
+Important this file should be included after the React library.
 
 ### Features
 1. get values in and out the form

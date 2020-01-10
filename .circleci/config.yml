@@ -57,7 +57,6 @@ workflows:
       - release:
           requires:
             - build
-          context: Production
           filters:
             branches:
               ignore: /.*/

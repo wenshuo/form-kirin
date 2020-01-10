@@ -427,7 +427,8 @@ function validateForm(values) {
 }
 
 // synchronous field validation
-function validateName(value, fieldName, values) {
+// receive field value, name, all form values and props of form field as arguments.
+function validateName(value, fieldName, values, props) {
   return value && value.length < 5 ? 'name must have at least 5 characters.' : '';
 }
 
@@ -506,7 +507,8 @@ function validateForm(values) {
 }
 
 // asynchronous field validation
-function validateName(value, fieldName, values) {
+// receive field value, name, all form values and props of form field as arguments.
+function validateName(value, fieldName, values, props) {
   // asynchronous validation must return a promise
   // we could run server validations but for simplicity we just wrap it in a promise in this example.
   return new Promise((resolve) => {
@@ -566,7 +568,8 @@ const initialValues = {
 
 // Overwrite error message for the required validation prop
 const firstNameErrors = {
-  required({ fieldName }) {
+  required(value, fieldName, values, props) {
+    // receive field value, name, all form values and props of form field as arguments.
     return `${fieldName} can't be blank.`;
   }
 };
@@ -647,7 +650,8 @@ const initialValues = {
 // Add new validation props at the form level
 // We can use the new validation prop in any built-in form controls within this form.
 const validationProps = {
-  positive({ value, fieldName }) {
+  positive(value, fieldName, values, props) {
+    // receive field value, name, all form values and props of form field as arguments.
     return value && value <= 0 ? `${fieldName} must be a positive number.` : '';
   }
 };
@@ -729,7 +733,8 @@ function submitForm(values) {
 
 // here we add global validation props
 addValidations({
-  isEmailAddress({ value, fieldName }) {
+  isEmailAddress(value, fieldName, values, props) {
+    // receive field value, name, all form values and props of form field as arguments.
     return !/^.+@.+\..+$/.test(value) && `${value || "''"} is not a valid email address.`;
   }
 });
@@ -843,13 +848,13 @@ validate = {
 ```
 
 `validationProps:`
-Object of custom validators used as prop. Keys of this object can be used as props for form controls. Values should be functions that receive a context object which contains value, fieldName, errorMessages prop of the field control, and the value of the validation prop.
+Object of custom validators used as prop. Keys of this object can be used as props for form controls. Values should be functions that will receive the field value, field name, all form values, and props of the field control as arguments.
 ```
 validationProps = {
-  isEmail({ value, fieldName, isEmail, errorMessages }) {
+  isEmail(value, fieldName, values, props) {
     ...
   },
-  isNumber({ value, fieldName, isNumber, errorMessages }) {
+  isNumber(value, fieldName, values, props) {
     ...
   }
 };
@@ -956,6 +961,12 @@ Remove meta of a form control and also all related internal state.
 `unsetField(fieldName)`
 
 ### Built-in Form Controls
+### common props for all built-in form controls
+- `validate:` `field level validator function`, receive field value, field name, entire form values, and props of the form control as arguments.
+- `onChange:` `onChange handler function`, additional onChange logics
+- `onBlur:` `onBlur handler function`, additional onBlur logics
+- `errorMessages:` `object`, customize the built-in validation props error messages. The keys should be names of validation props and value should either be a string or function that receive field value, field name, entire form values and props of the field control as arguments.
+
 `TextField`: render `input[type="text"]` field
   - `name:` required, name of the control, should be camelCase, form-kirin used name as key to keep track of various internal state.
 
@@ -1028,8 +1039,7 @@ utility component that wraps its children with label and error message.
 
 ```
 <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-  <Input
-    type="text"
+  <TextField
     id="lastName"
     name="lastName"
     validate={isRequired}

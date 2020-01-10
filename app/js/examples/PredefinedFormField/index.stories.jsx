@@ -2,7 +2,7 @@ import React from 'react';
 
 import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
-import Input from '../../components/BasicField';
+import TextField from '../../components/TextField';
 import Checkbox from '../../components/Checkbox';
 import RadioSet from '../RadioSet';
 import Radio from '../../components/Radio';
@@ -55,8 +55,7 @@ function PredefinedFormFieldExample() {
             <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="firstName"
                     name="firstName"
                     validate={isRequired}
@@ -66,8 +65,7 @@ function PredefinedFormFieldExample() {
 
               <section className="section">
                 <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="lastName"
                     name="lastName"
                     validate={isRequired}
@@ -83,8 +81,7 @@ function PredefinedFormFieldExample() {
                 values.admin && (
                   <section className="section">
                     <Field errorMessage={touched.department && errors.department} labelText="Department:">
-                      <Input
-                        type="text"
+                      <TextField
                         id="department"
                         name="department"
                       />

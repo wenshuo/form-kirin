@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
-import Input from '../../components/BasicField';
+import TextField from '../../components/TextField';
 import Checkbox from '../../components/Checkbox';
 import RadioSet from '../RadioSet';
 import Radio from '../../components/Radio';
@@ -52,8 +52,7 @@ class ReinitializeExample extends Component {
               <form onSubmit={handleSubmit} noValidate>
                 <section className="section">
                   <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                    <Input
-                      type="text"
+                    <TextField
                       id="firstName"
                       name="firstName"
                       minLength="5"
@@ -64,8 +63,7 @@ class ReinitializeExample extends Component {
 
                 <section className="section">
                   <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                    <Input
-                      type="text"
+                    <TextField
                       id="lastName"
                       name="lastName"
                       required
@@ -111,8 +109,7 @@ const ValidateOnMountExample = () => (
           <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="firstName"
                   name="firstName"
                   required
@@ -122,8 +119,7 @@ const ValidateOnMountExample = () => (
 
             <section className="section">
               <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="lastName"
                   name="lastName"
                   required
@@ -175,8 +171,7 @@ class ValidateOnReinitializeExample extends Component {
               <form onSubmit={handleSubmit} noValidate>
                 <section className="section">
                   <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                    <Input
-                      type="text"
+                    <TextField
                       id="firstName"
                       name="firstName"
                       minLength="5"
@@ -187,8 +182,7 @@ class ValidateOnReinitializeExample extends Component {
 
                 <section className="section">
                   <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                    <Input
-                      type="text"
+                    <TextField
                       id="lastName"
                       name="lastName"
                       required
@@ -234,8 +228,7 @@ const ValidateOnResetExample = () => (
           <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="firstName"
                   name="firstName"
                   required
@@ -245,8 +238,7 @@ const ValidateOnResetExample = () => (
 
             <section className="section">
               <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="lastName"
                   name="lastName"
                   required
@@ -293,8 +285,7 @@ const ResourceExample = () => (
           <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
             <section className="section">
               <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="firstName"
                   name="firstName"
                   required
@@ -304,8 +295,7 @@ const ResourceExample = () => (
 
             <section className="section">
               <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                <Input
-                  type="text"
+                <TextField
                   id="lastName"
                   name="lastName"
                   required

@@ -11,7 +11,7 @@ export function getValidator(props, formLevelValidators = {}) {
 
   if (validators.length) {
     validator = new Validator();
-    validators.forEach(v => validator.addValidateMethod(v, props[v], formLevelValidators));
+    validators.forEach(v => validator.addValidateMethod(v, formLevelValidators));
   }
 
   return validator;

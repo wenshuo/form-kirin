@@ -228,7 +228,7 @@ describe('Form', () => {
       el.find('form').simulate('submit');
 
       setTimeout(() => {
-        expect(validateFirstName.calledWith('', 'firstName', el.state('values'), el.props())).to.be.true;
+        expect(validateFirstName.calledWith('', 'firstName', el.state('values'))).to.be.true;
         done();
       },0);
     });
@@ -693,7 +693,7 @@ describe('Form', () => {
     };
 
     const validationProps = {
-      isEmail({ value, fieldName }) {
+      isEmail(value, fieldName) {
         return /^.+@.+\..+$/.test(value) ? '' : `${fieldName} must be a valid email.`;
       }
     };

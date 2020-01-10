@@ -2,7 +2,7 @@ import React from 'react';
 
 import FormKirin from '../../components/FormKirin';
 import Field from '../../components/Field';
-import Input from '../../components/BasicField';
+import TextField from '../../components/TextField';
 import Checkbox from '../../components/Checkbox';
 import RadioSet from '../RadioSet';
 import Radio from '../../components/Radio';
@@ -17,13 +17,13 @@ import { addValidations } from '../../validation/validator';
 import '../index.scss';
 
 addValidations({
-  isEmail({ value, fieldName }) {
+  isEmail(value, fieldName) {
     return !/^.+@.+\..+$/.test(value) && `${value || "''"} is not a valid email address.`;
   }
 });
 
 const validationProps = {
-  positive({ value, fieldName }) {
+  positive(value, fieldName) {
     return value && value <= 0 ? `${fieldName} must be a positive number.` : '';
   }
 };
@@ -33,7 +33,7 @@ const initialValues = {
 };
 
 const firstNameErrors = {
-  required({ fieldName }) {
+  required(value, fieldName) {
     return `${fieldName} can't be blank.`;
   }
 };
@@ -58,8 +58,7 @@ function BuiltinValidationExample() {
             <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="firstName"
                     name="firstName"
                     minLength="5"
@@ -71,8 +70,7 @@ function BuiltinValidationExample() {
 
               <section className="section">
                 <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="lastName"
                     name="lastName"
                     required
@@ -134,8 +132,7 @@ function CustomValidationExample() {
             <form onSubmit={handleSubmit} onReset={handleReset} noValidate>
               <section className="section">
                 <Field errorMessage={touched.firstName && errors.firstName} labelText="First Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="firstName"
                     name="firstName"
                     minLength="5"
@@ -147,8 +144,7 @@ function CustomValidationExample() {
 
               <section className="section">
                 <Field errorMessage={touched.lastName && errors.lastName} labelText="Last Name:">
-                  <Input
-                    type="text"
+                  <TextField
                     id="lastName"
                     name="lastName"
                     required

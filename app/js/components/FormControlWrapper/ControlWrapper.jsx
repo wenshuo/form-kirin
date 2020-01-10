@@ -22,8 +22,9 @@ export default class ControlWrapper extends Component {
       this.validator = getValidator(this.props, validationProps);
 
       setField({
-        validate: (enableValidationProps && this.validator) || this.props.validate ? this.validate : null,
-        name: fieldName
+        validate: ((enableValidationProps && this.validator) || this.props.validate) ? this.validate : null,
+        name: fieldName,
+        context: this
       });
     }
   }
@@ -46,7 +47,7 @@ export default class ControlWrapper extends Component {
     let errors = '';
 
     if (this.validator) {
-      errors += await this.validator.validate(this.props.errorMessages, ...args);
+      errors += await this.validator.validate(...args);
     }
 
     if (this.props.validate) {

@@ -1,31 +1,31 @@
 import { isNumber, isString, uniq } from '../helpers/utils';
 
 const MESSAGES = {
-  required({ fieldName }) {
+  required(value, fieldName) {
     return `${fieldName} is required.`;
   },
-  max({ max, value, fieldName }) {
-    return `${fieldName} can't not be greater than ${max}. You enter ${value}.`;
+  max(value, fieldName, values, props = {}) {
+    return `${fieldName} can't not be greater than ${props.max}. You enter ${value}.`;
   },
-  min({ min, value, fieldName }) {
-    return `${fieldName} can't not be smaller than ${min}. You enter ${value}.`;
+  min(value, fieldName, values, props = {}) {
+    return `${fieldName} can't not be smaller than ${props.min}. You enter ${value}.`;
   },
-  maxLength({ maxLength, value, fieldName }) {
-    return `${fieldName} can't be longer than ${maxLength} characters. You enter ${value.length} characters.`;
+  maxLength(value, fieldName, values, props = {}) {
+    return `${fieldName} can't be longer than ${props.maxLength} characters. You enter ${value.length} characters.`;
   },
-  minLength({ minLength, value, fieldName }) {
-    return `${fieldName} can't be shorter than ${minLength} characters. You enter ${value.length} characters.`;
+  minLength(value, fieldName, values, props = {}) {
+    return `${fieldName} can't be shorter than ${props.minLength} characters. You enter ${value.length} characters.`;
   },
-  pattern({ value, fieldName }) {
+  pattern(value, fieldName) {
     return `${value || "''"} is not valid value for ${fieldName}.`;
   },
-  isEmail({ value }) {
+  isEmail(value) {
     return `${value || "''"} is not a valid email address.`;
   },
-  isPhoneNumber({ value }) {
+  isPhoneNumber(value) {
     return `${value || "''"} is not a valid phone number.`;
   },
-  isNumber({ value }) {
+  isNumber(value) {
     return `${value || "''"} is not a valid number.`;
   }
 };
@@ -33,84 +33,100 @@ const MESSAGES = {
 export const BUILTIN_VALIDATION_METHOD_NAMES = ['required', 'min', 'max', 'minLength', 'maxLength', 'pattern'];
 
 export const VALIDATION_METHODS = {
-  required({ errorMessages, value, fieldName }) {
-    return value ? '' : getErrorMessage('required', errorMessages, MESSAGES, { value, fieldName });
+  required(value, fieldName, values, props = {}) {
+    return value ? '' : getErrorMessage('required', props.errorMessages, MESSAGES, value, fieldName, values, props);
   },
 
-  max({ max, errorMessages, value, fieldName }) {
+  max(value, fieldName, values, props = {}) {
+    const { max, errorMessages } = props;
+
     if (isNumber(value) && isNumber(max)) {
       const number = Number(value);
       const maxValue = Number(max);
-      return number > maxValue ? getErrorMessage('max', errorMessages, MESSAGES, { value, fieldName, max: maxValue }) : '';
+      return number > maxValue ? getErrorMessage('max', errorMessages, MESSAGES, value, fieldName, values, props) : '';
     }
 
     return '';
   },
 
-  min({ min, errorMessages, value, fieldName }) {
+  min(value, fieldName, values, props = {}) {
+    const { min, errorMessages } = props;
+
     if (isNumber(value) && isNumber(min)) {
       const number = Number(value);
       const minValue = Number(min);
-      return number < minValue ? getErrorMessage('min', errorMessages, MESSAGES, { value, fieldName, min: minValue }) : '';
+      return number < minValue ? getErrorMessage('min', errorMessages, MESSAGES, value, fieldName, values, props) : '';
     }
 
     return '';
   },
 
-  maxLength({ maxLength, errorMessages, value, fieldName }) {
+  maxLength(value, fieldName, values, props = {}) {
+    const { maxLength, errorMessages } = props;
+
     if (isString(value) && isNumber(maxLength)) {
       const maxValue = Number(maxLength);
-      return value.length > maxValue ? getErrorMessage('maxLength', errorMessages, MESSAGES, { value, fieldName, maxLength: maxValue }) : '';
+      return value.length > maxValue ? getErrorMessage('maxLength', errorMessages, MESSAGES, value, fieldName, values, props) : '';
     }
 
     return '';
   },
 
-  minLength({ minLength, errorMessages, value, fieldName }) {
+  minLength(value, fieldName, values, props = {}) {
+    const { minLength, errorMessages } = props;
+
     if (isString(value) && isNumber(minLength)) {
       const minValue = Number(minLength);
-      return value.length < minValue ? getErrorMessage('minLength', errorMessages, MESSAGES, { value, fieldName, minLength: minValue }) : '';
+      return value.length < minValue ? getErrorMessage('minLength', errorMessages, MESSAGES, value, fieldName, values, props) : '';
     }
 
     return '';
   },
 
-  pattern({ pattern, errorMessages, value, fieldName, errorName }) {
+  pattern(value, fieldName, values, props = {}, errorName) {
+    const { pattern, errorMessages } = props;
+
     if (isString(pattern) && isString(value)) {
-      return new RegExp(pattern).test(value) ? '' : getErrorMessage(errorName || 'pattern', errorMessages, MESSAGES, { value, fieldName, pattern });
+      return new RegExp(pattern).test(value) ? '' : getErrorMessage(errorName || 'pattern', errorMessages, MESSAGES, value, fieldName, values, props);
     }
 
     return '';
   },
 
-  isEmail({ isEmail, errorMessages, value, fieldName }) {
-    return VALIDATION_METHODS.pattern({
+  isEmail(value, fieldName, values, props = {}) {
+    const { isEmail } = props;
+
+    return VALIDATION_METHODS.pattern(
       value,
       fieldName,
-      errorMessages,
-      pattern: isString(isEmail) ? isEmail : '^.+@.+\..+$',
-      errorName: 'isEmail'
-    });
+      values,
+      { ...props, pattern: isString(isEmail) ? isEmail : '^.+@.+\..+$' },
+      'isEmail'
+    );
   },
 
-  isPhoneNumber({ isPhoneNumber, errorMessages, value, fieldName }) {
-    return VALIDATION_METHODS.pattern({
+  isPhoneNumber(value, fieldName, values, props = {}) {
+    const { isPhoneNumber } = props;
+
+    return VALIDATION_METHODS.pattern(
       value,
       fieldName,
-      errorMessages,
-      pattern: isString(isPhoneNumber) ? isPhoneNumber : '^[0-9]{3}-[0-9]{3}-[0-9]{4}$',
-      errorName: 'isPhoneNumber'
-    });
+      values,
+      { ...props, pattern: isString(isPhoneNumber) ? isPhoneNumber : '^[0-9]{3}-[0-9]{3}-[0-9]{4}$' },
+      'isPhoneNumber'
+    );
   },
 
-  isNumber({ isNumber, errorMessages, value, fieldName }) {
-    return VALIDATION_METHODS.pattern({
+  isNumber(value, fieldName, values, props = {}) {
+    const { isNumber } = props;
+
+    return VALIDATION_METHODS.pattern(
       value,
       fieldName,
-      errorMessages,
-      pattern: isString(isNumber) ? isNumber : '^-?\d*(\.\d+)?$',
-      errorName: 'isNumber'
-    });
+      values,
+      { ...props, pattern: isString(isNumber) ? isNumber : '^-?\d*(\.\d+)?$' },
+      'isNumber'
+    );
   }
 };
 
@@ -125,11 +141,11 @@ export function nonNativeProps(formLevelValidators = {}) {
   ]).filter(v => !BUILTIN_VALIDATION_METHOD_NAMES.includes(v));
 }
 
-export function getErrorMessage(key, userDefinedMsg = {}, defaultMsg = {}, context = {}) {
+export function getErrorMessage(key, userDefinedMsg = {}, defaultMsg = {}, ...args) {
   let message = userDefinedMsg[key] || defaultMsg[key];
 
   if (typeof message === 'function') {
-    message = message(context);
+    message = message(...args);
   } else if (!isString(message)){
     message = '';
   }
@@ -142,24 +158,14 @@ export default class Validator {
     this.validators = [];
   }
 
-  validate(errorMessages, value, fieldName, values) {
-    return Promise.all(
-      this.validators.map(({ fn, args }) => fn({ value, fieldName, values, errorMessages, ...args }))
-    )
+  validate(value, fieldName, values, props) {
+    return Promise.all(this.validators.map(validator => validator(value, fieldName, values, props)))
       .then((messages) => messages.filter(m => !!m).join(' '))
       .catch(() => '');
   }
 
-  addValidateMethod(method, args, formLevelValidators = {}) {
+  addValidateMethod(method, formLevelValidators = {}) {
     const validatorMethod = formLevelValidators[method] || VALIDATION_METHODS[method];
-
-    if (validatorMethod) {
-      this.validators.push({
-        fn: validatorMethod,
-        args: {
-          [method]: args
-        }
-      });
-    }
+    validatorMethod && this.validators.push(validatorMethod);
   }
 }

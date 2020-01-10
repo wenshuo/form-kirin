@@ -35,6 +35,10 @@ function shouldLoadFromResource(props) {
   return props.resource && isFunction(props.resource.get);
 }
 
+function fieldContext(fields, name) {
+  return fields[name] && fields[name].context && fields[name].context.props;
+}
+
 export default class FormKirin extends PureComponent {
   constructor(props) {
     super(props);
@@ -244,7 +248,7 @@ export default class FormKirin extends PureComponent {
         const fieldValidatorNames = Object.keys(fieldValidators);
 
         await Promise.all(
-          fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values, this.props))
+          fieldValidatorNames.map(name => fieldValidators[name](values[name], name, values, fieldContext(this.fields, name)))
         ).then((result) => {
           fieldValidatorNames.forEach((name, i) => {
             fieldErrors[name] = result[i];
@@ -391,7 +395,7 @@ export default class FormKirin extends PureComponent {
     // Call field level validation if defined
     if (shouldValidate && validateOnChange && fieldValidator) {
       try {
-        const fieldErrors = await fieldValidator(values[fieldName], fieldName, values);
+        const fieldErrors = await fieldValidator(values[fieldName], fieldName, values, fieldContext(this.fields, fieldName));
         this.setFieldError(fieldName, fieldErrors);
       } catch (e) {
         console.log(e);
@@ -420,7 +424,7 @@ export default class FormKirin extends PureComponent {
     // Call field level validation if defined
     if (validateOnBlur && fieldValidator) {
       try {
-        const fieldErrors = await fieldValidator(fieldValue, fieldName, this.state.values);
+        const fieldErrors = await fieldValidator(fieldValue, fieldName, this.state.values, fieldContext(this.fields, fieldName));
         this.setFieldError(fieldName, fieldErrors);
       } catch (e) {
         console.log(e);

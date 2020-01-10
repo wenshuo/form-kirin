@@ -10,15 +10,7 @@ describe('Validator Class', () => {
     const validator = new Validator();
     validator.addValidateMethod('required');
 
-    expect(validator.validators[0].fn).to.eql(VALIDATION_METHODS.required);
-  });
-
-  it('add builtin validation with arguments', () => {
-    const validator = new Validator();
-    validator.addValidateMethod('maxLength', 12);
-
-    expect(validator.validators[0].fn).to.eql(VALIDATION_METHODS.maxLength);
-    expect(validator.validators[0].args.maxLength).to.eql(12);
+    expect(validator.validators[0]).to.eql(VALIDATION_METHODS.required);
   });
 
   it('form level validator take precedency over builtins', () => {
@@ -27,16 +19,15 @@ describe('Validator Class', () => {
     };
 
     const validator = new Validator();
-    validator.addValidateMethod('maxLength', 12, formLevelValidators);
+    validator.addValidateMethod('maxLength', formLevelValidators);
 
-    expect(validator.validators[0].fn).to.eql(formLevelValidators.maxLength);
-    expect(validator.validators[0].args.maxLength).to.eql(12);
+    expect(validator.validators[0]).to.eql(formLevelValidators.maxLength);
   });
 
   it('call each validator with correct arguments', () => {
     const maxLength = sinon.spy(VALIDATION_METHODS, 'maxLength');
     const validator = new Validator();
-    validator.addValidateMethod('maxLength', 12);
+    validator.addValidateMethod('maxLength');
     const errorMessages = {
       required: 'this is required'
     };
@@ -45,17 +36,18 @@ describe('Validator Class', () => {
     const values = {
       name: 'test'
     };
-    validator.validate(errorMessages, value, fieldName, values);
-    expect(maxLength.calledWith({ errorMessages, value, fieldName, values, maxLength: 12 })).to.be.true;
+    const props = { maxLength: 12, errorMessages };
+    validator.validate(value, fieldName, values, props);
+    expect(maxLength.calledWith(value, fieldName, values, props)).to.be.true;
     maxLength.restore();
   });
 
   it('join each message with single space', (done) => {
     const validator = new Validator();
     validator.addValidateMethod('required');
-    validator.addValidateMethod('minLength', 10);
+    validator.addValidateMethod('minLength');
     const expectedResult = 'firstName is required. firstName can\'t be shorter than 10 characters. You enter 0 characters.';
-    validator.validate({}, '', 'firstName')
+    validator.validate('', 'firstName', null, { minLength: 10 })
       .then(msg => {
         expect(msg).to.eql(expectedResult);
         done();
@@ -96,97 +88,97 @@ describe('Validator Class', () => {
   describe('builtin validation methods', () => {
     describe('required validator', () => {
       it('error message when value is missing', () => {
-        expect(VALIDATION_METHODS.required({ value: '', fieldName: 'name' })).to.eql('name is required.');
-        expect(VALIDATION_METHODS.required({ value: undefined, fieldName: 'name' })).to.eql('name is required.');
-        expect(VALIDATION_METHODS.required({ value: null, fieldName: 'name' })).to.eql('name is required.');
+        expect(VALIDATION_METHODS.required('', 'name' )).to.eql('name is required.');
+        expect(VALIDATION_METHODS.required(undefined, 'name')).to.eql('name is required.');
+        expect(VALIDATION_METHODS.required(null, 'name')).to.eql('name is required.');
       });
 
       it('empty error message when value is present', () => {
-        expect(VALIDATION_METHODS.required({ value: 'yes', fieldName: 'name' })).to.eql('');
+        expect(VALIDATION_METHODS.required('yes', 'name')).to.eql('');
       });
     });
 
     describe('max validator', () => {
       it('empty message when value is not a number', () => {
-        expect(VALIDATION_METHODS.max({ value: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.max('test')).to.eql('');
       });
 
       it('empty message when value is smaller than max', () => {
-        expect(VALIDATION_METHODS.max({ value: 8, max: 10})).to.eql('');
+        expect(VALIDATION_METHODS.max(8, 'quantity',{}, { max: 10 })).to.eql('');
       });
 
       it('error message when value is larger than max', () => {
-        expect(VALIDATION_METHODS.max({ value: 18, max: 10, fieldName: 'quantity'})).to.eql('quantity can\'t not be greater than 10. You enter 18.');
+        expect(VALIDATION_METHODS.max(18, 'quantity', {}, { max: 10 })).to.eql('quantity can\'t not be greater than 10. You enter 18.');
       });
     });
 
     describe('min validator', () => {
       it('empty message when value is not a number', () => {
-        expect(VALIDATION_METHODS.min({ value: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.min('test')).to.eql('');
       });
 
       it('empty message when value is greater than min', () => {
-        expect(VALIDATION_METHODS.min({ value: 8, min: 5})).to.eql('');
+        expect(VALIDATION_METHODS.min(8, 'quantity', {}, { min: 5 })).to.eql('');
       });
 
       it('error message when value is smaller than min', () => {
-        expect(VALIDATION_METHODS.min({ value: 8, min: 10, fieldName: 'quantity'})).to.eql('quantity can\'t not be smaller than 10. You enter 8.');
+        expect(VALIDATION_METHODS.min(8, 'quantity', {}, { min: 10 })).to.eql('quantity can\'t not be smaller than 10. You enter 8.');
       });
     });
 
     describe('maxLength validator', () => {
       it('empty message for non string', () => {
-        expect(VALIDATION_METHODS.maxLength({ maxLength: 10, value: null })).to.eql('');
-        expect(VALIDATION_METHODS.maxLength({ maxLength: 10, value: undefined })).to.eql('');
-        expect(VALIDATION_METHODS.maxLength({ maxLength: 10, value: true })).to.eql('');
-        expect(VALIDATION_METHODS.maxLength({ maxLength: 10, value: {} })).to.eql('');
-        expect(VALIDATION_METHODS.maxLength({ maxLength: 10, value: 1 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength(null, 'name', {}, { maxLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength(undefined, 'name', {}, { maxLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength(true, 'name', {}, { maxLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength({}, 'name', {}, { maxLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength(1, 'name', {}, { maxLength: 10 })).to.eql('');
       });
 
       it('empty message when length is less than or equal to maxLength', () => {
-        expect(VALIDATION_METHODS.maxLength({ value: 'test', maxLength: 5})).to.eql('');
-        expect(VALIDATION_METHODS.maxLength({ value: 'tests', maxLength: 5})).to.eql('');
+        expect(VALIDATION_METHODS.maxLength('test', 'name', {}, { maxLength: 5 })).to.eql('');
+        expect(VALIDATION_METHODS.maxLength('tests', 'name', {}, { maxLength: 5 })).to.eql('');
       });
 
       it('error message when length is greater than maxLength', () => {
-        expect(VALIDATION_METHODS.maxLength({ value: 'test', maxLength: 3, fieldName: 'name'})).to.eql('name can\'t be longer than 3 characters. You enter 4 characters.');
+        expect(VALIDATION_METHODS.maxLength('test', 'name', {}, { maxLength: 3 })).to.eql('name can\'t be longer than 3 characters. You enter 4 characters.');
       });
     });
 
     describe('minLength validator', () => {
       it('empty message for non string', () => {
-        expect(VALIDATION_METHODS.minLength({ minLength: 10, value: null })).to.eql('');
-        expect(VALIDATION_METHODS.minLength({ minLength: 10, value: undefined })).to.eql('');
-        expect(VALIDATION_METHODS.minLength({ minLength: 10, value: true })).to.eql('');
-        expect(VALIDATION_METHODS.minLength({ minLength: 10, value: {} })).to.eql('');
-        expect(VALIDATION_METHODS.minLength({ minLength: 10, value: 1 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength(null, 'name', {}, { minLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength(undefined, 'name', {}, { minLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength(true, 'name',  {}, { minLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength({}, 'name', {}, { minLength: 10 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength(1, 'name', {}, { minLength: 10 })).to.eql('');
       });
 
       it('empty message when length is greater than or equal to minLength', () => {
-        expect(VALIDATION_METHODS.minLength({ value: 'test', minLength: 2 })).to.eql('');
-        expect(VALIDATION_METHODS.minLength({ value: 'tests', minLength: 2 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength('test', 'name', {}, { minLength: 2 })).to.eql('');
+        expect(VALIDATION_METHODS.minLength('tests', 'name', {}, { minLength: 2 })).to.eql('');
       });
 
       it('error message when length is less than minLength', () => {
-        expect(VALIDATION_METHODS.minLength({ value: 'te', minLength: 3, fieldName: 'name' })).to.eql('name can\'t be shorter than 3 characters. You enter 2 characters.');
+        expect(VALIDATION_METHODS.minLength('te', 'name', {}, { minLength: 3 })).to.eql('name can\'t be shorter than 3 characters. You enter 2 characters.');
       });
     });
 
     describe('pattern validator', () => {
       it('empty message for non string', () => {
-        expect(VALIDATION_METHODS.pattern({ pattern: 'test', value: null })).to.eql('');
-        expect(VALIDATION_METHODS.pattern({ pattern: 'test', value: undefined })).to.eql('');
-        expect(VALIDATION_METHODS.pattern({ pattern: 'test', value: true })).to.eql('');
-        expect(VALIDATION_METHODS.pattern({ pattern: 'test', value: {} })).to.eql('');
-        expect(VALIDATION_METHODS.pattern({ pattern: 'test', value: 1 })).to.eql('');
+        expect(VALIDATION_METHODS.pattern(null, 'name', {}, { pattern: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.pattern(undefined, 'name', {}, { pattern: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.pattern(true, 'name', {}, { pattern: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.pattern({}, 'name', {}, { pattern: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.pattern(1, 'name', {}, { pattern: 'test' })).to.eql('');
       });
 
       it('empty message when pattern matches', () => {
-        expect(VALIDATION_METHODS.pattern({ value: 'test', pattern: 'test' })).to.eql('');
+        expect(VALIDATION_METHODS.pattern('test', 'name', {}, { pattern: 'test' })).to.eql('');
       });
 
       it('error message when pattern does not match', () => {
-        expect(VALIDATION_METHODS.pattern({ value: 'te', pattern: 'test', fieldName: 'name' })).to.eql('te is not valid value for name.');
+        expect(VALIDATION_METHODS.pattern('te', 'name', {}, { pattern: 'test' })).to.eql('te is not valid value for name.');
       });
     });
   });

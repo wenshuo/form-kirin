@@ -30,6 +30,10 @@ export function getFieldValueForElement(el) {
   if (elementName === 'select') {
     // If select with multiple, we return an array otherwise we return string value
     return el.multiple ? Array.from(el.selectedOptions).map(e => e.value) : el.value;
+  } else if (elementName === 'input' && el.getAttribute('type') === 'number') {
+    const value = Number(el.value);
+    // parse value to number if possible
+    return Number.isNaN(value) ? el.value : value;
   }
 
   return el.getAttribute('type') === 'checkbox' ? el.checked : el.value;

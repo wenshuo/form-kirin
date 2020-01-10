@@ -114,8 +114,8 @@ module.exports = [
     ...config,
     output: {
       ...config.output,
-      filename: '[name].cjs2.js',
-      sourceMapFilename: '[name].cjs2.map',
+      filename: '[name].cjs.js',
+      sourceMapFilename: '[name].cjs.map',
       libraryTarget: 'commonjs2'
     }
   }

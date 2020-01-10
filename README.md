@@ -4,7 +4,7 @@ React form library that works in simple and configurable and extensible way.
 ### How to install
 `npm install form-kirin`
 
-or if you use `yarn`
+or if you use `yarn` as package manager, run
 `yarn add form-kirin`
 
 ### How to use
@@ -22,15 +22,15 @@ Pull in components `import { FormKirin, Form } from 'form-kirin';`
 ### To see examples
 There are a few examples written using react storybooks.
 ```
-1. npm install
-1. npm start
+npm install
+npm start
 ```
 
 ### Stylings
-None of the built-in components come with stylings, but they add css class names to elements. Please read the source code to see what are the class names. Additionally each built-in component accept a className prop and attach it to the container element to support custom styling.
+None of the built-in components come with stylings, but they add css class names to elements to allow us to add custom stylings. Please read the source code to see what are the class names. Additionally each built-in component accept a className prop and attach it to the container element to support custom styling.
 
 ### How does it work ?
-The FormKirin component keep all related state internally and pass those data to a render prop that renders the actual form.
+The FormKirin component keeps all related state internally and pass those data to a render prop that renders the actual form.
 
 ### Get values into the form and get values out
 There are a few different ways to get values into the form.

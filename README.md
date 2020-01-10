@@ -1,3 +1,5 @@
+![CircleCI](https://circleci.com/gh/wenshuo/form-kirin.svg?style=svg)
+
 ## form-kirin
 React form library that works in simple and configurable and extensible way.
 

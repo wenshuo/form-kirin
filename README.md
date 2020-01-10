@@ -10,6 +10,14 @@ or if you use `yarn` as package manager, run
 ### How to use
 Pull in components `import { FormKirin, Form } from 'form-kirin';`
 
+If you don't use a package bundler such as webpack, you could use our umd file hosted by unpkg.
+Include the following in your html file:
+```
+<script src="https://unpkg.com/form-kirin/dist/form-kirin.umd.js"></script>
+```
+
+This file will add FormKirin to the window object, and you can access component and methods by doing `window.FormKirin.<component name or method name>`
+
 ### Features
 1. get values in and out the form
 2. validations and error handling

@@ -105,15 +105,6 @@ module.exports = [
     ...config,
     output: {
       ...config.output,
-      filename: '[name].[hash].js',
-      sourceMapFilename: '[name].[hash].map',
-      libraryTarget: 'var'
-    }
-  },
-  {
-    ...config,
-    output: {
-      ...config.output,
       filename: '[name].cjs.js',
       sourceMapFilename: '[name].cjs.map',
       libraryTarget: 'commonjs2'

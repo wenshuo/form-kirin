@@ -11,7 +11,7 @@
     "form",
     "react"
   ],
-  "main": "./app/js/index.js",
+  "main": "./dist/form-kirin.umd.js",
   "homepage": "https://github.com/wenshuo/form-kirin/blob/master/README.md",
   "bugs": {
     "url": "https://github.com/wenshuo/form-kirin/issues"
@@ -21,9 +21,9 @@
     "ci_test": "karma start karma.config.js",
     "test": "karma start karma.config.js --auto-watch --no-single-run --reporters progress",
     "start": "start-storybook -p 9001 -c .stories",
-    "build:prod": "webpack --config webpack.prod.js --progress --display-error --display-modules",
+    "build:prod": "webpack --config webpack.prod.js --progress --display-error",
     "build:analyze": "webpack --config webpack.analyze.js --progress --display-error --profile --json > stats.json",
-    "release": "echo 123"
+    "release": "node scripts/release"
   },
   "dependencies": {
     "prop-types": "^15.7.2"
@@ -73,6 +73,6 @@
     "dist"
   ],
   "peerDependencies": {
-    "react": ">=16"
+    "react": ">=16.3.0"
   }
 }
